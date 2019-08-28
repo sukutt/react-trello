@@ -1,12 +1,10 @@
 import React from 'react';
-import TrelloListBoard from './components/TrelloListBoard';
+import ListContainer from './containers/ListContainer';
 
 class App extends React.Component {
   render() {
     return (
-      <div>
-        <TrelloListBoard title={'test'}/>
-      </div>
+        <ListContainer />
     )
   }
 }
