@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import TrelloCard from './TrelloCard';
+import TrelloActionButton from './TrelloActionButton';
 
 const TrelloListBoard = ({ title, cards }) => {
     const jsxList = cards.map((item) => {
@@ -13,17 +14,29 @@ const TrelloListBoard = ({ title, cards }) => {
     })
     return (
         <BoardDiv>
-            <h4>{title}</h4>
-            {jsxList}
+            <CardDiv>
+                <HeaderDiv>{title}</HeaderDiv>
+                {jsxList}
+            </CardDiv>
+            <TrelloActionButton/>
         </BoardDiv>
     )
 }
+
+const HeaderDiv = styled.div`
+    padding: 8px;
+    font-weight: 600;
+    font-size: 16px;
+`;
+
+const CardDiv = styled.div`
+    padding: 8px;
+`;
 
 const BoardDiv = styled.div`
     background-color: #dfe3e6;
     border-radius: 3px;
     width: 300px;
-    padding: 8px;
     margin-right: 8px;
 `;
 
