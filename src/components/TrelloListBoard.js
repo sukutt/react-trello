@@ -1,26 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
 import TrelloCard from './TrelloCard';
-import AddButtonContainer from '../containers/AddButtonContainer'
+import TrelloActionButton from '../components/TrelloActionButton'
 
-const TrelloListBoard = ({ title, cards }) => {
-    const jsxList = cards.map((item) => {
+class TrelloListBoard extends React.Component {
+    render() {
+        const {title, id, cards, formOpen, onAddCard} = this.props;
+        const jsxList = cards.map((item) => {
+            return (
+                <TrelloCard
+                content={item.content}
+                key={item.id}
+                />
+            )
+        });
+
         return (
-            <TrelloCard
-            content={item.content}
-            key={item.id}
-            />
+            <BoardDiv>
+                <CardDiv>
+                    <HeaderDiv>{title}</HeaderDiv>
+                    {jsxList}
+                </CardDiv>
+                <TrelloActionButton formOpen={formOpen} onAddCard={onAddCard} id={id}/>
+            </BoardDiv>
         )
-    })
-    return (
-        <BoardDiv>
-            <CardDiv>
-                <HeaderDiv>{title}</HeaderDiv>
-                {jsxList}
-            </CardDiv>
-            <AddButtonContainer/>
-        </BoardDiv>
-    )
+    }
 }
 
 const HeaderDiv = styled.div`
@@ -30,7 +34,7 @@ const HeaderDiv = styled.div`
 `;
 
 const CardDiv = styled.div`
-    padding: 8px;
+    padding: 8px 8px 0px 8px;
 `;
 
 const BoardDiv = styled.div`

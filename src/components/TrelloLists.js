@@ -2,13 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import TrelloListBoard from './TrelloListBoard';
 
-const TrelloLists = ({list}) => {
+const TrelloLists = ({ list, onAddCard }) => {
     const jsxList = list.map((item) => {
         return (
             <TrelloListBoard
-            title={item.title}
-            key={item.id}
-            cards={item.cards}
+            title={item.get('title')}
+            key={item.get('id')}
+            id={item.get('id')}
+            cards={item.get('cards')}
+            formOpen={item.get('formOpen')}
+            onAddCard={onAddCard}
             />
         )
     })
