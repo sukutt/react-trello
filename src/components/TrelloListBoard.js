@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import TrelloCard from './TrelloCard';
-import TrelloActionButton from './TrelloActionButton';
+import AddButtonContainer from '../containers/AddButtonContainer'
 
 const TrelloListBoard = ({ title, cards }) => {
     const jsxList = cards.map((item) => {
@@ -18,7 +18,7 @@ const TrelloListBoard = ({ title, cards }) => {
                 <HeaderDiv>{title}</HeaderDiv>
                 {jsxList}
             </CardDiv>
-            <TrelloActionButton/>
+            <AddButtonContainer/>
         </BoardDiv>
     )
 }

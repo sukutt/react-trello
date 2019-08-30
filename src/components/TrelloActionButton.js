@@ -3,14 +3,27 @@ import styled from 'styled-components';
 import Icon from '@material-ui/core/Icon';
 
 class TrelloActionButton extends Component {
-    render() {
-        const {list} = this.props;
-        const buttonText = list ? "Add another list" : "Add another card";
+    renderAddButton = (buttonText, onAddCard) => {
         return (
-            <Button>
+            <Button onClick={onAddCard}>
                 <Icon>add</Icon>
                 <p>{buttonText}</p>
             </Button>
+        )
+    }
+
+    renderForm = () => {
+        return (
+            <p>Hello</p>
+        )
+    }
+
+    render() {
+        const { formOpen, list, onAddCard } = this.props;
+        const buttonText = list ? "Add another list" : "Add another card";
+
+        return (
+            formOpen ? this.renderForm() : this.renderAddButton(buttonText, onAddCard)
         )
     }
 }
