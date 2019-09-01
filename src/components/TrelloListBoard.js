@@ -1,16 +1,33 @@
 import React from 'react';
 import styled from 'styled-components';
 import TrelloCard from './TrelloCard';
-import TrelloActionButton from '../components/TrelloActionButton'
+import ActionButtonContainer from '../containers/ActionButtonContainer';
 
 class TrelloListBoard extends React.Component {
+    shouldComponentUpdate = (nextProps) => {
+        if(this.props.formOpen !== nextProps.formOpen) {
+            return true;
+        }
+
+        return false;
+    }
+
     render() {
-        const {title, id, cards, formOpen, onAddCard} = this.props;
+        const {
+            title,
+            id,
+            cards,
+            formOpen,
+            onAddCard,
+            onCancelAddingCard,
+            onConfirmNewCard,
+        } = this.props;
+
         const jsxList = cards.map((item) => {
             return (
                 <TrelloCard
-                content={item.content}
-                key={item.id}
+                content={item.get('content')}
+                key={item.get('id')}
                 />
             )
         });
@@ -21,7 +38,13 @@ class TrelloListBoard extends React.Component {
                     <HeaderDiv>{title}</HeaderDiv>
                     {jsxList}
                 </CardDiv>
-                <TrelloActionButton formOpen={formOpen} onAddCard={onAddCard} id={id}/>
+                <ActionButtonContainer 
+                formOpen={formOpen} 
+                onAddCard={onAddCard} 
+                onCancelAddingCard={onCancelAddingCard} 
+                onConfirmNewCard={onConfirmNewCard}
+                id={id}
+                />
             </BoardDiv>
         )
     }
@@ -38,7 +61,7 @@ const CardDiv = styled.div`
 `;
 
 const BoardDiv = styled.div`
-    background-color: #dfe3e6;
+    background-color: #ebecf0;
     border-radius: 3px;
     width: 300px;
     margin-right: 8px;

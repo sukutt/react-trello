@@ -6,10 +6,14 @@ import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
 
 class TrelloActionButton extends Component {
-    renderAddButton = (buttonText, onAddCard, id) => {
+    renderAddButton = (id, isBoard, buttonText, onAddCard, onAddBoard) => {
         return (
-            <ActionButton onClick={()=> {
-                onAddCard(id);
+            <ActionButton isBoard={isBoard} onClick={()=> {
+                if(isBoard) {
+                    onAddCard(id);
+                } else {
+                    onAddBoard();
+                }
             }}>
                 <Icon>add</Icon>
                 <p>{buttonText}</p>
@@ -17,32 +21,78 @@ class TrelloActionButton extends Component {
         )
     }
 
-    renderForm = () => {
-        const { list } = this.props;
-        const placeHolder = list ? "Enter list title..." : "Enter a title for this card...";
-        const buttonTitle = list ? "Add List" : "Add Card";
+    renderForm = (id, onCancelAddingCard, onConfirmNewCard, onChangeContent, onConfirmNewBoard) => {
+        const { isBoard = true, content, onReset, onCancelAddingBoard } = this.props;
+        const placeHolder = isBoard ? "Enter a title for this card..." : "Enter list title...";
+        const buttonTitle = isBoard ? "Add Card" : "Add List";
 
         return (
             <Container>
-                <StyledCard>
+                <StyledCard onMouseDown={(e) => {
+                    e.preventDefault();
+                }}>
                     <TextArea 
-                        placeholder={placeHolder} autoFocus 
+                        onChange={(e) => {
+                            onChangeContent(e.target.value);
+                        }}
+                        placeholder={placeHolder}
+                        autoFocus
+                        onBlur={() => {
+                            if(isBoard) {
+                                onCancelAddingCard(id);
+                            } else {
+                                onCancelAddingBoard();
+                            }
+                            onReset();
+                        }}
                     />
                 </StyledCard>
                 <AddCardButtonGroup>
-                    <AddCardButton variant="contained">{buttonTitle}{" "}</AddCardButton>
-                    <CloseButton>close</CloseButton>
+                    <AddCardButton onMouseDown={(e) => {
+                        const escapedContent = content.replace(/\s/gi, "");
+                        if(escapedContent.length === 0) {
+                            e.preventDefault();
+                            return;
+                        }
+                        if(isBoard) {
+                            onConfirmNewCard(id, content);
+                        } else {
+                            onConfirmNewBoard(content);
+                        }
+                        onReset();
+                    }} variant="contained">{buttonTitle}{" "}</AddCardButton>
+                    <CloseButton onClick={() => {
+                        if(isBoard) {
+                            onCancelAddingCard(id);
+                        } else{
+                            onCancelAddingBoard();
+                        }
+                        onReset();
+                    }}>close</CloseButton>
                 </AddCardButtonGroup>
             </Container>
         )
     }
 
     render() {
-        const { formOpen, list, onAddCard, id } = this.props;
-        const buttonText = list ? "Add another list" : "Add another card";
+        const {
+            id,
+            formOpen,
+            boardFormOpen,
+            isBoard = true,
+            onAddCard,
+            onAddBoard,
+            onCancelAddingCard,
+            onConfirmNewCard,
+            onChangeContent,
+            onConfirmNewBoard
+        } = this.props;
+        const buttonText = isBoard ? "Add another card" :"Add another list";
 
         return (
-            formOpen ? this.renderForm() : this.renderAddButton(buttonText, onAddCard, id)
+            formOpen || (isBoard === false && boardFormOpen) ?
+            this.renderForm(id, onCancelAddingCard, onConfirmNewCard, onChangeContent, onConfirmNewBoard)
+            : this.renderAddButton(id, isBoard, buttonText, onAddCard, onAddBoard)
         )
     }
 }
@@ -54,6 +104,9 @@ const Container = styled.div`
 const StyledCard = styled(Card)`
     min-height: 85px;
     min-width: 272px;
+    &:hover {
+        cursor: text;
+    }
 `;
 
 const TextArea = styled(Textarea)`
@@ -87,16 +140,15 @@ const ActionButton = styled.div`
     border-radius: 3px;
     height: 24px;
     padding: 8px;
-    color: ${props => props.list ? "white" : "inherit"};
-    opacity: ${props => props.list ? 1 : 0.5};
-    background-color: ${props => props.list ? "rgba(0,0,0,.15)" : "inherit"};
+    color: ${props => props.isBoard ? "#5e6c84" : "white"};
+    background-color: ${props => props.isBoard ? "transparent" : "rgba(0, 0, 0, 0.3)"};
+    min-width: 280px;
     &:hover {
-        background-color: rgba(9,30,66,.13);
+        background-color: ${props => props.isBoard ? "rgba(9,30,66,.13)" : "rgba(0, 0, 0, 0.2)"}; 
         p {
             text-decoration: underline;
         }
     }
 `;
-
 
 export default TrelloActionButton;
