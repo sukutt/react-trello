@@ -18,7 +18,7 @@ class TrelloActionButton extends Component {
         return (
             <ActionButton isBoard={isBoard} onClick={()=> {
                 if(isBoard) {
-                    onAddCard(id, true);
+                    onAddCard(Number(id.split('-')[1]), true);
                 } else {
                     onAddBoard(true);
                 }
@@ -56,7 +56,7 @@ class TrelloActionButton extends Component {
                         autoFocus
                         onBlur={() => {
                             if(isBoard) {
-                                onAddCard(id, false);
+                                onAddCard(Number(id.split('-')[1]), false);
                             } else {
                                 onAddBoard(false);
                             }
@@ -72,7 +72,7 @@ class TrelloActionButton extends Component {
                             return;
                         }
                         if(isBoard) {
-                            onConfirmNewCard(id, content);
+                            onConfirmNewCard(Number(id.split('-')[1]), content);
                         } else {
                             onConfirmNewBoard(content);
                         }
@@ -80,7 +80,7 @@ class TrelloActionButton extends Component {
                     }} variant="contained">{buttonTitle}{" "}</AddCardButton>
                     <CloseButton onClick={() => {
                         if(isBoard) {
-                            onAddCard(id, false);
+                            onAddCard(Number(id.split('-')[1]), false);
                         } else{
                             onAddBoard(false);
                         }

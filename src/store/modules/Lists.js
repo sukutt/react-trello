@@ -4,35 +4,37 @@ import {Map, List} from 'immutable';
 const ADD_CARD = 'board/ADD_CARD';
 const CONFIRM_NEW_CARD = 'board/CONFIRM_NEW_CARD';
 const CONFIRM_NEW_BOARD = 'board/CONFIRM_NEW_BOARD';
+const REORDER = 'board/REORDER';
 
 export const addCard = createAction(ADD_CARD);
 export const confirmNewCard = createAction(CONFIRM_NEW_CARD);
 export const confirmNewBoard = createAction(CONFIRM_NEW_BOARD);
+export const reorder = createAction(REORDER);
+
+let listId = 2;
+let cardId = 4;
 
 const initialState = Map({
-    listId: 2,
     list: List([Map({
-        id: 0,
+        id: `list-${0}`,
         title: 'test',
         formOpen: false,
-        cardId: 2,
         cards: List([Map({
-            id: 0,
+            id: `card-${0}`,
             content: "It's a test",
         }), Map({
-            id: 1,
+            id: `card-${1}`,
             content: 'sldkjflkjdflkasjd',
         })])
     }), Map({
-        id: 1,
+        id: `list-${1}`,
         title: 'test2',
         formOpen: false,
-        cardId: 2,
         cards: List([Map({
-            id: 0,
+            id: `card-${2}`,
             content: "It's a test",
         }), Map({
-            id: 1,
+            id: `card-${3}`,
             content: 'sldkjflkjdflkasjd',
         })])
     })
@@ -47,15 +49,11 @@ export default handleActions({
             (item) => item.set('formOpen', action.payload.isOpen)))
     },
     [CONFIRM_NEW_BOARD]: (state, action) => {
-        const listId = state.get('listId');
         const list = state.get('list');
-
         return state
-            .set('listId', listId + 1)
             .set('list', list.push(Map({
-                id: listId,
+                id: `list-${listId++}`,
                 title: action.payload.title,
-                cardId: 0,
                 formOpen: false,
                 cards: List([]),
         })));
@@ -65,14 +63,29 @@ export default handleActions({
         return state.set('list', list.update(
             action.payload.id,
             (item) => {
-                const newId = item.get('cardId');
                 return item
-                .set('cardId', newId + 1)
                 .set('cards', item.get('cards').push(Map({
-                    id: newId,
+                    id: `card-${cardId++}`,
                     content: action.payload.content,
                 })));
             }
         ));
     },
+    [REORDER]: (state, action) => {
+        const {
+            droppableIdStart,
+            droppableIdEnd,
+            droppableIndexStart,
+            droppableIndexEnd,
+            draggableId, 
+        } = action.payload;
+
+        const numberedStartId = Number(droppableIdStart.split('-')[1]);
+        const numberedEndId = Number(droppableIdEnd.split('-')[1]);
+        // same list
+        if(droppableIdStart === droppableIdEnd) {
+            const list = state.get('list').get(numberedStartId);
+            // const card = list.get('cards').get
+        }
+    }
 }, initialState)
