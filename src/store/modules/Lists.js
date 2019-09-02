@@ -2,12 +2,10 @@ import {handleActions, createAction} from 'redux-actions';
 import {Map, List} from 'immutable';
 
 const ADD_CARD = 'board/ADD_CARD';
-const CANCEL_ADDINGCARD = 'board/CANCEL_ADDINGCARD';
 const CONFIRM_NEW_CARD = 'board/CONFIRM_NEW_CARD';
 const CONFIRM_NEW_BOARD = 'board/CONFIRM_NEW_BOARD';
 
 export const addCard = createAction(ADD_CARD);
-export const cancelAddingCard = createAction(CANCEL_ADDINGCARD);
 export const confirmNewCard = createAction(CONFIRM_NEW_CARD);
 export const confirmNewBoard = createAction(CONFIRM_NEW_BOARD);
 
@@ -46,12 +44,12 @@ export default handleActions({
         const list = state.get('list');
         return state.set('list', list.update(
             action.payload.id,
-            (item) => item.set('formOpen', true)))
+            (item) => item.set('formOpen', action.payload.isOpen)))
     },
     [CONFIRM_NEW_BOARD]: (state, action) => {
         const listId = state.get('listId');
         const list = state.get('list');
-        
+
         return state
             .set('listId', listId + 1)
             .set('list', list.push(Map({
@@ -76,11 +74,5 @@ export default handleActions({
                 })));
             }
         ));
-    },
-    [CANCEL_ADDINGCARD]: (state, action) => {
-        const list = state.get('list');
-        return state.set('list', list.update(
-            action.payload.id,
-            (item) => item.set('formOpen', false)))
     },
 }, initialState)

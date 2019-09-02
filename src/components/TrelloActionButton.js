@@ -18,9 +18,9 @@ class TrelloActionButton extends Component {
         return (
             <ActionButton isBoard={isBoard} onClick={()=> {
                 if(isBoard) {
-                    onAddCard(id);
+                    onAddCard(id, true);
                 } else {
-                    onAddBoard();
+                    onAddBoard(true);
                 }
             }}>
                 <Icon>add</Icon>
@@ -33,9 +33,8 @@ class TrelloActionButton extends Component {
         const { 
             id,
             content,
-            onReset,
-            onCancelAddingBoard ,
-            onCancelAddingCard,
+            onAddCard,
+            onAddBoard,
             onConfirmNewCard,
             onChangeContent,
             onConfirmNewBoard
@@ -57,11 +56,11 @@ class TrelloActionButton extends Component {
                         autoFocus
                         onBlur={() => {
                             if(isBoard) {
-                                onCancelAddingCard(id);
+                                onAddCard(id, false);
                             } else {
-                                onCancelAddingBoard();
+                                onAddBoard(false);
                             }
-                            onReset();
+                            onChangeContent('');
                         }}
                     />
                 </StyledCard>
@@ -77,15 +76,15 @@ class TrelloActionButton extends Component {
                         } else {
                             onConfirmNewBoard(content);
                         }
-                        onReset();
+                        onChangeContent('');
                     }} variant="contained">{buttonTitle}{" "}</AddCardButton>
                     <CloseButton onClick={() => {
                         if(isBoard) {
-                            onCancelAddingCard(id);
+                            onAddCard(id, false);
                         } else{
-                            onCancelAddingBoard();
+                            onAddBoard(false);
                         }
-                        onReset();
+                        onChangeContent('');
                     }}>close</CloseButton>
                 </AddCardButtonGroup>
             </Container>
