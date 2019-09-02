@@ -2,16 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import TrelloCard from './TrelloCard';
 import ActionButtonContainer from '../containers/ActionButtonContainer';
-import { Droppable } from 'react-beautiful-dnd';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 class TrelloListBoard extends React.Component {
-    shouldComponentUpdate = (nextProps) => {
-        if(this.props.formOpen !== nextProps.formOpen) {
-            return true;
-        }
+    // shouldComponentUpdate = (nextProps) => {
+    //     if(this.props.item !== nextProps.item) {
+    //         return true;
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
     render() {
         const {
@@ -19,6 +19,7 @@ class TrelloListBoard extends React.Component {
             id,
             cards,
             formOpen,
+            index,
         } = this.props;
 
         const jsxList = cards.map((item, index) => {
@@ -33,23 +34,32 @@ class TrelloListBoard extends React.Component {
         });
 
         return (
-            <Droppable droppableId={String(id)}>
+            <Draggable draggableId={String(id)} index={index}>
                 {provided => (
                     <BoardDiv 
-                    {...provided.droppableProps} 
-                    ref={provided.innerRef}>
-                        <CardDiv>
-                            <HeaderDiv>{title}</HeaderDiv>
-                            {jsxList}
-                        </CardDiv>
-                        {provided.placeholder}
-                        <ActionButtonContainer 
-                            formOpen={formOpen} 
-                            id={id}
-                        />
+                    {...provided.draggableProps} 
+                    ref={provided.innerRef}
+                    {...provided.dragHandleProps}>
+                        <Droppable droppableId={String(id)}>
+                            {provided => (
+                                <div {...provided.droppableProps} 
+                                ref={provided.innerRef}
+                                >
+                                    <CardDiv>
+                                        <HeaderDiv>{title}</HeaderDiv>
+                                        {jsxList}
+                                    </CardDiv>
+                                    {provided.placeholder}
+                                    <ActionButtonContainer 
+                                    formOpen={formOpen} 
+                                    id={id}
+                                    />
+                                </div>
+                            )}
+                        </Droppable>
                     </BoardDiv>
                 )}
-            </Droppable>
+            </Draggable>
         )
     }
 }

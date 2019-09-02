@@ -10,14 +10,16 @@ class TrelloLists extends React.Component {
             onConfirmNewBoard
         } = this.props;
 
-        const jsxList = list.map((item) => {
+        const jsxList = list.map((item, index) => {
             return (
                 <TrelloListBoard
-                title={item.get('title')}
+                item={item}
                 key={item.get('id')}
+                title={item.get('title')}
                 id={item.get('id')}
                 cards={item.get('cards')}
                 formOpen={item.get('formOpen')}
+                index={index}
                 />
             )
         })
