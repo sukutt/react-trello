@@ -18,9 +18,6 @@ class TrelloListBoard extends React.Component {
             id,
             cards,
             formOpen,
-            onAddCard,
-            onCancelAddingCard,
-            onConfirmNewCard,
         } = this.props;
 
         const jsxList = cards.map((item) => {
@@ -40,9 +37,6 @@ class TrelloListBoard extends React.Component {
                 </CardDiv>
                 <ActionButtonContainer 
                 formOpen={formOpen} 
-                onAddCard={onAddCard} 
-                onCancelAddingCard={onCancelAddingCard} 
-                onConfirmNewCard={onConfirmNewCard}
                 id={id}
                 />
             </BoardDiv>
@@ -57,7 +51,7 @@ const HeaderDiv = styled.div`
 `;
 
 const CardDiv = styled.div`
-    padding: 8px 8px 0px 8px;
+    padding: 0px 8px 0px 8px;
 `;
 
 const BoardDiv = styled.div`

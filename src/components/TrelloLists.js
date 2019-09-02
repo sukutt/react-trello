@@ -7,9 +7,6 @@ class TrelloLists extends React.Component {
     render() {
         const {
             list,
-            onAddCard,
-            onCancelAddingCard,
-            onConfirmNewCard,
             onConfirmNewBoard
         } = this.props;
 
@@ -21,9 +18,6 @@ class TrelloLists extends React.Component {
                 id={item.get('id')}
                 cards={item.get('cards')}
                 formOpen={item.get('formOpen')}
-                onAddCard={onAddCard}
-                onCancelAddingCard={onCancelAddingCard}
-                onConfirmNewCard={onConfirmNewCard}
                 />
             )
         })

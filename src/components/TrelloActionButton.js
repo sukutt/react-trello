@@ -6,7 +6,15 @@ import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
 
 class TrelloActionButton extends Component {
-    renderAddButton = (id, isBoard, buttonText, onAddCard, onAddBoard) => {
+    renderAddButton = (isBoard) => {
+        const { 
+            id,
+            onAddCard,
+            onAddBoard,
+        } = this.props;
+
+        const buttonText = isBoard ? "Add another card" :"Add another list";
+
         return (
             <ActionButton isBoard={isBoard} onClick={()=> {
                 if(isBoard) {
@@ -21,8 +29,18 @@ class TrelloActionButton extends Component {
         )
     }
 
-    renderForm = (id, onCancelAddingCard, onConfirmNewCard, onChangeContent, onConfirmNewBoard) => {
-        const { isBoard = true, content, onReset, onCancelAddingBoard } = this.props;
+    renderForm = (isBoard) => {
+        const { 
+            id,
+            content,
+            onReset,
+            onCancelAddingBoard ,
+            onCancelAddingCard,
+            onConfirmNewCard,
+            onChangeContent,
+            onConfirmNewBoard
+        } = this.props;
+
         const placeHolder = isBoard ? "Enter a title for this card..." : "Enter list title...";
         const buttonTitle = isBoard ? "Add Card" : "Add List";
 
@@ -76,23 +94,15 @@ class TrelloActionButton extends Component {
 
     render() {
         const {
-            id,
             formOpen,
             boardFormOpen,
             isBoard = true,
-            onAddCard,
-            onAddBoard,
-            onCancelAddingCard,
-            onConfirmNewCard,
-            onChangeContent,
-            onConfirmNewBoard
         } = this.props;
-        const buttonText = isBoard ? "Add another card" :"Add another list";
 
         return (
             formOpen || (isBoard === false && boardFormOpen) ?
-            this.renderForm(id, onCancelAddingCard, onConfirmNewCard, onChangeContent, onConfirmNewBoard)
-            : this.renderAddButton(id, isBoard, buttonText, onAddCard, onAddBoard)
+            this.renderForm(isBoard)
+            : this.renderAddButton(isBoard)
         )
     }
 }
