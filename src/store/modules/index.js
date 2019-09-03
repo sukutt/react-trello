@@ -4,5 +4,5 @@ import actionButton from './ActionButton';
 
 export default combineReducers({
     lists,
-    actionButton 
+    actionButton,
 });
