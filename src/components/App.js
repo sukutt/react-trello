@@ -5,8 +5,8 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 class App extends React.Component {
   onDragEnd = (result) => {
     const { onReorder } = this.props;
-    const {destination, source, draggableId, type} = result;
-    
+    const {destination, source, type} = result;
+
     if (!destination) {
       return;
     }
@@ -16,7 +16,6 @@ class App extends React.Component {
       droppableIdEnd: destination.droppableId,
       droppableIndexStart: source.index,
       droppableIndexEnd: destination.index,
-      draggableId,
       type,
     })
   }
@@ -29,8 +28,7 @@ class App extends React.Component {
             <Droppable droppableId="all-lists" direction="horizontal" type="list">
               {provided => (
                 <div {...provided.droppableProps} ref={provided.innerRef} >
-                  <ListContainer />
-                  {provided.placeholder}
+                  <ListContainer provided={provided}/>
                 </div>
               )}
             </Droppable>

@@ -78,12 +78,9 @@ export default handleActions({
             droppableIdEnd,
             droppableIndexStart,
             droppableIndexEnd,
-            draggableId, 
             type
         } = action.payload;
 
-        const numberedStartId = Number(droppableIdStart.split('-')[1]);
-        const numberedEndId = Number(droppableIdEnd.split('-')[1]);
 
         if(type === 'list') {
             const list = state.get('list');
@@ -98,7 +95,7 @@ export default handleActions({
         if(droppableIdStart === droppableIdEnd) {
             const list = state.get('list');
             return state.set('list', list.update(
-                numberedStartId,
+                Number(droppableIdStart.split('-')[1]),
                 (item) => {
                     const draggedItem = item.get('cards').get(droppableIndexStart);
                     const newCards = item
@@ -111,16 +108,24 @@ export default handleActions({
             ));
         } else {
             const list = state.get('list');
-            const startCards = list.get(numberedStartId).get('cards');
-            const endCards = list.get(numberedEndId).get('cards');
+            const currentStartIndex = list.findIndex((item) => {
+                return item.get('id') === droppableIdStart;
+            });
+
+            const currentEndIndex = list.findIndex((item) => {
+                return item.get('id') === droppableIdEnd;
+            });
+
+            const startCards = list.get(currentStartIndex).get('cards');
+            const endCards = list.get(currentEndIndex).get('cards');
 
             const draggedItem = startCards.get(droppableIndexStart);
 
             const deletedCards = startCards.delete(droppableIndexStart);
             const addedCards = endCards.insert(droppableIndexEnd, draggedItem);
 
-            return state.setIn(['list', numberedStartId, 'cards'], deletedCards)
-                        .setIn(['list', numberedEndId, 'cards'], addedCards);
+            return state.setIn(['list', currentStartIndex, 'cards'], deletedCards)
+                        .setIn(['list', currentEndIndex, 'cards'], addedCards);
         }
     }
 }, initialState)

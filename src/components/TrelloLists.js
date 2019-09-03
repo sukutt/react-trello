@@ -7,7 +7,8 @@ class TrelloLists extends React.Component {
     render() {
         const {
             list,
-            onConfirmNewBoard
+            onConfirmNewBoard,
+            provided,
         } = this.props;
 
         const jsxList = list.map((item, index) => {
@@ -27,6 +28,7 @@ class TrelloLists extends React.Component {
         return (
             <Body>
                 {jsxList}
+                {provided.placeholder}
                 <ActionButtonContainer isBoard={false} onConfirmNewBoard={onConfirmNewBoard}/>
             </Body>
         )
