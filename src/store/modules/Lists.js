@@ -2,11 +2,13 @@ import {handleActions, createAction} from 'redux-actions';
 import {Map, List} from 'immutable';
 
 const ADD_CARD = 'board/ADD_CARD';
+const EDIT_CARD = 'board/EDIT_CARD';
 const CONFIRM_NEW_CARD = 'board/CONFIRM_NEW_CARD';
 const CONFIRM_NEW_BOARD = 'board/CONFIRM_NEW_BOARD';
 const REORDER = 'board/REORDER';
 
 export const addCard = createAction(ADD_CARD);
+export const editCard = createAction(EDIT_CARD);
 export const confirmNewCard = createAction(CONFIRM_NEW_CARD);
 export const confirmNewBoard = createAction(CONFIRM_NEW_BOARD);
 export const reorder = createAction(REORDER);
@@ -127,5 +129,9 @@ export default handleActions({
             return state.setIn(['list', currentStartIndex, 'cards'], deletedCards)
                         .setIn(['list', currentEndIndex, 'cards'], addedCards);
         }
+    },
+
+    [EDIT_CARD]: (state, action) => {
+        return state;
     }
 }, initialState)

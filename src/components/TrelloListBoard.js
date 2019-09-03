@@ -1,18 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import TrelloCard from './TrelloCard';
+import CardContainer from '../containers/CardContainer';
 import ActionButtonContainer from '../containers/ActionButtonContainer';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 class TrelloListBoard extends React.Component {
-    // shouldComponentUpdate = (nextProps) => {
-    //     if(this.props.item !== nextProps.item) {
-    //         return true;
-    //     }
-
-    //     return false;
-    // }
-
     render() {
         const {
             title,
@@ -24,7 +16,7 @@ class TrelloListBoard extends React.Component {
 
         const jsxList = cards.map((item, index) => {
             return (
-                <TrelloCard
+                <CardContainer
                 content={item.get('content')}
                 key={item.get('id')}
                 id={item.get('id')}
