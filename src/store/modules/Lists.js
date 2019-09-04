@@ -50,6 +50,7 @@ export default handleActions({
             action.payload.id,
             (item) => item.set('formOpen', action.payload.isOpen)))
     },
+
     [CONFIRM_NEW_BOARD]: (state, action) => {
         const list = state.get('list');
         return state
@@ -60,6 +61,7 @@ export default handleActions({
                 cards: List([]),
         })));
     },
+
     [CONFIRM_NEW_CARD]: (state, action) => {
         const list = state.get('list');
         return state.set('list', list.update(
@@ -132,6 +134,15 @@ export default handleActions({
     },
 
     [EDIT_CARD]: (state, action) => {
-        return state;
+        const {listIndex, index, text} = action.payload;
+        const card = state.get('list')
+                          .get(listIndex)
+                          .get('cards')
+                          .get(index);
+
+        return state.setIn(['list', listIndex, 'cards', index], Map({
+            ...card.toJS(),
+            content: text,
+        }));
     }
 }, initialState)

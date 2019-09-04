@@ -1,40 +1,68 @@
 import React from 'react';
-import Textarea from 'react-textarea-autosize';
 import styled from 'styled-components';
+import Textarea from 'react-textarea-autosize';
 import { Draggable } from 'react-beautiful-dnd';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Icon, Popover, Button, CardContent, Typography, Card } from '@material-ui/core';
 import { DeleteOutline } from '@material-ui/icons';
 
 const TrelloCard = ({
     content,
     id,
+    listIndex,
     index,
     onEditCard,
 }) => {
-    function handleClick(e) {
-        setAnchorEl(e.currentTarget.parentElement);
+    const useStyles = makeStyles(theme => ({
+        iconStyle: {
+          verticalAlign: 'text-bottom',
+        },
+    }));
+
+    const handleFocus = (e) => {
+        if (show) {
+            e.target.select();
+            setShow(false);
+        }
     }
 
-    function handleClose() {
+    const handleChange = (e) => {
+        setText(e.target.value);
+    }
+
+    const handleClick = (target) => {
+        setText(content);
+        setShow(true);
+        setAnchorEl(target);
+    }
+
+    const handleClose = (e) => {
+        e.stopPropagation();
         setAnchorEl(null);
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [show, setShow] = React.useState(false);
+    const [text, setText] = React.useState('');
     const open = Boolean(anchorEl);
+    const classes = useStyles();
 
     return (
         <Draggable draggableId={String(id)} index={index}>
             {provided => (
                 <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                    <StyledCard>
-                        <CardEditButton onMouseDown={handleClick}>
+                    <StyledCard onClick={(e) => {
+                        handleClick(e.currentTarget);
+                    }}>
+                        <CardEditButton onClick={(e) => {
+                            handleClick(e.currentTarget.parentElement);
+                        }}>
                             <EditIcon>edit</EditIcon>
                             <Popover
                                 PaperProps={{
                                     style: {
+                                        overflow: 'visible',
                                         height: '180px',
-                                        width: '500px',
                                         backgroundColor: 'transparent',
                                         boxShadow: 'none',
                                         borderRadius: 0,
@@ -58,15 +86,34 @@ const TrelloCard = ({
                                 }}
                             >
                                 <div>
-                                    <TextArea 
+                                    <TextArea
+                                        value={text}
+                                        onChange={handleChange}
+                                        onFocus={handleFocus}
                                         autoFocus
                                     />
                                 </div>
-                                <SaveCardButton onMouseDown={(e) => {
-                                }} variant="contained">SAVE</SaveCardButton>
+                                <SaveCardButton 
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        // 수정된 텍스트 및 카드 id
+                                        onEditCard({
+                                            listIndex,
+                                            index,
+                                            text,
+                                        });
+                                        setAnchorEl(null);
+                                    }}
+                                    variant="contained">
+                                        SAVE
+                                </SaveCardButton>
                                 <EditFormFloatDiv>
                                     <EditFormButton variant="contained" size="small">
-                                        <DeleteOutline fontSize="small" />
+                                        <DeleteOutline className={classes.iconStyle} fontSize="small" />
+                                        Archive
+                                    </EditFormButton>
+                                    <EditFormButton variant="contained" size="small">
+                                        <DeleteOutline className={classes.iconStyle} fontSize="small" />
                                         Archive
                                     </EditFormButton>
                                 </EditFormFloatDiv>
@@ -89,24 +136,25 @@ const EditFormButton = withStyles({
         background: 'rgba(0,0,0,.3)',
         fontSize: '14px',
         color: 'white',
+        clear: 'both',
+        margin: '0px 0px 4px 8px',
         textTransform: 'none',
+        display: 'block',
+        float: 'left',
         '&:hover': {
             fontWeight: 900,
             backgroundColor: 'rgba(0,0,0,.3)',
-            '& span': {
-                transition: 'transform 0.5s',
-                transform: 'translateX(4px)',
-            }
+            transition: 'transform 0.3s',
+            transform: 'translateX(4px)',
         },
     },
-  })(Button);
+})(Button);
 
 const EditFormFloatDiv = styled.div`
     left: 100%;
     position: absolute;
     top: 0;
     width: 240px;
-    transform: translateX(-210px);
 `;
 
 const SaveCardButton = styled(Button)`

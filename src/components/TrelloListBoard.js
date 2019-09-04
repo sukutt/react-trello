@@ -11,13 +11,14 @@ class TrelloListBoard extends React.Component {
             id,
             cards,
             formOpen,
-            index,
+            index: listIndex,
         } = this.props;
 
         const jsxList = cards.map((item, index) => {
             return (
                 <CardContainer
                 content={item.get('content')}
+                listIndex={listIndex}
                 key={item.get('id')}
                 id={item.get('id')}
                 index={index}
@@ -26,7 +27,7 @@ class TrelloListBoard extends React.Component {
         });
 
         return (
-            <Draggable draggableId={String(id)} index={index}>
+            <Draggable draggableId={String(id)} index={listIndex}>
                 {provided => (
                     <BoardDiv 
                     {...provided.draggableProps} 
