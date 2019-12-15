@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as baseActions from 'store/modules/base';
+import { AuthWrapper } from 'components/Auth';
+import {Register, Login} from 'containers/Auth';
+import { Route } from 'react-router-dom';
 
 class Auth extends Component {
     // 인증 페이지 진입 시 헤더 숨김
@@ -16,9 +19,10 @@ class Auth extends Component {
 
     render() {
         return (
-            <div>
-                Auth
-            </div>
+            <AuthWrapper>
+                <Route path="/auth/login" component={Login}/>
+                <Route path="/auth/register" component={Register}/>
+            </AuthWrapper>
         )
     }
 }

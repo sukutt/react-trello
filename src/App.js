@@ -2,7 +2,7 @@ import React from 'react';
 import {Route} from 'react-router-dom';
 import ListContainer from './containers/ListContainer';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import {Home, Auth} from 'pages';
+import {Home, Auth, Boards} from 'pages';
 import HeaderContainer from 'containers/Base/HeaderContainer';
 
 class App extends React.Component {
@@ -29,6 +29,7 @@ class App extends React.Component {
         <HeaderContainer />
         <Route exact path="/" component={Home}/>
         <Route path="/auth" component={Auth}/>
+        <Route path="/boards" component={Boards} />
       </div>
       
       // <DragDropContext onDragEnd={this.onDragEnd}>

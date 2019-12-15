@@ -1,15 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
-import Button from '@material-ui/core/Button';
+import { Link } from 'react-router-dom';
+import { shadow } from 'lib/styleUtils';
 
-const StyledButton = styled(Button)`
-    background-color: white !important;
-    color: #3f51b5 !important;
-    margin-left: 5px !important;
+const StyledButton = styled(Link)`
+    font-weight: 600;
+    color: white;
+    border: 1px solid white;
+    padding: 0.5rem;
+    padding-bottom: 0.4rem;
+    cursor: pointer;
+    border-radius: 2px;
+    text-decoration: none;
+
+    &:hover {
+        background: #3f51b5;
+        color: white;
+        ${shadow(1)}
+    }
+    &:active {
+        transform: translateY(-3px);
+    }
 `;
 
 const LoginButton = () => (
-    <StyledButton to="/auth/login">
+    <StyledButton to="/auth/register">
         Sign in
     </StyledButton>
 );
