@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { shadow } from 'lib/styleUtils';
 
-const StyledButton = styled(Link)`
+const StyledButton = styled(({isSignUp, backgroundColor, ...rest}) => <Link {...rest} />)`
     font-weight: 600;
     color: white;
-    border: 1px solid white;
+    border: ${props => props.isSignUp ? '1px solid white' : 'none'};
     padding: 0.5rem;
     padding-bottom: 0.4rem;
     cursor: pointer;
@@ -14,8 +14,7 @@ const StyledButton = styled(Link)`
     text-decoration: none;
 
     &:hover {
-        background: #3f51b5;
-        color: white;
+        background: ${props => props.backgroundColor};
         ${shadow(1)}
     }
     &:active {
@@ -23,9 +22,9 @@ const StyledButton = styled(Link)`
     }
 `;
 
-const LoginButton = () => (
-    <StyledButton to="/auth/register">
-        Sign in
+const LoginButton = ({text, backgroundColor, to}) => (
+    <StyledButton isSignUp={text === 'Sign up' ? true : false} backgroundColor={backgroundColor} to={to}>
+        {text}
     </StyledButton>
 );
 

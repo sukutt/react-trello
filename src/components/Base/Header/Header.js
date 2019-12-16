@@ -4,9 +4,10 @@ import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 
-const StyledAppBar = styled(AppBar)`
+const StyledAppBar = styled(({signedIn, ...rest}) => <AppBar {...rest} />)`
     position: fixed !important;
-    background-color: transparent !important;
+    background: transparent !important;
+    // background: ${props => props.signedIn ? 'linear-gradient(135deg, #0079bf, #5067c5)' : 'transparent'} !important;
 `;
 
 const Spacer = styled.div`
@@ -15,8 +16,8 @@ const Spacer = styled.div`
 
 const Header = ({children}) => {
     return (
-        <StyledAppBar>
-        <Toolbar>
+        <StyledAppBar >
+        <Toolbar variant="dense">
             <Typography variant="h6">
                 Frello
             </Typography>
