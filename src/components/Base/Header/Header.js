@@ -6,17 +6,16 @@ import Toolbar from '@material-ui/core/Toolbar';
 
 const StyledAppBar = styled(({signedIn, ...rest}) => <AppBar {...rest} />)`
     position: fixed !important;
-    background: transparent !important;
-    // background: ${props => props.signedIn ? 'linear-gradient(135deg, #0079bf, #5067c5)' : 'transparent'} !important;
+    background: ${props => props.signedIn ? 'linear-gradient(135deg, #0079bf, #5067c5)' : 'transparent'} !important;
 `;
 
 const Spacer = styled.div`
     flex-grow: 1;
 `;
 
-const Header = ({children}) => {
+const Header = ({signedIn, children}) => {
     return (
-        <StyledAppBar >
+        <StyledAppBar signedIn>
         <Toolbar variant="dense">
             <Typography variant="h6">
                 Frello

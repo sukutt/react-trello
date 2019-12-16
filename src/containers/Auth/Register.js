@@ -21,14 +21,13 @@ class Register extends Component {
                 email, userId, password 
             });
 
-            const loggedInfo = this.props.result.toJS();
-            storage.set('signedInInfo', loggedInfo);
-            UserActions.setSignedInInfo(loggedInfo);
-            // UserActions.setValidated(true);
-
+            const signedInInfo = this.props.result.toJS();
+            storage.set('signedInInfo', signedInInfo);
+            UserActions.setSignedInInfo(signedInInfo);
+            UserActions.setValidated(true);
             history.push('/');
         } catch(e) {
-            if(e.response.status === 409) {
+            if (e.response.status === 409) {
                 const { key } = e.response.data;
                 const message = key === 'email' ? '이미 존재하는 이메일입니다.' : '이미 존재하는 아이디입니다.';
                 console.log(message);

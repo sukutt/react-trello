@@ -4,6 +4,10 @@ import ListContainer from './containers/ListContainer';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import {Home, Auth, Boards} from 'pages';
 import HeaderContainer from 'containers/Base/HeaderContainer';
+import storage from 'lib/api/storage';
+import { connect } from 'react-redux';
+import * as userActions from 'store/modules/user';
+import { bindActionCreators } from 'redux';
 
 class App extends React.Component {
   onDragEnd = (result) => {
@@ -21,6 +25,28 @@ class App extends React.Component {
       droppableIndexEnd: destination.index,
       type,
     })
+  }
+
+  initializeUserInfo = async () => {
+    const signedInInfo = storage.get('signedInInfo'); // 로그인 정보를 로컬스토리지에서 가져옵니다.
+    if(!signedInInfo) return; // 로그인 정보가 없다면 여기서 멈춥니다.
+
+    const { UserActions, history } = this.props;
+    UserActions.setSignedInInfo(signedInInfo);
+
+    try {
+        await UserActions.checkStatus();
+
+        // 바로 boards로 넘겨준다
+        history.push('/boards');
+    } catch (e) {
+        storage.remove('signedInInfo');
+        window.location.href = '/auth/login?expired';
+    }
+  }
+
+  componentDidMount() {
+    this.initializeUserInfo();
   }
 
   render() {
@@ -48,4 +74,11 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default connect(
+  (state) => ({
+
+  }),
+  (dispatch) => ({
+    UserActions: bindActionCreators(userActions, dispatch)
+  })
+)(App);

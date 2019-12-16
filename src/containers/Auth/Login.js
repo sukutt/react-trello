@@ -23,17 +23,11 @@ class Login extends Component {
                 password
             });
 
-            const loggedInfo = this.props.result.toJS();
-            UserActions.setSignedInInfo(loggedInfo);
+            const signedInInfo = this.props.result.toJS();
+            UserActions.setSignedInInfo(signedInInfo);
             history.push('/boards');
-            storage.set('signedInInfo', loggedInfo);
-
+            storage.set('signedInInfo', signedInInfo);
         } catch(e) {
-            if(e.response.status === 409) {
-                const { key } = e.response.data;
-                const message = key === 'email' ? '이미 존재하는 이메일입니다.' : '이미 존재하는 아이디입니다.';
-                console.log(message)
-            }
         }
     }
 
