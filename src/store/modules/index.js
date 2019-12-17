@@ -4,6 +4,7 @@ import actionButton from './ActionButton';
 import base from './base';
 import auth from './auth';
 import user from './user';
+import boards from './boards';
 import { penderReducer } from 'redux-pender';
 
 export default combineReducers({
@@ -12,5 +13,6 @@ export default combineReducers({
     base,
     auth,
     user,
+    boards,
     pender: penderReducer
 });
