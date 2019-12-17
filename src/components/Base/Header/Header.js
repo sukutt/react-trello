@@ -5,7 +5,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 
 const StyledAppBar = styled(({signedIn, ...rest}) => <AppBar {...rest} />)`
-    position: fixed !important;
     background: ${props => props.signedIn ? 'linear-gradient(135deg, #0079bf, #5067c5)' : 'transparent'} !important;
 `;
 
@@ -15,15 +14,15 @@ const Spacer = styled.div`
 
 const Header = ({signedIn, children}) => {
     return (
-        <StyledAppBar signedIn>
-        <Toolbar variant="dense">
-            <Typography variant="h6">
-                Frello
-            </Typography>
-            <Spacer />
-            {children}
-        </Toolbar>
-    </StyledAppBar>
+        <StyledAppBar position={signedIn ? "static" : "fixed" } signedIn={signedIn}>
+            <Toolbar variant="dense">
+                <Typography variant="h6">
+                    Frello
+                </Typography>
+                <Spacer />
+                {children}
+            </Toolbar>
+        </StyledAppBar>
     )
 };
 

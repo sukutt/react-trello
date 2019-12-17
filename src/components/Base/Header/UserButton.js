@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fab from '@material-ui/core/Fab';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 
-export default function UserButton() {
+
+export default function UserButton(props) {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleOpenMenu = event => {
@@ -13,10 +14,6 @@ export default function UserButton() {
 
     const handleClose = () => {
         setAnchorEl(null);
-    }
-
-    const handleLogout = () => {
-        
     }
 
     return (
@@ -33,7 +30,7 @@ export default function UserButton() {
             >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                <MenuItem onClick={props.handleLogout}>Logout</MenuItem>
             </Menu>
         </div>
     )

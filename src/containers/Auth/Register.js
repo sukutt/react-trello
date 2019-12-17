@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import storage from 'lib/api/storage';
+import storage from 'lib/storage';
 import * as userActions from 'store/modules/user';
 import * as authActions from 'store/modules/auth';
 import { bindActionCreators } from 'redux';

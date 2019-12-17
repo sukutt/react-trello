@@ -4,10 +4,16 @@ import ListContainer from './containers/ListContainer';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import {Home, Auth, Boards} from 'pages';
 import HeaderContainer from 'containers/Base/HeaderContainer';
-import storage from 'lib/api/storage';
+import storage from 'lib/storage';
 import { connect } from 'react-redux';
 import * as userActions from 'store/modules/user';
 import { bindActionCreators } from 'redux';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import styled from 'styled-components';
+
+const RootDiv = styled.div`
+  display: block;
+`;
 
 class App extends React.Component {
   onDragEnd = (result) => {
@@ -51,12 +57,12 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <RootDiv>
         <HeaderContainer />
         <Route exact path="/" component={Home}/>
         <Route path="/auth" component={Auth}/>
         <Route path="/boards" component={Boards} />
-      </div>
+      </RootDiv>
       
       // <DragDropContext onDragEnd={this.onDragEnd}>
       //   <div>
