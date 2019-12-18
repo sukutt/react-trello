@@ -6,7 +6,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    // onReorder: (params) => dispatch(reorder(params)),
+    onReorder: (params) => dispatch(reorder(params)),
 });
 
 const AppContainer = connect(

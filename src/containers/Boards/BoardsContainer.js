@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { SideNav, GridPanel } from 'components/Boards';
 import styled from 'styled-components';
 import Drawer from '@material-ui/core/Drawer';
+import * as boardsActions from 'store/modules/boards';
+import { bindActionCreators } from 'redux';
 
 const BoardsDiv = styled.div`
     margin-top: 30px;
@@ -30,11 +32,22 @@ const Spacer = styled.div`
 `;
 
 class BoardsContainer extends Component {
+    initBoards = async () => {
+        const { BoardsActions } = this.props;
+        try {
+            await BoardsActions.getBoards();
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     componentDidMount() {
-        //  boards 목록 획득
+        // this.initBoards();
     }
 
     render() {
+        const { list } = this.props;
+
         return (
             <BoardsDiv>
                 <StyledDrawer
@@ -58,9 +71,9 @@ class BoardsContainer extends Component {
 
 export default connect(
     (state) => ({
-        boards: state.boards
+        list: state.boards.get('list')
     }),
-    (dispatch) => {
-
-    }
+    (dispatch) => ({
+        BoardsAction: bindActionCreators(boardsActions, dispatch)
+    })
 )(BoardsContainer);
