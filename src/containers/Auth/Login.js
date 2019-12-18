@@ -24,9 +24,10 @@ class Login extends Component {
             });
 
             const signedInInfo = this.props.result.toJS();
-            UserActions.setSignedInInfo(signedInInfo);
-            history.push('/boards');
             storage.set('signedInInfo', signedInInfo);
+            UserActions.setSignedInInfo(signedInInfo);
+            
+            history.push('/boards');
         } catch(e) {
         }
     }

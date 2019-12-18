@@ -27,7 +27,7 @@ const PersonIcon = styled(PersonOutlineIcon)`
 
 class GridPanel extends Component {
     render() {
-        const { isFavorite } = this.props;
+        const { isFavorite, boards } = this.props;
         return (
             <div>
                 <Typography variant="subtitle1" gutterBottom={true}>
@@ -37,7 +37,7 @@ class GridPanel extends Component {
                 <RootContainer container spacing={2}>
                     <Grid item xs={12}>
                         <Grid container spacing={3}>
-                            {[0, 1, 2].map(value => (
+                            {boards.map(value => (
                             <Grid key={value} item>
                                 <ContentPaper />
                             </Grid>

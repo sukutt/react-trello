@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Drawer from '@material-ui/core/Drawer';
 import * as boardsActions from 'store/modules/boards';
 import { bindActionCreators } from 'redux';
+import storage from 'lib/storage';
 
 const BoardsDiv = styled.div`
     margin-top: 30px;
@@ -34,19 +35,24 @@ const Spacer = styled.div`
 class BoardsContainer extends Component {
     initBoards = async () => {
         const { BoardsActions } = this.props;
+        const { email } = storage.get('signedInInfo');
+
         try {
-            await BoardsActions.getBoards();
+            await BoardsActions.getBoards(email);
         } catch (e) {
             console.log(e);
         }
     }
 
     componentDidMount() {
-        // this.initBoards();
+        this.initBoards();
     }
 
     render() {
-        const { list } = this.props;
+        const list = this.props.list.toJS();
+
+        const favoriteList = list.filter(value => value.favorite);
+        const personalList = list.filter(value => !value.favorite);
 
         return (
             <BoardsDiv>
@@ -56,11 +62,15 @@ class BoardsContainer extends Component {
                     <SideNav />
                 </StyledDrawer>
                 <Main>
-                    <GridPanel isFavorite={true}>
-                        Favorite
-                    </GridPanel>
-                    <Spacer />
-                    <GridPanel isFavorite={false}>
+                    {favoriteList.length > 0 ?
+                        <React.Fragment>
+                            <GridPanel isFavorite={true} boards={favoriteList}>
+                                Favorite
+                            </GridPanel>
+                            <Spacer />
+                        </React.Fragment> : ''
+                    }
+                    <GridPanel isFavorite={false} boards={personalList}>
                         Personal
                     </GridPanel>
                 </Main>
@@ -74,6 +84,6 @@ export default connect(
         list: state.boards.get('list')
     }),
     (dispatch) => ({
-        BoardsAction: bindActionCreators(boardsActions, dispatch)
+        BoardsActions: bindActionCreators(boardsActions, dispatch)
     })
 )(BoardsContainer);
