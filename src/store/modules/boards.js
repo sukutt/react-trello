@@ -8,7 +8,7 @@ const CREATE = 'boards/CREATE';
 const TOGGLE_FAVORITE = 'boards/TOGGLE_FAVORTIE';
 
 export const getBoards = createAction(GET_BOARDS, BoardsAPI.getBoards);
-export const create = createAction(CREATE);
+export const createBoard = createAction(CREATE, BoardsAPI.createBoard);
 export const toggleFavorite = createAction(TOGGLE_FAVORITE);
 
 const initialState = Map({
@@ -23,6 +23,11 @@ export default handleActions({
 
     ...pender({
         type: GET_BOARDS,
+        onSuccess: (state, action) => state.set('list', List(action.payload.data))
+    }),
+
+    ...pender({
+        type: CREATE,
         onSuccess: (state, action) => state.set('list', List(action.payload.data))
     })
 }, initialState)
