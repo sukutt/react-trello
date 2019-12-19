@@ -42,6 +42,8 @@ const StyledModal = styled(Modal)`
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: rgba(255, 255, 255, .15);  
+    backdrop-filter: blur(5px);
 `;
 
 const StyledPaper = styled.div`
@@ -83,6 +85,12 @@ class BoardsContainer extends Component {
         disabledButton: true 
     }
 
+    initialState = {
+        open: false,
+        title: '',
+        disabledButton: true 
+    }
+
     initBoards = async () => {
         const { BoardsActions } = this.props;
         const { email } = storage.get('signedInInfo');
@@ -98,7 +106,9 @@ class BoardsContainer extends Component {
         this.initBoards();
     }
 
-    handleCreateBoard = async () => {
+    handleSubmit = async (e) => {
+        e.preventDefault();
+
         const { BoardsActions } = this.props;
         const { email } = storage.get('signedInInfo');
         const { title } = this.state;
@@ -111,12 +121,12 @@ class BoardsContainer extends Component {
         } catch (e) {
             console.log(e);
         }
+
+        this.setState(this.initialState);
     }
 
     handleClose = () => {
-        this.setState({
-           open: false,
-        })
+        this.setState(this.initialState);
     }
 
     openBoardModal = () => {
@@ -172,7 +182,7 @@ class BoardsContainer extends Component {
                 >
                     <Fade in={open}>
                         <StyledPaper>
-                            <form>
+                            <form onSubmit={this.handleSubmit}>
                                 <BoardTitleDiv>
                                     <WhiteInput 
                                             size='small'
@@ -188,7 +198,7 @@ class BoardsContainer extends Component {
                                     </span>
                                 </BoardTitleDiv>
                                 <ButtonDiv>
-                                    <Button  variant="contained" color='primary' disabled={disabledButton} onClick={this.handleCreateBoard}>Create Board</Button>
+                                    <Button type="submit" variant="contained" color='primary' disabled={disabledButton}>Create Board</Button>
                                 </ButtonDiv>
                             </form>
                         </StyledPaper>

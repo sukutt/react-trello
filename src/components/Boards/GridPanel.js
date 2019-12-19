@@ -1,19 +1,25 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import CreateButton from './CreateButton';
+import Card from '@material-ui/core/Card';
+
+const StyledCard = styled(Card)`
+    height: 96px;
+    width: 206px;
+    background: #97a0af!important;
+
+    &:hover {
+        cursor: pointer;
+        opacity: 0.9;
+    }
+`;
 
 const RootContainer = styled(Grid)`
     flex-grow: 1;
-`;
-
-const ContentPaper = styled(Paper)`
-    height: 96px;
-    width: 228px;
 `;
 
 const StarIcon = styled(StarBorderIcon)`
@@ -27,9 +33,12 @@ const PersonIcon = styled(PersonOutlineIcon)`
 `;
 
 class GridPanel extends Component {
+    openBoard = () => {
+        console.log('test');
+    }
+
     render() {
         const { isFavorite, boards, openBoardModal } = this.props;
-
         return (
             <div>
                 <Typography variant="subtitle1" gutterBottom={true}>
@@ -39,10 +48,12 @@ class GridPanel extends Component {
                 <RootContainer container spacing={2}>
                     <Grid item xs={12}>
                         <Grid container spacing={3}>
-                            {boards.map(value => (
-                            <Grid key={value} item>
-                                <ContentPaper />
-                            </Grid>
+                            {boards.map((value) => (
+                                <Grid key={value._id} item>
+                                    <StyledCard onClick={this.openBoard}>
+                                        {value.title}
+                                    </StyledCard>
+                                </Grid>
                             ))}
                             {isFavorite ? '' : 
                             <Grid item>

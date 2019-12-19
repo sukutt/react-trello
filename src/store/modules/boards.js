@@ -23,11 +23,20 @@ export default handleActions({
 
     ...pender({
         type: GET_BOARDS,
-        onSuccess: (state, action) => state.set('list', List(action.payload.data))
+        onSuccess: (state, action) => {
+            const immutableList = action.payload.data.map((value) => {
+                return Map(value);
+            })
+
+            return state.set('list', List(immutableList))
+        }
     }),
 
     ...pender({
         type: CREATE,
-        onSuccess: (state, action) => state.set('list', List(action.payload.data))
+        onSuccess: (state, action) => {
+            const list = state.get('list');
+            return state.set('list', list.push(Map(action.payload.data)));
+        }
     })
 }, initialState)
