@@ -9,18 +9,13 @@ const TOGGLE_FAVORITE = 'boards/TOGGLE_FAVORTIE';
 
 export const getBoards = createAction(GET_BOARDS, BoardsAPI.getBoards);
 export const createBoard = createAction(CREATE, BoardsAPI.createBoard);
-export const toggleFavorite = createAction(TOGGLE_FAVORITE);
+export const toggleFavorite = createAction(TOGGLE_FAVORITE, BoardsAPI.toggleFavorite);
 
 const initialState = Map({
     list: List([]),
 })
 
 export default handleActions({
-    [TOGGLE_FAVORITE]: (state, action) => {
-        const index = state.get('list').findIndex(board=> board.get('id') === action.payload);
-        return state.get('list').update(index, board => board.set('favorite', !board.get('favorite')));
-    },
-
     ...pender({
         type: GET_BOARDS,
         onSuccess: (state, action) => {
@@ -37,6 +32,15 @@ export default handleActions({
         onSuccess: (state, action) => {
             const list = state.get('list');
             return state.set('list', list.push(Map(action.payload.data)));
+        }
+    }),
+
+    ...pender({
+        type: TOGGLE_FAVORITE,
+        onSuccess: (state, action) => {
+            const index = state.get('list').findIndex(board=> board.get('_id') === action.payload.data);
+            const newList = state.get('list').update(index, board => board.set('favorite', !board.get('favorite')));
+            return state.set('list', newList);
         }
     })
 }, initialState)

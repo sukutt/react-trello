@@ -17,7 +17,6 @@ const initialState = Map({
         userId: null
     }),
     signedIn: false, // 현재 로그인중인지 알려준다
-    validated: false // 이 값은 현재 로그인중인지 아닌지 한번 서버측에 검증했음을 의미
 })
 
 export default handleActions({
@@ -25,7 +24,7 @@ export default handleActions({
 
     ...pender({
         type: CHECK_STATUS,
-        onSuccess: (state, action) => state.set('signedInInfo', Map(action.payload.data)).set('validated', true), 
+        onSuccess: (state, action) => state.set('signedInInfo', Map(action.payload.data)),
         onFailure: (state, action) => initialState
     })
 }, initialState)

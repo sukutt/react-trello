@@ -106,6 +106,21 @@ class BoardsContainer extends Component {
         this.initBoards();
     }
 
+    handleFavorite = async ({ id, favorite }) => {
+        const { BoardsActions } = this.props;
+        try {
+            await BoardsActions.toggleFavorite({
+                id,
+                favorite
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    } 
+
+    handleOpenBoard = async (e) => {
+    }
+
     handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -148,6 +163,15 @@ class BoardsContainer extends Component {
         const { open, title, disabledButton } = this.state;
         const list = this.props.list.toJS();
 
+        const {
+            openBoardModal,
+            handleFavorite,
+            handleOpenBoard,
+            handleClose,
+            handleSubmit,
+            handleTitleChange
+        } = this;
+
         const favoriteList = list.filter(value => value.favorite);
         const personalList = list.filter(value => !value.favorite);
 
@@ -161,19 +185,30 @@ class BoardsContainer extends Component {
                 <Main>
                     {favoriteList.length > 0 ?
                         <React.Fragment>
-                            <GridPanel isFavorite={true} boards={favoriteList}>
+                            <GridPanel 
+                            isFavorite={true} 
+                            boards={favoriteList}
+                            handleFavorite={handleFavorite}
+                            handleOpenBoard={handleOpenBoard}
+                            >
                                 Favorite
                             </GridPanel>
                             <Spacer />
                         </React.Fragment> : ''
                     }
-                    <GridPanel isFavorite={false} boards={personalList} openBoardModal={this.openBoardModal}>
+                    <GridPanel 
+                    isFavorite={false} 
+                    boards={personalList} 
+                    openBoardModal={openBoardModal}
+                    handleFavorite={handleFavorite}
+                    handleOpenBoard={handleOpenBoard}
+                    >
                         Personal
                     </GridPanel>
                 </Main>
                 <StyledModal
                     open={open}
-                    onClose={this.handleClose}
+                    onClose={handleClose}
                     closeAfterTransition
                     BackdropComponent={Backdrop}
                     BackdropProps={{
@@ -182,19 +217,19 @@ class BoardsContainer extends Component {
                 >
                     <Fade in={open}>
                         <StyledPaper>
-                            <form onSubmit={this.handleSubmit}>
+                            <form onSubmit={handleSubmit}>
                                 <BoardTitleDiv>
                                     <WhiteInput 
                                             size='small'
                                             value={title}
-                                            onChange={this.handleTitleChange}
+                                            onChange={handleTitleChange}
                                             autoFocus={true} 
                                             required={true} 
                                             variant="filled" 
                                             placeholder="Add board title" 
                                     />
                                     <span>
-                                        <StyledCloseIcon fontSize='small' onClick={this.handleClose}/>
+                                        <StyledCloseIcon fontSize='small' onClick={handleClose}/>
                                     </span>
                                 </BoardTitleDiv>
                                 <ButtonDiv>
