@@ -7,7 +7,6 @@ import Typography from '@material-ui/core/Typography';
 
 const StyledCard = styled(Card)`
     height: 96px;
-    width: 206px;
     background: #f1f6f9 !important;
 `;
 
