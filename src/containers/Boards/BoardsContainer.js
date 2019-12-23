@@ -12,13 +12,15 @@ import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import CloseIcon from '@material-ui/icons/Close';
+import CheckIcon from '@material-ui/icons/Check';
 
 const StyledDrawer = styled(Drawer)`
-    margin-top: 20px;
-    width: 210px;
     position: sticky;
-    flex-shrink: 0;
+    top: 0px;
+
     > div {
+        margin-top: 20px;
+        width: 210px;
         position: relative;
         border: none;
         background-color: #fafbfc;
@@ -28,6 +30,10 @@ const StyledDrawer = styled(Drawer)`
         display: none;
     }
 `
+
+const FormContainer = styled.div`
+    outline: none;
+`;
 
 const ContentDiv = styled.main`
     display: flex;
@@ -46,7 +52,7 @@ const MemberBoardsView = styled.div`
 `;
 
 const HomeContainer = styled.div`
-    min-height: calc(100vh - 40px);
+    min-height: calc(100vh - 48px);
 `;
 
 const HomeStickyContainer = styled.div`
@@ -87,23 +93,28 @@ const StyledModal = styled(Modal)`
 `;
 
 const StyledPaper = styled.div`
-    border: none;
-    padding: 4px;
-    outline: none;
-    background-image: url(images/thumbnail-work-harder.jpg);
-    background-size: cover;
-    background-repeat: no-repeat;
-`;
-
-const BackgroundFade = styled.span`
     display: block;
-    background-color: rgba(0, 0, 0, .4);
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: 0;
-    position: absolute;
+    height: 96px;
+    border: none;
+    outline: none;
+    background-image: url(images/thumbnail-default3.jpg);
+    background-size: cover;
+    background-repeat: no-repeat; 
     border-radius: 3px;
+    position: relative;
+
+    &:before {
+        display: block;
+        content: "";
+        background: rgba(0, 0, 0, .15);
+        background-color: rgba(0, 0, 0, .4);
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: 0;
+        position: absolute;
+        border-radius: 3px;
+    }
 `;
 
 const BoardTitleDiv = styled.div`
@@ -111,15 +122,23 @@ const BoardTitleDiv = styled.div`
 `;
 
 const WhiteInput = styled(TextField)`
-    background-color: rgba(255, 255, 255, 0.2);
     input {
         color: white;
+        &::placeholder {
+            background-color: rgba(0,0,0, .8);
+        }
     }
 `;
 
 const ButtonDiv = styled.div`
     display: flex;
     padding: 8px 4px 4px 0;
+
+    > button {
+        &:disabled {
+            background-color: #f5f5f5;
+        }
+    }
 `;
 
 const StyledCloseIcon = styled(CloseIcon)`
@@ -132,6 +151,68 @@ const StyledCloseIcon = styled(CloseIcon)`
         cursor: pointer;
     }
 `
+
+const GridList = styled.ul`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    list-style: none;
+    width: 100px;
+    height: 96px;
+    margin: 0;
+    margin-left: 8px;
+    padding-left: 0;
+`;
+
+const GridListItem = styled.li`
+    height: 28px;
+    width: 28px;
+    margin-bottom: 6px;
+
+    &:nth-child(n+7) {
+        margin-bottom: 0;
+    }
+`;
+
+const GridItemButton = styled(({img, backgroundColor, ...rest}) => <button {...rest} />)`
+    background: none;
+    background-color: ${props => props.backgroundColor || '#fff'};
+    background-image: url(${props => props.img || 'none'});
+    background-position: 50%;
+    background-size: cover;
+    box-shadow: none;
+    align-items: center;
+    border-radius: 3px;
+    color: rgba(0,0,0,.4);
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    margin: 0;
+    min-height: 0;
+    padding: 0;
+    position: relative;
+    line-height: 0;
+    width: 100%;
+    cursor: pointer;
+    border: none;
+    outline: none;
+
+    &:before {
+        display: block;
+        background: rgba(0,0,0, .15);
+        position: absolute;
+        content: "";
+        bottom: 0;
+        top: 0;
+        right: 0;
+        left: 0;
+        border-radius: 3px;
+    }
+`;
+
+const GridItemCheck = styled(CheckIcon)`
+    color: #fff;
+`;
 
 class BoardsContainer extends Component {
     state = {
@@ -152,6 +233,12 @@ class BoardsContainer extends Component {
 
         try {
             await BoardsActions.getBoards(email);
+        } catch (e) {
+            console.log(e);
+        }
+
+        try {
+            await BoardsActions.getBoardImages();
         } catch (e) {
             console.log(e);
         }
@@ -211,16 +298,21 @@ class BoardsContainer extends Component {
         })
     }
 
+    changeThumbnail = (e) => {
+        e.preventDefault();
+    }
+
     render() {
         const { open, title, disabledButton } = this.state;
         const list = this.props.list.toJS();
-
+        const tileData = this.props.images.toJS();
         const {
             openBoardModal,
             handleFavorite,
             handleClose,
             handleSubmit,
-            handleTitleChange
+            handleTitleChange,
+            changeThumbnail
         } = this;
 
         const favoriteList = list.filter(value => value.favorite);
@@ -270,11 +362,11 @@ class BoardsContainer extends Component {
                                 }}
                             >
                                 <Fade in={open}>
-                                    <StyledPaper>
-                                    <BackgroundFade />
+                                    <FormContainer>
                                         <form onSubmit={handleSubmit}>
                                             <BoardTitleDiv>
-                                                <WhiteInput 
+                                                <StyledPaper>
+                                                    <WhiteInput 
                                                         size='small'
                                                         value={title}
                                                         onChange={handleTitleChange}
@@ -282,16 +374,26 @@ class BoardsContainer extends Component {
                                                         required={true} 
                                                         variant="filled" 
                                                         placeholder="Add board title" 
-                                                />
-                                                <span>
-                                                    <StyledCloseIcon fontSize='small' onClick={handleClose}/>
-                                                </span>
+                                                    />
+                                                    <span>
+                                                        <StyledCloseIcon fontSize='small' onClick={handleClose}/>
+                                                    </span>
+                                                </StyledPaper>
+                                                <GridList>
+                                                    {tileData.map((value) => (
+                                                        <GridListItem key={value.img || value.backgroundColor}>
+                                                            <GridItemButton onClick={changeThumbnail} backgroundColor={value.backgroundColor} img={value.img}>
+                                                                <GridItemCheck />
+                                                            </GridItemButton>
+                                                        </GridListItem>
+                                                    ))}
+                                                </GridList>
                                             </BoardTitleDiv>
                                             <ButtonDiv>
                                                 <Button type="submit" variant="contained" color='primary' disabled={disabledButton}>Create Board</Button>
                                             </ButtonDiv>
                                         </form>
-                                    </StyledPaper>
+                                    </FormContainer>
                                 </Fade>
                             </StyledModal>
                         </HomeStickyContainer>
@@ -304,7 +406,8 @@ class BoardsContainer extends Component {
 
 export default connect(
     (state) => ({
-        list: state.boards.get('list')
+        list: state.boards.get('list'),
+        images: state.boards.get('images')
     }),
     (dispatch) => ({
         BoardsActions: bindActionCreators(boardsActions, dispatch)

@@ -81,17 +81,17 @@ const TitleContainer = styled.div`
 `;
 
 const Title = styled(Typography)`
-    display: -webkit-box;
     color: white;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 `
 
 const StyledLink = styled(({toggled, ...rest}) => <Link {...rest} />)`
     display: block;
     border-radius: 3px;
     background-color: #97a0af;
-    background-image: url(images/thumbnail-work-harder.jpg);
+    background-image: url(images/thumbnail-default3.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     position: relative;

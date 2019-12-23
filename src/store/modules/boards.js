@@ -4,18 +4,32 @@ import * as BoardsAPI from 'lib/api/boards';
 import { pender } from 'redux-pender';
 
 const GET_BOARDS = 'boards/GET_BOARDS';
+const GET_BOARD_IMAGES = 'boards/GET_BOARD_IMAGES';
 const CREATE = 'boards/CREATE';
 const TOGGLE_FAVORITE = 'boards/TOGGLE_FAVORTIE';
 
 export const getBoards = createAction(GET_BOARDS, BoardsAPI.getBoards);
+export const getBoardImages = createAction(GET_BOARD_IMAGES, BoardsAPI.getBoardImages);
 export const createBoard = createAction(CREATE, BoardsAPI.createBoard);
 export const toggleFavorite = createAction(TOGGLE_FAVORITE, BoardsAPI.toggleFavorite);
 
 const initialState = Map({
     list: List([]),
+    images: List([]),
 })
 
 export default handleActions({
+    ...pender({
+        type: GET_BOARD_IMAGES,
+        onSuccess: (state, action) => {
+            const immutableList = action.payload.data.map((value) => {
+                return Map(value);
+            })
+
+            return state.set('images', List(immutableList))
+        }
+    }),
+
     ...pender({
         type: GET_BOARDS,
         onSuccess: (state, action) => {
