@@ -87,11 +87,16 @@ const Title = styled(Typography)`
     white-space: nowrap;
 `
 
-const StyledLink = styled(({toggled, ...rest}) => <Link {...rest} />)`
+const StyledLink = styled(({thumbnail, toggled, ...rest}) => <Link {...rest} />)`
     display: block;
     border-radius: 3px;
-    background-color: #97a0af;
-    background-image: url(images/thumbnail-default3.jpg);
+    ${({thumbnail})=> {
+        if(thumbnail.includes('image')) {
+            return `background-image: ${thumbnail};`;
+        } else {
+            return `background-color: ${thumbnail};`;
+        }
+    }}
     background-size: cover;
     background-repeat: no-repeat;
     position: relative;
@@ -166,7 +171,10 @@ class GridPanel extends Component {
                 <GridContainer>
                     {boards.map((value) => (
                         <GridItem key={value._id} item>
-                            <StyledLink toggled={value.favorite} underline='none'>
+                            <StyledLink 
+                            thumbnail={value.thumbnail}
+                            toggled={value.favorite} 
+                            underline='none'>
                                 <BackgroundFade />
                                 <StyledCard >
                                     <TitleContainer>

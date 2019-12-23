@@ -92,12 +92,15 @@ const StyledModal = styled(Modal)`
     backdrop-filter: blur(5px);
 `;
 
-const StyledPaper = styled.div`
+const StyledPaper = styled(({backgroundKey, backgroundValue, ...rest}) => <div {...rest} />)`
     display: block;
     height: 96px;
     border: none;
     outline: none;
-    background-image: url(images/thumbnail-default3.jpg);
+    ${({backgroundKey, backgroundValue}) => {
+        return `${backgroundKey}: ${backgroundValue};`;
+    }}
+    background-position: 50%;
     background-size: cover;
     background-repeat: no-repeat; 
     border-radius: 3px;
@@ -177,7 +180,13 @@ const GridListItem = styled.li`
 const GridItemButton = styled(({img, backgroundColor, ...rest}) => <button {...rest} />)`
     background: none;
     background-color: ${props => props.backgroundColor || '#fff'};
-    background-image: url(${props => props.img || 'none'});
+    ${props => {
+        if(props.img) {
+            return `background-image: url(${props.img});`;
+        } else {
+            return '';
+        }
+    }}
     background-position: 50%;
     background-size: cover;
     box-shadow: none;
@@ -218,13 +227,23 @@ class BoardsContainer extends Component {
     state = {
         open: false,
         title: '',
-        disabledButton: true 
+        disabledButton: true,
+        background: {
+            id: 0,
+            key: 'background-image',
+            value: 'url(images/thumbnail-default1.jpg)',
+        },
     }
 
     initialState = {
         open: false,
         title: '',
-        disabledButton: true 
+        disabledButton: true,
+        background: {
+            id: 0,
+            key: 'background-image',
+            value: 'url(images/thumbnail-default1.jpg)',
+        },
     }
 
     initBoards = async () => {
@@ -265,10 +284,10 @@ class BoardsContainer extends Component {
 
         const { BoardsActions } = this.props;
         const { email } = storage.get('signedInInfo');
-        const { title } = this.state;
-
+        const { title, background } = this.state;
         try {
             await BoardsActions.createBoard({
+                thumbnail: background.value,
                 email,
                 title,
             });
@@ -300,10 +319,18 @@ class BoardsContainer extends Component {
 
     changeThumbnail = (e) => {
         e.preventDefault();
+        const { id, name, value } = e.target;
+        this.setState({
+            background: {
+                id: Number(id),
+                key: name,
+                value: name === 'background-image' ? `url(${value})` : value,
+            },
+        })
     }
 
     render() {
-        const { open, title, disabledButton } = this.state;
+        const { open, title, disabledButton, background } = this.state;
         const list = this.props.list.toJS();
         const tileData = this.props.images.toJS();
         const {
@@ -365,7 +392,7 @@ class BoardsContainer extends Component {
                                     <FormContainer>
                                         <form onSubmit={handleSubmit}>
                                             <BoardTitleDiv>
-                                                <StyledPaper>
+                                                <StyledPaper backgroundKey={background.key} backgroundValue={background.value}>
                                                     <WhiteInput 
                                                         size='small'
                                                         value={title}
@@ -380,10 +407,10 @@ class BoardsContainer extends Component {
                                                     </span>
                                                 </StyledPaper>
                                                 <GridList>
-                                                    {tileData.map((value) => (
+                                                    {tileData.map((value, index) => (
                                                         <GridListItem key={value.img || value.backgroundColor}>
-                                                            <GridItemButton onClick={changeThumbnail} backgroundColor={value.backgroundColor} img={value.img}>
-                                                                <GridItemCheck />
+                                                            <GridItemButton id={index} value={value.img || value.backgroundColor} name={value.img ? 'background-image' : 'background-color'} onClick={changeThumbnail} backgroundColor={value.backgroundColor} img={value.img}>
+                                                                {index === background.id ? <GridItemCheck /> : ''}
                                                             </GridItemButton>
                                                         </GridListItem>
                                                     ))}

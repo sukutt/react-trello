@@ -45,6 +45,7 @@ export default handleActions({
         type: CREATE,
         onSuccess: (state, action) => {
             const list = state.get('list');
+            console.log(action.payload.data)
             return state.set('list', list.push(Map(action.payload.data)));
         }
     }),
