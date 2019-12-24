@@ -2,13 +2,12 @@ import React from 'react';
 import {Route} from 'react-router-dom';
 import ListContainer from './containers/ListContainer';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import {Home, Auth, Boards} from 'pages';
+import {Home, Auth, Boards, TDLBoard} from 'pages';
 import HeaderContainer from 'containers/Base/HeaderContainer';
 import storage from 'lib/storage';
 import { connect } from 'react-redux';
 import * as userActions from 'store/modules/user';
 import { bindActionCreators } from 'redux';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import styled from 'styled-components';
 
 const RootDiv = styled.div`
@@ -60,6 +59,7 @@ class App extends React.Component {
       <RootDiv>
         <HeaderContainer />
         <Route exact path="/" component={Home}/>
+        <Route exact path="/tdl" component={TDLBoard} />
         <Route path="/auth" component={Auth}/>
         <Route path="/boards" component={Boards} />
       </RootDiv>

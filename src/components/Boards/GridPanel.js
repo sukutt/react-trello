@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import CreateButton from './CreateButton';
-import Link from '@material-ui/core/Link';
+import { Link } from 'react-router-dom';
 import oc from 'open-color';
 
 const RootContainer = styled.div`
@@ -90,6 +90,7 @@ const Title = styled(Typography)`
 const StyledLink = styled(({thumbnail, toggled, ...rest}) => <Link {...rest} />)`
     display: block;
     border-radius: 3px;
+    text-decoration: none;
     ${({thumbnail})=> {
         if(thumbnail.includes('image')) {
             return `background-image: ${thumbnail};`;
@@ -172,6 +173,7 @@ class GridPanel extends Component {
                     {boards.map((value) => (
                         <GridItem key={value._id} item>
                             <StyledLink 
+                            to='/tdl'
                             thumbnail={value.thumbnail}
                             toggled={value.favorite} 
                             underline='none'>
