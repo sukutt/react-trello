@@ -13,7 +13,9 @@ import { connect } from 'react-redux';
 
 class Login extends Component {
 
-    handleSignIn = async () => {
+    handleSubmit = async (e) => {
+        e.preventDefault();
+
         const { AuthActions, UserActions, history, form } = this.props;
         const { email, password } = form.toJS();
 
@@ -26,9 +28,10 @@ class Login extends Component {
             const signedInInfo = this.props.result.toJS();
             storage.set('signedInInfo', signedInInfo);
             UserActions.setSignedInInfo(signedInInfo);
-            
+
             history.push('/boards');
         } catch(e) {
+            console.log(e);
         }
     }
 
@@ -44,12 +47,12 @@ class Login extends Component {
     }
 
     render() {
-        const { handleSignIn, handleChange } = this;
+        const { handleChange, handleSubmit } = this;
 
         return (
             <Container>
                 <CssBaseline />
-                <form>
+                <form onSubmit={handleSubmit}>
                     <Grid container spacing={1}>
                         <Grid item xs={12}>
                             <TextField 
@@ -76,7 +79,7 @@ class Login extends Component {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <Button onClick={handleSignIn} color="primary" variant="contained" fullWidth={true}>Sign in</Button>
+                            <Button type="submit" color="primary" variant="contained" fullWidth={true}>Sign in</Button>
                         </Grid>
                         <Grid container justify="flex-end">
                             <Link to="/auth/register" underline="always">Sign up</Link>

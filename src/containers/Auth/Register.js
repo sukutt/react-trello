@@ -11,7 +11,9 @@ import * as authActions from 'store/modules/auth';
 import { bindActionCreators } from 'redux';
 
 class Register extends Component {
-    handleRegister = async () => {
+    handleSubmit = async (e) => {
+        e.preventDefault();
+
         const { AuthActions, form } = this.props;
         const { email, userId, password, passwordConfirm } = form.toJS();
 
@@ -42,12 +44,12 @@ class Register extends Component {
     }
 
     render() {
-        const { handleChange, handleRegister } = this;
+        const { handleChange, handleSubmit } = this;
 
         return (
             <Container maxWidth="xs">
                 <CssBaseline />
-                <form>
+                <form onSubmit={handleSubmit}>
                     <Grid container spacing={1}>
                         <Grid item xs={12}>
                             <TextField 
@@ -97,7 +99,7 @@ class Register extends Component {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <Button onClick={handleRegister} color="primary" variant="contained" fullWidth={true}>Sign up</Button>
+                            <Button type='submit' color="primary" variant="contained" fullWidth={true}>Sign up</Button>
                         </Grid>
                         <Grid container justify="flex-end">
                             <Link to="/auth/login" underline="always">Sign in</Link>

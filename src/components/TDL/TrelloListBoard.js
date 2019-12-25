@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import CardContainer from '../containers/CardContainer';
-import ActionButtonContainer from '../containers/ActionButtonContainer';
+import CardContainer from 'containers/CardContainer';
+import ActionButtonContainer from 'containers/ActionButtonContainer';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 class TrelloListBoard extends React.Component {

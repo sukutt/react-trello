@@ -1,14 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
-import TrelloListBoard from './TrelloListBoard';
-import ActionButtonContainer from '../containers/ActionButtonContainer';
+import TrelloListBoard from './TDL/TrelloListBoard';
+import ActionButtonContainer from 'containers/ActionButtonContainer';
+
+const Body = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+`;
 
 class TrelloLists extends React.Component {
     render() {
         const {
             list,
-            onConfirmNewBoard,
             provided,
+            onConfirmNewBoard,
         } = this.props;
 
         const jsxList = list.map((item, index) => {
@@ -34,11 +40,5 @@ class TrelloLists extends React.Component {
         )
     }
 }
-
-const Body = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-`;
 
 export default TrelloLists;

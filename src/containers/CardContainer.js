@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import TrelloCard from '../components/TrelloCard';
-import { editCard } from '../store/modules/Lists';
+import { editCard } from '../store/modules/lists';
 
 const mapStateToProps = (state) => ({
 });
