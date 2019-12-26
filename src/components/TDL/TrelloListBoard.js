@@ -5,6 +5,22 @@ import ActionButtonContainer from 'containers/ActionButtonContainer';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 class TrelloListBoard extends React.Component {
+    handleOpenNewCard = () => {
+
+    }
+
+    handleCloseNewCard = () => {
+
+    }
+
+    handleConfirmNewCard = (e) => {
+
+    }
+
+    handleChangeContent = (e) => {
+
+    }
+
     render() {
         const {
             title,

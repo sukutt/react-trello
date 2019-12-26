@@ -20,9 +20,11 @@ const ActionButton = styled.div`
     }
 `;
 
-const NewActionButton = ({handleClick, text}) => {
+const NewActionButton = ({handleClick, text, id}) => {
     return (
-        <ActionButton onClick={handleClick}>
+        <ActionButton onClick={() => {
+            handleClick(id);
+        }}>
             <Icon >add</Icon>
             <p>{text}</p>
         </ActionButton>

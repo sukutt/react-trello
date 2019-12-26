@@ -46,7 +46,8 @@ const NewForm = ({
     placeHolder,
     handleClose,
     handleChange,
-    handleAdd
+    handleAdd,
+    id
     }) => {
     return (
         <Container>
@@ -65,7 +66,7 @@ const NewForm = ({
             <AddCardButtonGroup>
                 <AddCardButton 
                 onMouseDown={(e) => {
-                    handleAdd(e);
+                    handleAdd(e, id);
                 }}
                 variant="contained">
                     {text}" "
