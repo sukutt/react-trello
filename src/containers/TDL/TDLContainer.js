@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ListContainer from 'containers/ListContainer';
+import ListContainer from 'containers/TDL/ListContainer';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import * as tdlBoardActions from 'store/modules/lists';

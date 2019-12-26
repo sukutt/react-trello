@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import lists from './lists';
-import actionbutton from './actionbutton';
+import actionButton from './actionButton';
 import base from './base';
 import auth from './auth';
 import user from './user';
@@ -9,7 +9,7 @@ import { penderReducer } from 'redux-pender';
 
 export default combineReducers({
     lists,
-    actionbutton,
+    actionButton,
     base,
     auth,
     user,

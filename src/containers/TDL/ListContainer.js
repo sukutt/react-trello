@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as tdlBoardActions from 'store/modules/lists';
-import * as buttonActions from 'store/modules/actionbutton';
+import * as buttonActions from 'store/modules/actionButton';
 import styled from 'styled-components';
 import { NewForm, NewActionButton, TrelloListBoard } from 'components/TDL';
 import { bindActionCreators } from 'redux';
@@ -94,8 +94,8 @@ class ListContainer extends Component {
 export default connect(
     (state) => ({
         list: state.lists.get('list'),
-        content: state.actionbutton.get('content'),
-        boardFormOpen: state.actionbutton.get('boardFormOpen'),
+        content: state.actionButton.get('content'),
+        boardFormOpen: state.actionButton.get('boardFormOpen'),
     }),
     (dispatch) => ({
         TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch),
