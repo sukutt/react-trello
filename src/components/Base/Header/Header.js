@@ -14,7 +14,7 @@ const Spacer = styled.div`
 
 const Header = ({signedIn, children}) => {
     return (
-        <StyledAppBar position={signedIn ? "static" : "fixed" } signedIn={signedIn}>
+        <StyledAppBar position="fixed" signedIn={signedIn}>
             <Toolbar variant="dense">
                 <Typography variant="h6">
                     Frello

@@ -3,8 +3,14 @@ import TDLContainer from 'containers/TDL/TDLContainer';
 
 class TDLBoard extends Component {
     render() {
+        const {
+            title,
+        } = this.props.location.state;
+
         return (
-            <TDLContainer />
+            <TDLContainer 
+            title={title}
+            />
         )
     }
 }

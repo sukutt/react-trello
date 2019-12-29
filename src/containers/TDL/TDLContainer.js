@@ -4,6 +4,19 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import * as tdlBoardActions from 'store/modules/lists';
 import { bindActionCreators } from 'redux';
+import HeaderContainer from './HeaderContainer';
+import styled from 'styled-components';
+
+const Body = styled.div`
+    position: fixed;
+    padding-top: 48px;
+    width: 100%;
+`;
+
+const BoardList = styled.div`
+    padding: 10px;
+    background: linear-gradient(180deg,rgba(0,0,0,.24) 0,rgba(0,0,0,.24) 48px,transparent 80px,transparent);
+`;
 
 class TDLContainer extends Component {
     onDragEnd = (result) => {
@@ -24,18 +37,22 @@ class TDLContainer extends Component {
     }
 
     render() {
+        const {
+            title,
+        } = this.props;
+
         return (
             <DragDropContext onDragEnd={this.onDragEnd}>
-                <div>
-                    <h2>Hello Trello</h2>
+                <Body>
+                    <HeaderContainer title={title} />
                     <Droppable droppableId="all-lists" direction="horizontal" type="list">
                         {provided => (
-                        <div {...provided.droppableProps} ref={provided.innerRef} >
+                        <BoardList {...provided.droppableProps} ref={provided.innerRef} >
                             <ListContainer provided={provided}/>
-                        </div>
+                        </BoardList>
                         )}
                     </Droppable>
-                </div>
+                </Body>
             </DragDropContext>
         )
     }

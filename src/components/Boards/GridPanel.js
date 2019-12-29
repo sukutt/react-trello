@@ -173,7 +173,12 @@ class GridPanel extends Component {
                     {boards.map((value) => (
                         <GridItem key={value._id} item>
                             <StyledLink 
-                            to='/tdl'
+                            to={{
+                                pathname: '/tdl',
+                                state: {
+                                    title: value.title
+                                }
+                            }}
                             thumbnail={value.thumbnail}
                             toggled={value.favorite} 
                             underline='none'>

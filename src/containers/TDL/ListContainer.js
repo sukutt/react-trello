@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import * as tdlBoardActions from 'store/modules/lists';
 import * as buttonActions from 'store/modules/actionButton';
 import styled from 'styled-components';
-import { NewForm, NewActionButton, TrelloListBoard } from 'components/TDL';
+import TrelloBoardContainer from 'containers/TDL/TrelloBoardContainer';
+import { NewForm, NewActionButton } from 'components/TDL';
 import { bindActionCreators } from 'redux';
 
 const Body = styled.div`
@@ -57,7 +58,7 @@ class ListContainer extends Component {
 
         const jsxList = list.map((item, index) => {
             return (
-                <TrelloListBoard
+                <TrelloBoardContainer
                 item={item}
                 key={item.get('id')}
                 title={item.get('title')}

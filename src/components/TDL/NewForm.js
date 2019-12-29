@@ -60,7 +60,9 @@ const NewForm = ({
                 }}
                 placeholder={placeHolder}
                 autoFocus
-                onBlur={handleClose}
+                onBlur={() => {
+                    handleClose(id);
+                }}
                 />
             </StyledCard>
             <AddCardButtonGroup>
@@ -69,9 +71,11 @@ const NewForm = ({
                     handleAdd(e, id);
                 }}
                 variant="contained">
-                    {text}" "
+                    {text}
                 </AddCardButton>
-                <CloseButton onClick={handleClose} >close</CloseButton>
+                <CloseButton onClick={() => {
+                    handleClose(id);
+                }} >close</CloseButton>
             </AddCardButtonGroup>
         </Container>
     )

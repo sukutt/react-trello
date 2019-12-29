@@ -9,9 +9,8 @@ import { DeleteOutline } from '@material-ui/icons';
 const TrelloCard = ({
     content,
     id,
-    listIndex,
     index,
-    onEditCard,
+    handleEditCard,
 }) => {
     const useStyles = makeStyles(theme => ({
         iconStyle: {
@@ -97,11 +96,7 @@ const TrelloCard = ({
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         // 수정된 텍스트 및 카드 id
-                                        onEditCard({
-                                            listIndex,
-                                            index,
-                                            text,
-                                        });
+                                        handleEditCard(text);
                                         setAnchorEl(null);
                                     }}
                                     variant="contained">

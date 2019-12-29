@@ -42,6 +42,7 @@ const ContentDiv = styled.main`
     position: relative;
     overflow-y: auto;
     outline: none;
+    padding-top: 55px;
 `;
 
 const MemberBoardsView = styled.div`

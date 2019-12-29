@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as tdlBoardActions from 'store/modules/lists';
 import styled from 'styled-components';
-import CardContainer from 'containers/CardContainer';
+import TrelloCardContainer from 'containers/TDL/TrelloCardContainer';
 import * as buttonActions from 'store/modules/actionButton';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import { NewForm, NewActionButton, TrelloListBoard } from 'components/TDL';
+import { NewForm, NewActionButton } from 'components/TDL';
 
 const HeaderDiv = styled.div`
     padding: 8px;
@@ -27,14 +27,18 @@ const BoardDiv = styled.div`
 `;
 
 class TrelloBoardContainer extends Component {
-    handleOpenNewCard = (id) => {
-        const { TDLBoardActions } = this.props;
-        TDLBoardActions.addCard({id: Number(id.split('-')[1]), isOpen: true});
+    getEscapedId = (id) => {
+        return Number(id.split('-')[1]);
     }
 
-    handleCloseNewCard = () => {
+    handleOpenNewCard = (id) => {
+        const { TDLBoardActions } = this.props;
+        TDLBoardActions.addCard({id: this.getEscapedId(id), isOpen: true});
+    }
+
+    handleCloseNewCard = (id) => {
         const { TDLBoardActions, ButtonActions } = this.props;
-        TDLBoardActions.addCard({isOpen: false});
+        TDLBoardActions.addCard({id: this.getEscapedId(id), isOpen: false});
         ButtonActions.changeContent({content:''});
     }
 
@@ -46,7 +50,7 @@ class TrelloBoardContainer extends Component {
             return;
         }
 
-        TDLBoardActions.confirmNewCard({id, content});
+        TDLBoardActions.confirmNewCard({id: this.getEscapedId(id), content});
         ButtonActions.changeContent({content: ''});
     }
 
@@ -73,7 +77,7 @@ class TrelloBoardContainer extends Component {
 
         const jsxList = cards.map((item, index) => {
             return (
-                <CardContainer
+                <TrelloCardContainer
                 content={item.get('content')}
                 listIndex={listIndex}
                 key={item.get('id')}
@@ -110,6 +114,8 @@ class TrelloBoardContainer extends Component {
                                     id={id}
                                     />
                                     : <NewActionButton 
+                                    color={"rgba(0, 0, 0, .54)"}
+                                    backgroundColor={"transparent"}
                                     text={"Add another card"} 
                                     handleClick={handleOpenNewCard}
                                     id={id}
