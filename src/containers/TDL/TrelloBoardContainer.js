@@ -80,8 +80,8 @@ class TrelloBoardContainer extends Component {
                 <TrelloCardContainer
                 content={item.get('content')}
                 listIndex={listIndex}
-                key={item.get('id')}
-                id={item.get('id')}
+                key={item.get('_id')}
+                id={item.get('_id')}
                 index={index}
                 />
             )

@@ -19,15 +19,18 @@ class ListContainer extends Component {
         ButtonActions.addBoard({isOpen: true});
     }
 
-    handleConfirmNewBoard = (e) => {
-        const { TDLBoardActions, ButtonActions, content } = this.props;
+    handleConfirmNewList = (e) => {
+        const { TDLBoardActions, ButtonActions, content, boardId } = this.props;
         const escapedContent = content.replace(/\s/gi, "");
         if(escapedContent.length === 0) {
             e.preventDefault();
             return;
         }
 
-        TDLBoardActions.confirmNewBoard({title: content});
+        TDLBoardActions.confirmNewList({
+            boardId,
+            title: content
+        });
         ButtonActions.changeContent({content: ''});
     }
 
@@ -52,7 +55,7 @@ class ListContainer extends Component {
         const {
             handleChangeContent,
             handleOpenNewBoard,
-            handleConfirmNewBoard,
+            handleConfirmNewList,
             handleCloseNewBoard,
         } = this;
 
@@ -80,7 +83,7 @@ class ListContainer extends Component {
                 placeHolder="Enter list title..."
                 handleClose={handleCloseNewBoard}
                 handleChange={handleChangeContent}
-                handleAdd={handleConfirmNewBoard}
+                handleAdd={handleConfirmNewList}
                 />
                 : <NewActionButton 
                 text={"Add another list"} 
@@ -94,6 +97,7 @@ class ListContainer extends Component {
 
 export default connect(
     (state) => ({
+        boardId: state.lists.get('boardId'),
         list: state.lists.get('list'),
         content: state.actionButton.get('content'),
         boardFormOpen: state.actionButton.get('boardFormOpen'),

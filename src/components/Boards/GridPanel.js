@@ -176,12 +176,14 @@ class GridPanel extends Component {
                             to={{
                                 pathname: '/tdl',
                                 state: {
-                                    title: value.title
+                                    title: value.title,
+                                    boardId: value._id
                                 }
                             }}
                             thumbnail={value.thumbnail}
                             toggled={value.favorite} 
-                            underline='none'>
+                            underline='none'
+                            >
                                 <BackgroundFade />
                                 <StyledCard >
                                     <TitleContainer>
@@ -192,6 +194,7 @@ class GridPanel extends Component {
                                     <FavoriteButton toggled={value.favorite}>
                                         <IconSpan>
                                             <FavoriteIcon fontSize='small' toggled={value.favorite} onClick={(e) =>  {
+                                                        e.preventDefault();
                                                         e.stopPropagation();
                                                         handleFavorite({
                                                             id: value._id,

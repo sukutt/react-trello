@@ -1,49 +1,64 @@
 import {handleActions, createAction} from 'redux-actions';
+import * as ListsAPI from 'lib/api/lists';
 import {Map, List} from 'immutable';
+import { pender } from 'redux-pender';
 
-const ADD_CARD = 'board/ADD_CARD';
-const EDIT_CARD = 'board/EDIT_CARD';
-const CONFIRM_NEW_CARD = 'board/CONFIRM_NEW_CARD';
-const CONFIRM_NEW_BOARD = 'board/CONFIRM_NEW_BOARD';
-const REORDER = 'board/REORDER';
+const ADD_CARD = 'list/ADD_CARD';
+const EDIT_CARD = 'list/EDIT_CARD';
+const CONFIRM_NEW_CARD = 'list/CONFIRM_NEW_CARD';
+const CONFIRM_NEW_LIST = 'list/CONFIRM_NEW_LIST';
+const GET_LISTS = 'list/GET_LISTS';
+const REORDER = 'list/REORDER';
+const GET_CARDS = 'list/GET_CARDS';
 
+export const getLists = createAction(GET_LISTS, ListsAPI.getLists);
+export const getCards = createAction(GET_CARDS);
 export const addCard = createAction(ADD_CARD);
 export const editCard = createAction(EDIT_CARD);
 export const confirmNewCard = createAction(CONFIRM_NEW_CARD);
-export const confirmNewBoard = createAction(CONFIRM_NEW_BOARD);
+export const confirmNewList = createAction(CONFIRM_NEW_LIST, ListsAPI.createNewList);
 export const reorder = createAction(REORDER);
 
-let listId = 2;
-let cardId = 4;
-
 const initialState = Map({
-    list: List([Map({
-        id: `list-${0}`,
-        title: 'test',
-        formOpen: false,
-        cards: List([Map({
-            id: `card-${0}`,
-            content: "It's a test",
-        }), Map({
-            id: `card-${1}`,
-            content: 'sldkjflkjdflkasjd',
-        })])
-    }), Map({
-        id: `list-${1}`,
-        title: 'test2',
-        formOpen: false,
-        cards: List([Map({
-            id: `card-${2}`,
-            content: "It's a test",
-        }), Map({
-            id: `card-${3}`,
-            content: 'sldkjflkjdflkasjd',
-        })])
-    })
-]),
+    boardId: '',
+    list: List([]),
 })
 
 export default handleActions({
+    ...pender({
+        type: GET_LISTS,
+        onSuccess: (state, action) => {
+            const { boardId, list } = action.payload.data;
+            const immutableList = list.map((value) => {
+                const mappedCards = value.cards.map((card) => Map(card));
+                return Map({
+                    id: value.id,
+                    title: value.title,
+                    formOpen: false,
+                    cards: List(mappedCards),
+                });
+            })
+
+            return state
+            .set('boardId', boardId)
+            .set('list', List(immutableList))
+        }
+    }),
+
+    ...pender({
+        type: CONFIRM_NEW_LIST,
+        onSuccess: (state, action) => {
+            const newList = action.payload.data;
+            const list = state.get('list');
+            return state.set('list', list.push(Map({
+                id: newList._id,
+                title: newList.title,
+                formOpen: false,
+                cards: List([])
+            })));
+        }
+    }),
+
     [ADD_CARD]: (state, action) => {
         const list = state.get('list');
         return state.set('list', list.update(
@@ -51,29 +66,18 @@ export default handleActions({
             (item) => item.set('formOpen', action.payload.isOpen)))
     },
 
-    [CONFIRM_NEW_BOARD]: (state, action) => {
-        const list = state.get('list');
-        return state
-            .set('list', list.push(Map({
-                id: `list-${listId++}`,
-                title: action.payload.title,
-                formOpen: false,
-                cards: List([]),
-        })));
-    },
-
     [CONFIRM_NEW_CARD]: (state, action) => {
-        const list = state.get('list');
-        return state.set('list', list.update(
-            action.payload.id,
-            (item) => {
-                return item
-                .set('cards', item.get('cards').push(Map({
-                    id: `card-${cardId++}`,
-                    content: action.payload.content,
-                })));
-            }
-        ));
+        // const list = state.get('list');
+        // return state.set('list', list.update(
+        //     action.payload.id,
+        //     (item) => {
+        //         return item
+        //         .set('cards', item.get('cards').push(Map({
+        //             id: `card-${cardId++}`,
+        //             content: action.payload.content,
+        //         })));
+        //     }
+        // ));
     },
 
     [REORDER]: (state, action) => {

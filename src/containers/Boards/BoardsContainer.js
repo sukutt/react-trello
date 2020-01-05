@@ -42,7 +42,6 @@ const ContentDiv = styled.main`
     position: relative;
     overflow-y: auto;
     outline: none;
-    padding-top: 55px;
 `;
 
 const MemberBoardsView = styled.div`
@@ -332,7 +331,7 @@ class BoardsContainer extends Component {
 
     render() {
         const { open, title, disabledButton, background } = this.state;
-        const list = this.props.list.toJS();
+        const boards = this.props.boards.toJS();
         const tileData = this.props.images.toJS();
         const {
             openBoardModal,
@@ -343,8 +342,8 @@ class BoardsContainer extends Component {
             changeThumbnail
         } = this;
 
-        const favoriteList = list.filter(value => value.favorite);
-        const personalList = list.filter(value => !value.favorite);
+        const favoriteBoards = boards.filter(value => value.favorite);
+        const personalBoards = boards.filter(value => !value.favorite);
 
         return (
             <ContentDiv>
@@ -358,11 +357,11 @@ class BoardsContainer extends Component {
                             </StyledDrawer>
                             <BoardsDiv>
                                 <BoardsContentsDiv>
-                                    {favoriteList.length > 0 ?
+                                    {favoriteBoards.length > 0 ?
                                         <React.Fragment>
                                             <GridPanel 
                                             isFavorite={true} 
-                                            boards={favoriteList}
+                                            boards={favoriteBoards}
                                             handleFavorite={handleFavorite}
                                             >
                                                 Favorite
@@ -372,7 +371,7 @@ class BoardsContainer extends Component {
                                     }
                                     <GridPanel 
                                     isFavorite={false} 
-                                    boards={personalList} 
+                                    boards={personalBoards} 
                                     openBoardModal={openBoardModal}
                                     handleFavorite={handleFavorite}
                                     >
@@ -434,7 +433,7 @@ class BoardsContainer extends Component {
 
 export default connect(
     (state) => ({
-        list: state.boards.get('list'),
+        boards: state.boards.get('boards'),
         images: state.boards.get('images')
     }),
     (dispatch) => ({

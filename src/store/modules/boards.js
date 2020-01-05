@@ -7,14 +7,16 @@ const GET_BOARDS = 'boards/GET_BOARDS';
 const GET_BOARD_IMAGES = 'boards/GET_BOARD_IMAGES';
 const CREATE = 'boards/CREATE';
 const TOGGLE_FAVORITE = 'boards/TOGGLE_FAVORTIE';
+const UPDATE_TITLE = 'boards/UPDATE_TITLE';
 
 export const getBoards = createAction(GET_BOARDS, BoardsAPI.getBoards);
 export const getBoardImages = createAction(GET_BOARD_IMAGES, BoardsAPI.getBoardImages);
 export const createBoard = createAction(CREATE, BoardsAPI.createBoard);
 export const toggleFavorite = createAction(TOGGLE_FAVORITE, BoardsAPI.toggleFavorite);
+export const updateTitle = createAction(UPDATE_TITLE, BoardsAPI.updateTitle);
 
 const initialState = Map({
-    list: List([]),
+    boards: List([]),
     images: List([]),
 })
 
@@ -37,24 +39,35 @@ export default handleActions({
                 return Map(value);
             })
 
-            return state.set('list', List(immutableList))
+            return state.set('boards', List(immutableList))
         }
     }),
 
     ...pender({
         type: CREATE,
         onSuccess: (state, action) => {
-            const list = state.get('list');
-            return state.set('list', list.push(Map(action.payload.data)));
+            const list = state.get('boards');
+            return state.set('boards', list.push(Map(action.payload.data)));
         }
     }),
 
     ...pender({
         type: TOGGLE_FAVORITE,
         onSuccess: (state, action) => {
-            const index = state.get('list').findIndex(board=> board.get('_id') === action.payload.data);
-            const newList = state.get('list').update(index, board => board.set('favorite', !board.get('favorite')));
-            return state.set('list', newList);
+            const { _id, favorite } = action.payload.data;
+            const index = state.get('boards').findIndex(board=> board.get('_id') === _id);
+            const newList = state.get('boards').update(index, board => board.set('favorite', favorite));
+            return state.set('boards', newList);
         }
-    })
+    }),
+
+    ...pender({
+        type: UPDATE_TITLE,
+        onSuccess: (state, action) => {
+            const { _id, title } = action.payload.data;
+            const index = state.get('boards').findIndex(board=> board.get('_id') === _id);
+            const newList = state.get('boards').update(index, board => board.set('title', title));
+            return state.set('boards', newList);
+        }
+    }),
 }, initialState)

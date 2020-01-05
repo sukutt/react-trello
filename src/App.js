@@ -9,7 +9,9 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
 const RootDiv = styled.div`
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 `;
 
 class App extends React.Component {

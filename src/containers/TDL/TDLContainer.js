@@ -7,10 +7,36 @@ import { bindActionCreators } from 'redux';
 import HeaderContainer from './HeaderContainer';
 import styled from 'styled-components';
 
-const Body = styled.div`
-    position: fixed;
-    padding-top: 48px;
-    width: 100%;
+const Body = styled.main`
+    position: relative;
+    overflow-y: auto;
+    outline: none;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+`;
+
+const Board = styled.div`
+    flex-grow: 1;
+    position: relative;
+    overflow-y: auto;
+    outline: none;
+`;
+
+const BoardWrapper = styled.div`
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+`;
+
+const BoardMain = styled.div`
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-right: 0;
+    transition: margin .1s ease-in;
 `;
 
 const BoardList = styled.div`
@@ -36,22 +62,42 @@ class TDLContainer extends Component {
         })
     }
 
+    initLists = async () => {
+        const { TDLBoardActions, boardId } = this.props;
+        try {
+            await TDLBoardActions.getLists(boardId);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    componentDidMount() {
+        this.initLists();
+    }
+
     render() {
         const {
             title,
+            boardId,
         } = this.props;
 
         return (
             <DragDropContext onDragEnd={this.onDragEnd}>
                 <Body>
-                    <HeaderContainer title={title} />
-                    <Droppable droppableId="all-lists" direction="horizontal" type="list">
-                        {provided => (
-                        <BoardList {...provided.droppableProps} ref={provided.innerRef} >
-                            <ListContainer provided={provided}/>
-                        </BoardList>
-                        )}
-                    </Droppable>
+                    <Board>
+                        <BoardWrapper>
+                            <BoardMain>
+                                <HeaderContainer title={title} boardId={boardId} />
+                                <Droppable droppableId="all-lists" direction="horizontal" type="list">
+                                    {provided => (
+                                    <BoardList {...provided.droppableProps} ref={provided.innerRef} >
+                                        <ListContainer boardId={boardId} provided={provided}/>
+                                    </BoardList>
+                                    )}
+                                </Droppable>
+                            </BoardMain>
+                        </BoardWrapper>
+                    </Board>
                 </Body>
             </DragDropContext>
         )
@@ -63,6 +109,6 @@ export default connect(
 
     }),
     (dispatch) => ({
-        TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch)
+        TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch),
     })
 )(TDLContainer);
