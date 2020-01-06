@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import { isEmptyOrSpaces } from 'lib/fnUtils';
 
 const Main = styled.div`
     height: auto;
@@ -109,7 +110,7 @@ class HeaderContainer extends Component {
     }
 
     handleBlur = async (e) => {
-        if(!e.target.value) {
+        if(isEmptyOrSpaces(e.target.value)) {
             this.setState({
                 title: this.state.originalTitle,
                 changeDiv: false,

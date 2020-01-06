@@ -25,6 +25,10 @@ const BoardWrapper = styled.div`
     display: inline-block;
     vertical-align: top;
     white-space: nowrap;
+
+    &:first-child {
+        margin-left: 8px;
+    }
 `;
 
 const BoardDiv = styled.div`
@@ -39,21 +43,6 @@ const BoardDiv = styled.div`
 `;
 
 class TrelloBoardContainer extends Component {
-    // getEscapedId = (id) => {
-    //     return Number(id.split('-')[1]);
-    // }
-
-    // handleOpenNewCard = (id) => {
-    //     const { TDLBoardActions } = this.props;
-    //     TDLBoardActions.addCard({id: this.getEscapedId(id), isOpen: true});
-    // }
-
-    // handleCloseNewCard = (id) => {
-    //     const { TDLBoardActions, ButtonActions } = this.props;
-    //     TDLBoardActions.addCard({id: this.getEscapedId(id), isOpen: false});
-    //     ButtonActions.changeContent({content:''});
-    // }
-
     handleConfirmNewCard = (content) => {
         const { TDLBoardActions, id } = this.props;
         TDLBoardActions.confirmNewCard({
@@ -61,11 +50,6 @@ class TrelloBoardContainer extends Component {
             content
         });
     }
-
-    // handleChangeContent = (e) => {
-    //     const { ButtonActions } = this.props;
-    //     ButtonActions.changeContent({content: e.target.value});
-    // }
 
     render() {
         const {
@@ -110,23 +94,6 @@ class TrelloBoardContainer extends Component {
                                         </CardDiv>
                                         {provided.placeholder}
                                         <CreateCardButton createNewCard={handleConfirmNewCard} />
-                                        {/* {formOpen
-                                        ? <NewForm 
-                                        text="Add Card"
-                                        placeHolder="Enter a title for this card..."
-                                        handleClose={handleCloseNewCard}
-                                        handleChange={handleChangeContent}
-                                        handleAdd={handleConfirmNewCard}
-                                        id={id}
-                                        />
-                                        : <NewActionButton 
-                                        color={"rgba(0, 0, 0, .54)"}
-                                        backgroundColor={"transparent"}
-                                        text={"Add another card"} 
-                                        handleClick={handleOpenNewCard}
-                                        id={id}
-                                        />
-                                        } */}
                                     </div>
                                 )}
                             </Droppable>

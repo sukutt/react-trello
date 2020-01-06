@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
+import { isEmptyOrSpaces } from 'lib/fnUtils';
 
 const ListButtonDiv = styled.div`
     background-color: hsla(0,0%,100%,.24);
@@ -17,6 +18,10 @@ const ListButtonDiv = styled.div`
     display: inline-block;
     vertical-align: top;
     white-space: nowrap;
+
+    &:first-child {
+        margin-left: 8px;
+    }
 `;
 
 const ActionButton = styled(({color, backgroundColor, ...rest}) => <div {...rest} />)`
@@ -111,8 +116,11 @@ class CreateListButton extends Component {
             <ListButtonDiv>
                 <form onSubmit={(e) => {
                     e.preventDefault();
-                    createNewList(title);
+                    if(isEmptyOrSpaces(title)) {
+                        return;
+                    }
 
+                    createNewList(title);
                     this.clearState();
                 }}>
                     { isEditable 

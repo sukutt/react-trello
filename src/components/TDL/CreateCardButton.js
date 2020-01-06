@@ -3,36 +3,34 @@ import styled from 'styled-components';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import Textarea from 'react-textarea-autosize';
+import { isEmptyOrSpaces } from 'lib/fnUtils';
 
 const ListButtonDiv = styled.div`
-    background-color: hsla(0,0%,100%,.24);
     cursor: pointer;
     border-radius: 3px;
     height: auto;
-    min-height: 32px;
-    padding: 4px;
+    min-height: 38px;
     transition: background 85ms ease-in,opacity 40ms ease-in,border-color 85ms ease-in;
-    margin-right: 8px;
     width: 280px;
     box-sizing: border-box;
     display: inline-block;
     vertical-align: top;
     white-space: nowrap;
+    padding: 0px 8px 8px 8px;
 `;
 
-const ActionButton = styled(({color, backgroundColor, ...rest}) => <div {...rest} />)`
-    color: #fff;
+const ActionButton = styled.div`
+    color: #5e6c84;
     padding: 6px 8px;
     transition: color 85ms ease-in;
+    border-radius: 3px;
     &:hover {
-        opacity: 0.8;
-        p {
-            text-decoration: underline;
-        }
+        background-color: hsla(0, 0%, 50%, .24);
     }
 `;
 
 const AddIcon = styled(Icon)`
+    color: #5e6c84;
     vertical-align: bottom;
 `;
 
@@ -111,12 +109,26 @@ class CreateCardButton extends Component {
     }
 
     handleBlur = (e) => {
-        if(!e.target.value) {
+        if(isEmptyOrSpaces(e.target.value)) {
             this.clearState();
+            return;
         }
 
         const { createNewCard } = this.props;
         createNewCard(e.target.value);
+
+        this.clearState();
+    }
+
+    handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if(isEmptyOrSpaces(e.target.value)) {
+                return;
+            }
+
+            this.handleBlur(e);
+        }
     }
 
     clearState() {
@@ -139,7 +151,8 @@ class CreateCardButton extends Component {
         const {
             handleChange,
             handleClick,
-            handleBlur
+            handleBlur,
+            handleKeyDown
         } = this;
 
         let textAreaHeight = 0; 
@@ -151,18 +164,21 @@ class CreateCardButton extends Component {
             <ListButtonDiv>
                 <form onSubmit={(e) => {
                     e.preventDefault();
-                    createNewCard(title);
+                    if(isEmptyOrSpaces(title)) {
+                        return;
+                    }
 
+                    createNewCard(title);
                     this.clearState();
                 }}>
                     { isEditable 
                     ? <TitleWrapper>
                         <TitleContent ref={this.textAreaRef}>
                             <TitleTextArea 
-                            type= "text"
                             placeholder="Enter a title for this card..."
                             height={textAreaHeight}
                             autoFocus
+                            onKeyDown={handleKeyDown}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={title}

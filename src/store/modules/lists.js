@@ -62,15 +62,16 @@ export default handleActions({
         onSuccess: (state, action) => {
             const newCard = action.payload.data;
             const list = state.get('list');
-            return state.set('list', list.update(
-                newCard.list_id,
-                item => {
-                    return item.set('cards', item.get('cards').push(Map({
-                            id: newCard._id,
-                            content: newCard.content,
-                    })));
-                }
-            ));
+
+            const index = list.findIndex(item => item.get('id') === newCard.list_id);
+            const newList = list.update(index, item => item.set('cards', item.get('cards').push(Map({
+                    _id: newCard._id,
+                    list_id: newCard.list_id,
+                    content: newCard.content,
+                    order: newCard.order,
+            }))));
+
+            return state.set('list', newList);
         }
     }),
 
