@@ -19,7 +19,6 @@ const Body = styled.main`
 const Board = styled.div`
     flex-grow: 1;
     position: relative;
-    overflow-y: auto;
     outline: none;
 `;
 
@@ -42,6 +41,8 @@ const BoardMain = styled.div`
 const BoardList = styled.div`
     padding: 10px;
     background: linear-gradient(180deg,rgba(0,0,0,.24) 0,rgba(0,0,0,.24) 48px,transparent 80px,transparent);
+    position: relative;
+    flex-grow: 1;
 `;
 
 class TDLContainer extends Component {
