@@ -18,7 +18,6 @@ const CardDiv = styled.div`
 `;
 
 const BoardWrapper = styled.div`
-    width: 280px;
     height: 100%;
     margin-right: 8px;
     display: inline-block;
@@ -76,7 +75,7 @@ class TrelloBoardContainer extends Component {
 
         return (
             <BoardWrapper>
-                <Draggable draggableId={String(id)} index={listIndex} boardId={id}>
+                <Draggable draggableId={id} index={listIndex}>
                     {provided => (
                         <BoardDiv
                         {...provided.draggableProps} 
@@ -106,7 +105,6 @@ class TrelloBoardContainer extends Component {
 
 export default connect(
     (state) => ({
-        lists: state.lists.get('list'),
     }),
     (dispatch) => ({
         TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch),

@@ -68,7 +68,6 @@ export default handleActions({
                     content: newCard.content,
                     next: newCard.next,
             }))));
-
             return state.set('list', newList);
         }
     }),
@@ -81,7 +80,6 @@ export default handleActions({
             droppableIndexEnd,
             type
         } = action.payload;
-
 
         if(type === 'list') {
             const list = state.get('list');
@@ -142,4 +140,5 @@ export default handleActions({
             content: text,
         }));
     }
+
 }, initialState)

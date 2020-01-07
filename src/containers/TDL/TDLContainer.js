@@ -47,14 +47,29 @@ const BoardList = styled.div`
 
 class TDLContainer extends Component {
     onDragEnd = (result) => {
-        const { TDLBoardActions } = this.props;
+        const { lists, TDLBoardActions } = this.props;
         const { destination, source, type } = result;
-
-        console.log(result);
 
         if (!destination) {
           return;
         }
+
+        // 처음과 끝 구분 해야한다.
+        let next = null;
+        let prev = null;
+
+        // destination index가 0이 처음, prev는 null
+        if(destination.index === 0) {
+            next = lists.get(destination.index);
+        } else if (destination.index === lists.size - 1) {
+            prev = lists.get(destination.index);
+        } else {
+            next = lists.get(destination.index);
+            prev = lists.get(destination.index - 1);
+        }
+
+        console.log(`prev: ${prev && prev.toJS()}`);
+        console.log(`next: ${next && next.toJS()}`);
 
         TDLBoardActions.reorder({
           droppableIdStart: source.droppableId,
@@ -94,7 +109,8 @@ class TDLContainer extends Component {
                                 <Droppable droppableId="all-lists" direction="horizontal" type="list">
                                     {provided => (
                                     <BoardList {...provided.droppableProps} ref={provided.innerRef} >
-                                        <ListContainer boardId={boardId} provided={provided}/>
+                                        <ListContainer boardId={boardId} provided={provided} />
+                                        {provided.placeholder}
                                     </BoardList>
                                     )}
                                 </Droppable>
@@ -109,7 +125,7 @@ class TDLContainer extends Component {
 
 export default connect(
     (state) => ({
-
+        lists: state.lists.get('list'),
     }),
     (dispatch) => ({
         TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch),

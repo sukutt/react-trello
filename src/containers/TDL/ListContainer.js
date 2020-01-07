@@ -57,7 +57,7 @@ class ListContainer extends Component {
             <Body>
                 {jsxList}
                 <CreateListButton createNewList={handleConfirmNewList} />
-                {provided.placeholder}
+                {/* {provided.placeholder} */}
             </Body>
         )
     }
