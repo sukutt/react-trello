@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import { isEmptyOrSpaces } from 'lib/fnUtils';
+import AutosizeInput from 'react-input-autosize';
 
 const Main = styled.div`
     height: auto;
@@ -25,15 +26,29 @@ const CenteredTypography = styled(({isEditable, ...rest}) => <Typography {...res
     white-space: nowrap;
 `;
 
-const TitleInput = styled.input`
+const TitleInput = styled(AutosizeInput)`
     display: none;
-    background-color: #fff;
-    border: 0;
-    font-weight: 700;
-    font-size: 18px;
-    height: 32px;
-    margin: 0;
-    padding: 0 12px;
+
+    > input {
+        color: #172b4d;
+        border-radius: 3px;
+        line-height: 20px;
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;
+        background-color: #fff;
+        border: 0;
+        margin: 0;
+        padding: 0 12px;
+        font-weight: 700;
+        font-size: 18px;
+        height: 32px;
+
+        &:focus {
+            background: #fff;
+            border: none;
+            box-shadow: inset 0 0 0 2px #0079bf;
+            outline: 0
+        }
+    }
 `;
 
 const TitleDiv = styled.div`
@@ -110,7 +125,7 @@ class HeaderContainer extends Component {
     }
 
     handleBlur = async (e) => {
-        if(isEmptyOrSpaces(e.target.value)) {
+        if(isEmptyOrSpaces(e.target.value) || e.target.value === this.state.originalTitle) {
             this.setState({
                 title: this.state.originalTitle,
                 changeDiv: false,
@@ -118,6 +133,7 @@ class HeaderContainer extends Component {
 
             return;
         }
+
         const { BoardsActions } = this.props;
 
         // 타이틀 변경

@@ -48,7 +48,6 @@ class ListContainer extends Component {
                 title={item.get('title')}
                 id={item.get('id')}
                 cards={item.get('cards')}
-                formOpen={item.get('formOpen')}
                 index={index}
                 />
             )
@@ -57,8 +56,8 @@ class ListContainer extends Component {
         return (
             <Body>
                 {jsxList}
-                {provided.placeholder}
                 <CreateListButton createNewList={handleConfirmNewList} />
+                {provided.placeholder}
             </Body>
         )
     }

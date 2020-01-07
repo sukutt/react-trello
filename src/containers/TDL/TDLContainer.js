@@ -48,7 +48,9 @@ const BoardList = styled.div`
 class TDLContainer extends Component {
     onDragEnd = (result) => {
         const { TDLBoardActions } = this.props;
-        const {destination, source, type} = result;
+        const { destination, source, type } = result;
+
+        console.log(result);
 
         if (!destination) {
           return;

@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import * as tdlBoardActions from 'store/modules/lists';
 import styled from 'styled-components';
 import TrelloCardContainer from 'containers/TDL/TrelloCardContainer';
-import * as buttonActions from 'store/modules/actionButton';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { CreateCardButton } from 'components/TDL';
 
@@ -77,7 +76,7 @@ class TrelloBoardContainer extends Component {
 
         return (
             <BoardWrapper>
-                <Draggable draggableId={String(id)} index={listIndex}>
+                <Draggable draggableId={String(id)} index={listIndex} boardId={id}>
                     {provided => (
                         <BoardDiv
                         {...provided.draggableProps} 
@@ -108,12 +107,9 @@ class TrelloBoardContainer extends Component {
 export default connect(
     (state) => ({
         lists: state.lists.get('list'),
-        content: state.actionButton.get('content'),
-        boardFormOpen: state.actionButton.get('boardFormOpen'),
     }),
     (dispatch) => ({
         TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch),
-        ButtonActions: bindActionCreators(buttonActions, dispatch)
     })
 )(TrelloBoardContainer);
 

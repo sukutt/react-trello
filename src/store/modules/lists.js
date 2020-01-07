@@ -32,7 +32,6 @@ export default handleActions({
                 return Map({
                     id: value.id,
                     title: value.title,
-                    formOpen: false,
                     cards: List(mappedCards),
                 });
             })
@@ -51,7 +50,6 @@ export default handleActions({
             return state.set('list', list.push(Map({
                 id: newList._id,
                 title: newList.title,
-                formOpen: false,
                 cards: List([])
             })));
         }
@@ -68,7 +66,7 @@ export default handleActions({
                     _id: newCard._id,
                     list_id: newCard.list_id,
                     content: newCard.content,
-                    order: newCard.order,
+                    next: newCard.next,
             }))));
 
             return state.set('list', newList);
