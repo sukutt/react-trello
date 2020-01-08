@@ -17,27 +17,21 @@ const CardDiv = styled.div`
     padding: 0px 8px 0px 8px;
 `;
 
-const BoardWrapper = styled.div`
-    height: 100%;
-    margin-right: 8px;
+const BoardDiv = styled.div`
     display: inline-block;
+    background-color: #ebecf0;
+    border-radius: 3px;
+    box-sizing: border-box;
+    margin-right: 8px;
     vertical-align: top;
     white-space: nowrap;
+    flex-direction: column;
+    max-height: 100%;
+    position: relative;
 
     &:first-child {
         margin-left: 8px;
     }
-`;
-
-const BoardDiv = styled.div`
-    background-color: #ebecf0;
-    border-radius: 3px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    max-height: 100%;
-    position: relative;
-    white-space: normal;
 `;
 
 class TrelloBoardContainer extends Component {
@@ -74,31 +68,29 @@ class TrelloBoardContainer extends Component {
         });
 
         return (
-            <BoardWrapper>
-                <Draggable draggableId={id} index={listIndex}>
-                    {provided => (
-                        <BoardDiv
-                        {...provided.draggableProps} 
-                        ref={provided.innerRef}
-                        {...provided.dragHandleProps}>
-                            <Droppable droppableId={String(id)}>
-                                {provided => (
-                                    <div{...provided.droppableProps} 
-                                    ref={provided.innerRef}
-                                    >
-                                        <CardDiv>
-                                            <HeaderDiv>{title}</HeaderDiv>
-                                            {jsxList}
-                                        </CardDiv>
-                                        {provided.placeholder}
-                                        <CreateCardButton createNewCard={handleConfirmNewCard} />
-                                    </div>
-                                )}
-                            </Droppable>
-                        </BoardDiv>
-                    )}
-                </Draggable>
-            </BoardWrapper>
+            <Draggable draggableId={id} index={listIndex}>
+                {provided => (
+                    <BoardDiv
+                    {...provided.draggableProps} 
+                    ref={provided.innerRef}
+                    {...provided.dragHandleProps}>
+                        <Droppable droppableId={String(id)}>
+                            {provided => (
+                                <div{...provided.droppableProps} 
+                                ref={provided.innerRef}
+                                >
+                                    <CardDiv>
+                                        <HeaderDiv>{title}</HeaderDiv>
+                                        {jsxList}
+                                    </CardDiv>
+                                    {provided.placeholder}
+                                    <CreateCardButton createNewCard={handleConfirmNewCard} />
+                                </div>
+                            )}
+                        </Droppable>
+                    </BoardDiv>
+                )}
+            </Draggable>
         )
     }
 }

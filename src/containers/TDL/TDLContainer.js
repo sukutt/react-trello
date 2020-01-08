@@ -9,7 +9,6 @@ import styled from 'styled-components';
 
 const Body = styled.main`
     position: relative;
-    overflow-y: auto;
     outline: none;
     display: flex;
     flex-direction: column;
@@ -43,33 +42,26 @@ const BoardList = styled.div`
     background: linear-gradient(180deg,rgba(0,0,0,.24) 0,rgba(0,0,0,.24) 48px,transparent 80px,transparent);
     position: relative;
     flex-grow: 1;
+    overflow: auto;
 `;
 
 class TDLContainer extends Component {
-    onDragEnd = (result) => {
-        const { lists, TDLBoardActions } = this.props;
+    onDragEnd = (result, ...rest) => {
         const { destination, source, type } = result;
-
         if (!destination) {
-          return;
+            return;
         }
 
-        // 처음과 끝 구분 해야한다.
-        let next = null;
-        let prev = null;
+        const { list, TDLBoardActions } = this.props;
 
-        // destination index가 0이 처음, prev는 null
-        if(destination.index === 0) {
-            next = lists.get(destination.index);
-        } else if (destination.index === lists.size - 1) {
-            prev = lists.get(destination.index);
-        } else {
-            next = lists.get(destination.index);
-            prev = lists.get(destination.index - 1);
-        }
+        const draggedItem = list.get(source.index); 
+        const newOrderedList = list.delete(source.index).insert(destination.index, draggedItem);
 
-        console.log(`prev: ${prev && prev.toJS()}`);
-        console.log(`next: ${next && next.toJS()}`);
+        const orderList = newOrderedList.map((item) => {
+            return item.get('id');
+        });
+
+        // 위에서 만든 orderList를 서버로 전송, 저 리스트 순서대로 indexing을 업데이트 한다.
 
         TDLBoardActions.reorder({
           droppableIdStart: source.droppableId,
@@ -110,7 +102,6 @@ class TDLContainer extends Component {
                                     {provided => (
                                     <BoardList {...provided.droppableProps} ref={provided.innerRef} >
                                         <ListContainer boardId={boardId} provided={provided} />
-                                        {provided.placeholder}
                                     </BoardList>
                                     )}
                                 </Droppable>
@@ -125,7 +116,7 @@ class TDLContainer extends Component {
 
 export default connect(
     (state) => ({
-        lists: state.lists.get('list'),
+        list: state.lists.get('list'),
     }),
     (dispatch) => ({
         TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch),

@@ -10,8 +10,6 @@ const Body = styled.div`
     user-select: none;
     white-space: nowrap;
     margin-bottom: 8px;
-    overflow-x: auto;
-    overflow-y: hidden;
     padding-bottom: 8px;
     position: absolute;
     top: 0;
@@ -56,8 +54,8 @@ class ListContainer extends Component {
         return (
             <Body>
                 {jsxList}
+                {provided.placeholder}
                 <CreateListButton createNewList={handleConfirmNewList} />
-                {/* {provided.placeholder} */}
             </Body>
         )
     }
