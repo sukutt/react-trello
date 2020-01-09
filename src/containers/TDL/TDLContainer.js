@@ -117,7 +117,7 @@ class TDLContainer extends Component {
                         <BoardWrapper>
                             <BoardMain>
                                 <HeaderContainer title={title} boardId={boardId} />
-                                <Droppable droppableId="all-lists" direction="horizontal" type="list">
+                                <Droppable droppableId={boardId} direction="horizontal" type="list">
                                     {provided => (
                                     <BoardList {...provided.droppableProps} ref={provided.innerRef} >
                                         <ListContainer boardId={boardId} provided={provided} />

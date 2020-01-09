@@ -27,14 +27,17 @@ export default handleActions({
         type: GET_LISTS,
         onSuccess: (state, action) => {
             const { boardId, list } = action.payload.data;
+            console.log(boardId);
+            console.log(list);
             const immutableList = list.map((value) => {
                 const mappedCards = value.cards.map((card) => Map(card));
                 return Map({
-                    _id: value.id,
+                    _id: value._id,
                     title: value.title,
-                    cards: List(mappedCards),
+                    order: value.order,
+                    cards: List(mappedCards || []),
                 });
-            })
+            });
 
             return state
             .set('boardId', boardId)
@@ -50,6 +53,7 @@ export default handleActions({
             return state.set('list', list.push(Map({
                 _id: newList._id,
                 title: newList.title,
+                order: newList.order,
                 cards: List([])
             })));
         }
@@ -66,7 +70,7 @@ export default handleActions({
                     _id: newCard._id,
                     list_id: newCard.list_id,
                     content: newCard.content,
-                    next: newCard.next,
+                    order: newCard.order,
             }))));
             return state.set('list', newList);
         }
@@ -75,7 +79,25 @@ export default handleActions({
     ...pender({
         type: REORDER,
         onSuccess: (state, action) => {
-            console.log(action.payload.data);
+            const { type, id, newOrderedCollection } = action.payload.data;
+            if (type === 'list') {
+                const immutableList = newOrderedCollection.map((value) => {
+                    // const mappedCards = value.cards.map((card) => Map(card));
+                    return Map({
+                        _id: value._id,
+                        title: value.title,
+                        order: value.order,
+                        cards: [],
+                        // cards: List(mappedCards || []),
+                    });
+                });
+
+                return state
+                .set('boardId', id)
+                .set('list', List(immutableList));
+            } else {
+                console.log('test')
+            }
         }
     }),
 
