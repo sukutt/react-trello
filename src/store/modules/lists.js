@@ -15,7 +15,7 @@ export const getCards = createAction(GET_CARDS);
 export const editCard = createAction(EDIT_CARD);
 export const confirmNewCard = createAction(CONFIRM_NEW_CARD, ListsAPI.createNewCard);
 export const confirmNewList = createAction(CONFIRM_NEW_LIST, ListsAPI.createNewList);
-export const reorder = createAction(REORDER);
+export const reorder = createAction(REORDER, ListsAPI.reorder);
 
 const initialState = Map({
     boardId: '',
@@ -30,7 +30,7 @@ export default handleActions({
             const immutableList = list.map((value) => {
                 const mappedCards = value.cards.map((card) => Map(card));
                 return Map({
-                    id: value.id,
+                    _id: value.id,
                     title: value.title,
                     cards: List(mappedCards),
                 });
@@ -48,7 +48,7 @@ export default handleActions({
             const newList = action.payload.data;
             const list = state.get('list');
             return state.set('list', list.push(Map({
-                id: newList._id,
+                _id: newList._id,
                 title: newList.title,
                 cards: List([])
             })));
@@ -61,7 +61,7 @@ export default handleActions({
             const newCard = action.payload.data;
             const list = state.get('list');
 
-            const index = list.findIndex(item => item.get('id') === newCard.list_id);
+            const index = list.findIndex(item => item.get('_id') === newCard.list_id);
             const newList = list.update(index, item => item.set('cards', item.get('cards').push(Map({
                     _id: newCard._id,
                     list_id: newCard.list_id,
@@ -72,61 +72,68 @@ export default handleActions({
         }
     }),
 
-    [REORDER]: (state, action) => {
-        const {
-            droppableIdStart,
-            droppableIdEnd,
-            droppableIndexStart,
-            droppableIndexEnd,
-            type
-        } = action.payload;
-
-        if(type === 'list') {
-            const list = state.get('list');
-
-            const draggedItem = list.get(droppableIndexStart);
-            return state.set('list', 
-                list.delete(droppableIndexStart)
-                    .insert(droppableIndexEnd, draggedItem));
+    ...pender({
+        type: REORDER,
+        onSuccess: (state, action) => {
+            console.log(action.payload.data);
         }
+    }),
 
-        // same list
-        if(droppableIdStart === droppableIdEnd) {
-            const list = state.get('list');
-            return state.set('list', list.update(
-                Number(droppableIdStart.split('-')[1]),
-                (item) => {
-                    const draggedItem = item.get('cards').get(droppableIndexStart);
-                    const newCards = item
-                            .get('cards')
-                            .delete(droppableIndexStart)
-                            .insert(droppableIndexEnd, draggedItem);
+    // [REORDER]: (state, action) => {
+    //     const {
+    //         droppableIdStart,
+    //         droppableIdEnd,
+    //         droppableIndexStart,
+    //         droppableIndexEnd,
+    //         type
+    //     } = action.payload;
 
-                    return item.set('cards', newCards);
-                }
-            ));
-        } else {
-            const list = state.get('list');
-            const currentStartIndex = list.findIndex((item) => {
-                return item.get('id') === droppableIdStart;
-            });
+    //     if(type === 'list') {
+    //         const list = state.get('list');
 
-            const currentEndIndex = list.findIndex((item) => {
-                return item.get('id') === droppableIdEnd;
-            });
+    //         const draggedItem = list.get(droppableIndexStart);
+    //         return state.set('list', 
+    //             list.delete(droppableIndexStart)
+    //                 .insert(droppableIndexEnd, draggedItem));
+    //     }
 
-            const startCards = list.get(currentStartIndex).get('cards');
-            const endCards = list.get(currentEndIndex).get('cards');
+    //     // same list
+    //     if(droppableIdStart === droppableIdEnd) {
+    //         const list = state.get('list');
+    //         return state.set('list', list.update(
+    //             Number(droppableIdStart.split('-')[1]),
+    //             (item) => {
+    //                 const draggedItem = item.get('cards').get(droppableIndexStart);
+    //                 const newCards = item
+    //                         .get('cards')
+    //                         .delete(droppableIndexStart)
+    //                         .insert(droppableIndexEnd, draggedItem);
 
-            const draggedItem = startCards.get(droppableIndexStart);
+    //                 return item.set('cards', newCards);
+    //             }
+    //         ));
+    //     } else {
+    //         const list = state.get('list');
+    //         const currentStartIndex = list.findIndex((item) => {
+    //             return item.get('id') === droppableIdStart;
+    //         });
 
-            const deletedCards = startCards.delete(droppableIndexStart);
-            const addedCards = endCards.insert(droppableIndexEnd, draggedItem);
+    //         const currentEndIndex = list.findIndex((item) => {
+    //             return item.get('id') === droppableIdEnd;
+    //         });
 
-            return state.setIn(['list', currentStartIndex, 'cards'], deletedCards)
-                        .setIn(['list', currentEndIndex, 'cards'], addedCards);
-        }
-    },
+    //         const startCards = list.get(currentStartIndex).get('cards');
+    //         const endCards = list.get(currentEndIndex).get('cards');
+
+    //         const draggedItem = startCards.get(droppableIndexStart);
+
+    //         const deletedCards = startCards.delete(droppableIndexStart);
+    //         const addedCards = endCards.insert(droppableIndexEnd, draggedItem);
+
+    //         return state.setIn(['list', currentStartIndex, 'cards'], deletedCards)
+    //                     .setIn(['list', currentEndIndex, 'cards'], addedCards);
+    //     }
+    // },
 
     [EDIT_CARD]: (state, action) => {
         const {listIndex, index, text} = action.payload;

@@ -46,30 +46,49 @@ const BoardList = styled.div`
 `;
 
 class TDLContainer extends Component {
-    onDragEnd = (result, ...rest) => {
-        const { destination, source, type } = result;
+    onDragEnd = (result) => {
+        const { draggableId, destination, source, type } = result;
         if (!destination) {
             return;
         }
 
+        const isDraggingList = type === 'list';
         const { list, TDLBoardActions } = this.props;
 
-        const draggedItem = list.get(source.index); 
-        const newOrderedList = list.delete(source.index).insert(destination.index, draggedItem);
+        let draggedItem = null;
+        let ids = null;
+        let newOrderedList = null;
 
-        const orderList = newOrderedList.map((item) => {
-            return item.get('id');
-        });
+        if(isDraggingList) {
+            draggedItem = list.get(source.index); 
+            newOrderedList = list.delete(source.index).insert(destination.index, draggedItem);
+        } else {
+            const sourceList = list.find(item => item.get('_id') === source.droppableId);
+            const destinationList = list.find(item => item.get('_id') === destination.droppableId);
 
-        // 위에서 만든 orderList를 서버로 전송, 저 리스트 순서대로 indexing을 업데이트 한다.
+            const draggedItemIndex = sourceList.get('cards').findIndex(item => item.get('_id') === draggableId);
+            draggedItem = sourceList.get('cards').get(draggedItemIndex);
 
-        TDLBoardActions.reorder({
-          droppableIdStart: source.droppableId,
-          droppableIdEnd: destination.droppableId,
-          droppableIndexStart: source.index,
-          droppableIndexEnd: destination.index,
-          type,
-        })
+            const cards = destinationList.get('cards');
+            if (source.droppableId === destination.droppableId) {
+                newOrderedList = cards.delete(source.index).insert(destination.index, draggedItem);
+            } else {
+                newOrderedList = cards.insert(destination.index, draggedItem);
+            }
+        }
+
+        if (newOrderedList) {
+            // 위에서 만든 orderList를 서버로 전송, 저 리스트 순서대로 indexing을 업데이트 한다.
+            ids = newOrderedList.map((item) => {
+                return item.get('_id');
+            });
+
+            TDLBoardActions.reorder({
+                id: destination.droppableId,
+                key: isDraggingList ? 'list' : 'card',
+                list: ids.toJS(),
+            });
+        }
     }
 
     initLists = async () => {

@@ -42,9 +42,9 @@ class ListContainer extends Component {
             return (
                 <TrelloBoardContainer
                 item={item}
-                key={item.get('id')}
+                key={item.get('_id')}
                 title={item.get('title')}
-                id={item.get('id')}
+                id={item.get('_id')}
                 cards={item.get('cards')}
                 index={index}
                 />
