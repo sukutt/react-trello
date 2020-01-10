@@ -74,7 +74,7 @@ class TrelloBoardContainer extends Component {
                     {...provided.draggableProps} 
                     ref={provided.innerRef}
                     {...provided.dragHandleProps}>
-                        <Droppable droppableId={String(id)}>
+                        <Droppable droppableId={id}>
                             {provided => (
                                 <div{...provided.droppableProps} 
                                 ref={provided.innerRef}

@@ -46,9 +46,15 @@ const BoardList = styled.div`
 `;
 
 class TDLContainer extends Component {
-    onDragEnd = (result) => {
+    onDragEnd = async (result) => {
         const { draggableId, destination, source, type } = result;
+
         if (!destination) {
+            return;
+        }
+
+        const isSameList = source.droppableId === destination.droppableId;
+        if((source.index === destination.index) && isSameList) {
             return;
         }
 
@@ -58,24 +64,34 @@ class TDLContainer extends Component {
         let draggedItem = null;
         let ids = null;
         let newOrderedList = null;
+        let sourceList = null;
+        let destinationList = null;
 
         if(isDraggingList) {
             draggedItem = list.get(source.index); 
             newOrderedList = list.delete(source.index).insert(destination.index, draggedItem);
         } else {
-            const sourceList = list.find(item => item.get('_id') === source.droppableId);
-            const destinationList = list.find(item => item.get('_id') === destination.droppableId);
+            sourceList = list.find(item => item.get('_id') === source.droppableId);
+            destinationList = list.find(item => item.get('_id') === destination.droppableId);
 
             const draggedItemIndex = sourceList.get('cards').findIndex(item => item.get('_id') === draggableId);
             draggedItem = sourceList.get('cards').get(draggedItemIndex);
 
             const cards = destinationList.get('cards');
-            if (source.droppableId === destination.droppableId) {
+            if (isSameList) {
                 newOrderedList = cards.delete(source.index).insert(destination.index, draggedItem);
             } else {
                 newOrderedList = cards.insert(destination.index, draggedItem);
             }
         }
+
+        TDLBoardActions.reorderUI({
+            type: isDraggingList ? 'list' : 'card',
+            newOrderedList,
+            source,
+            destination,
+            draggableId
+        });
 
         if (newOrderedList) {
             // 위에서 만든 orderList를 서버로 전송, 저 리스트 순서대로 indexing을 업데이트 한다.

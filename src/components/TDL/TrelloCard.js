@@ -47,7 +47,7 @@ const TrelloCard = ({
     const classes = useStyles();
 
     return (
-        <Draggable draggableId={String(id)} index={index}>
+        <Draggable draggableId={id} index={index}>
             {provided => (
                 <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                     <StyledCard onClick={(e) => {
