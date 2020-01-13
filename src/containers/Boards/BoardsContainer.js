@@ -231,7 +231,7 @@ class BoardsContainer extends Component {
         background: {
             id: 0,
             key: 'background-image',
-            value: 'url(images/thumbnail-default1.jpg)',
+            value: 'url(images/default1.jpg)',
         },
     }
 
@@ -242,7 +242,7 @@ class BoardsContainer extends Component {
         background: {
             id: 0,
             key: 'background-image',
-            value: 'url(images/thumbnail-default1.jpg)',
+            value: 'url(images/default1.jpg)',
         },
     }
 
