@@ -7,7 +7,9 @@ import Typography from '@material-ui/core/Typography';
 
 const StyledCard = styled(Card)`
     height: 96px;
-    background: #f1f6f9 !important;
+    &&& {
+        background: #f1f6f9;
+    }
 `;
 
 const StyledCardActionArea = styled(CardActionArea)`

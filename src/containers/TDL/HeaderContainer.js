@@ -8,10 +8,62 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import { isEmptyOrSpaces } from 'lib/fnUtils';
 import AutosizeInput from 'react-input-autosize';
+import StarBorderRoundedIcon from '@material-ui/icons/StarBorderRounded';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import Button from '@material-ui/core/Button';
+import { Hidden } from '@material-ui/core';
+
+const DrawerMenuButtonDiv = styled.div`
+    position: relative;
+    display: block;
+    float: right;
+`;
+
+const DrawerMenuButton = styled(Button)`
+    &&& {
+        background: rgba(19, 21, 22, .24);
+        color: white;
+    }
+`;
+
+const VerticalDivider =  styled.span`
+    float: left;
+    border-left: 1px solid hsla(0,0%,100%,.24);
+    border-left-color: rgba(47, 47, 47, 0.24);
+    height: 16px;
+    margin: 8px 8px 12px 4px;
+`;
+
+const FavoriteButton = styled.div`
+    border-radius: 3px;
+    background: rgba(19, 21, 22, .24);
+    cursor: default;
+    float: left;
+    font-size: 14px;
+    height: 32px;
+    line-height: 32px;
+    margin: 0 4px 4px 0;
+    overflow: hidden;
+    padding-left: 32px;
+    position: relative;
+    text-decoration: none;
+
+    &:hover {
+        cursor: pointer;
+        background: rgba(19, 21, 22, .34);
+    }
+`;
+
+const StarIcon = styled(({isFavorite, ...rest}) => <StarBorderRoundedIcon {...rest} />)`
+    color: ${props => props.isFavorite ? 'rgb(255, 237, 56)' : 'white'};
+    padding: 6px;
+    position: absolute;
+    top: 0;
+    left: 0;
+`;
 
 const Main = styled.div`
     height: auto;
-    background-color: rgba(0,0,0,.24);
     padding: 8px 4px 4px 8px;
     position: relative;
 `;
@@ -76,13 +128,12 @@ const TitleDiv = styled.div`
     }
 `;
 
-const Spacer = styled.div`
-    flex-grow: 1;
-`;
-
 const useStyles = theme => ({
     visible: {
         display: 'block',
+    },
+    boardMenuBtn: {
+        visibility: 'hidden'
     }
 });
 
@@ -96,12 +147,16 @@ class HeaderContainer extends Component {
         title: '',
         originalTitle: '',
         changeDiv: false,
+        favorite: false,
     }
 
     componentDidMount() {
+        const { isFavorite } = this.props;
+
         this.setState({
             title: this.props.title,
-            originalTitle: this.props.title
+            originalTitle: this.props.title,
+            favorite: isFavorite,
         })
     }
 
@@ -158,19 +213,41 @@ class HeaderContainer extends Component {
         }
     }
 
+    handleFavorite = async (e) => {
+        const { BoardsActions, boardId } = this.props;
+        const { favorite } = this.state;
+
+        try {
+            await BoardsActions.toggleFavorite({
+                id: boardId,
+                favorite: !favorite
+            });
+        } catch (e) {
+            console.log(e);
+        }
+
+        this.setState(prevState => ({favorite: !prevState.favorite}));
+    }
+
     render() {
-        const { classes } = this.props;
+        const { 
+            classes, 
+            handleBoardAction,
+            boardMenuOpen
+         } = this.props;
 
         const {
             title,
-            changeDiv
+            changeDiv,
+            favorite
         } = this.state;
 
         const {
             handleBlur,
             handleTitleClick,
             handleChange,
-            handleKeyPress
+            handleKeyPress,
+            handleFavorite
         } = this;
 
         return (
@@ -189,7 +266,20 @@ class HeaderContainer extends Component {
                         ref={this.inputRef}
                     />
                 </TitleDiv>
-                <Spacer />
+                <FavoriteButton >
+                    <StarIcon isFavorite={favorite} fontSize="small"onClick={handleFavorite} />
+                </FavoriteButton>
+                <VerticalDivider />
+                <DrawerMenuButtonDiv className={boardMenuOpen ? classes.boardMenuBtn : ''}>
+                    <DrawerMenuButton
+                        size="small"
+                        variant="contained"
+                        startIcon={<MoreHorizIcon/>}
+                        onClick={handleBoardAction}
+                    >
+                        Show Menu
+                    </DrawerMenuButton>
+                </DrawerMenuButtonDiv>
             </Main>
         )
     }
@@ -197,7 +287,6 @@ class HeaderContainer extends Component {
 
 export default connect(
     (state) => ({
-
     }),
     (dispatch) => ({
         TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch),

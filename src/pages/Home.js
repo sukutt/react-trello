@@ -30,33 +30,44 @@ const MainGrid = styled(Grid)`
 `;
 
 const TypoGrid = styled(Grid)`
-    padding-top: 80px !important;
-    flex: 0 0 31.66666667% !important;
-    max-width: 31.66666667% !important;
+    &&& {
+        padding-top: 80px;
+        flex: 0 0 31.66666667%;
+        max-width: 31.66666667%;
+    }
 `;
 
 const TitleTypo = styled(Typography)`
     color: white;
     font-weight: 500;
-    line-height: 1.2 !important;
+
+    &&& {
+        line-height: 1.2;
+    }
 `;
 
 const ParagraphTypo = styled(Typography)`
     color: white;
-    font-size: 1.5rem !important;
-    line-height: 1.5 !important;
+    &&& {
+        font-size: 1.5rem;
+        line-height: 1.5;
+    }
 `;
 
 const ImageGrid = styled(Grid)`
-    flex: 0 0 50% !important;
-    max-width: 50% !important;
+    &&& {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
 `
 const ImageBox = styled(Box)`
-    background: url(images/main.svg) !important;
-    max-width: 100% !important;
+    &&& {
+        background: url(images/main.svg);
+        max-width: 100%;
+        vertical-align: middle;
+    }
     width: 582px;
     height: 441px;
-    vertical-align: middle !important;
 `;
 
 const MainBody = styled.div`

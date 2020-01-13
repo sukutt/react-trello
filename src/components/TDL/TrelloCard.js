@@ -153,16 +153,20 @@ const EditFormFloatDiv = styled.div`
 `;
 
 const SaveCardButton = styled(Button)`
-    color: white !important;
-    background-color: #5aac44 !important;
-    margin-top: 12px !important;
-    padding: 6px 24px !important;
+    &&& {
+        color: white;
+        background-color: #5aac44;
+        margin-top: 12px;
+        padding: 6px 24px;
+    }
 `;
 
 const TextArea = styled(Textarea)`
+    &&& {
+        height: 120px;
+    }
     resize: none;
     width: 280px;
-    height: 120px !important;
     overflow: hidden;
     outline: none;
     border: none;
@@ -170,7 +174,9 @@ const TextArea = styled(Textarea)`
 `;
 
 const EditIcon = styled(Icon)`
-    font-size: 1.2rem !important;
+    &&& {
+        font-size: 1.2rem;
+    }
 `;
 
 const CardEditButton = styled.span`
@@ -206,7 +212,9 @@ const StyledCard = styled(Card)`
 `;
 
 const StyledCardContent = styled(CardContent)`
-    padding: 10px 10px 0px 10px !important;
+    &&& {
+        padding: 10px 10px 0px 10px;
+    }
 `;
 
 export default TrelloCard;

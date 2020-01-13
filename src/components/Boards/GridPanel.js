@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
+import StarBorderRoundedIcon from '@material-ui/icons/StarBorderRounded';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import CreateButton from './CreateButton';
 import { Link } from 'react-router-dom';
@@ -29,7 +29,7 @@ const BoardHeader = styled(Typography)`
 `;
 
 
-const StarIcon = styled(StarBorderIcon)`
+const StarIcon = styled(StarBorderRoundedIcon)`
     vertical-align: middle;
     margin-right: 10px;
 `;
@@ -44,11 +44,11 @@ const IconSpan = styled.span`
     right: -4px;
 `;
 
-const FavoriteIcon = styled(({toggled, ...rest}) => <StarBorderIcon {...rest} />)`
+const FavoriteIcon = styled(({toggled, ...rest}) => <StarBorderRoundedIcon {...rest} />)`
     margin-right: ${props => props.toggled ? '6px' : '-2px'};
-    color: ${props => props.toggled ? oc.yellow[6] : oc.gray[2]};
+    color: ${props => props.toggled ? 'rgb(255, 237, 56)' : oc.gray[2]};
     &:hover {
-        color: ${oc.yellow[6]};
+        color: rgb(255,237,56);
     }
 `;
 
@@ -177,7 +177,9 @@ class GridPanel extends Component {
                                 pathname: '/tdl',
                                 state: {
                                     title: value.title,
-                                    boardId: value._id
+                                    boardId: value._id,
+                                    thumbnail: value.thumbnail,
+                                    isFavorite: isFavorite,
                                 }
                             }}
                             thumbnail={value.thumbnail}

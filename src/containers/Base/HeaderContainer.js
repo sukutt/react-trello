@@ -19,7 +19,7 @@ class HeaderContainer extends Component {
         } catch (e) {
             console.log(e);
         }
-        
+
         storage.remove('signedInInfo');
         window.location.href = '/';
     }
@@ -27,11 +27,11 @@ class HeaderContainer extends Component {
 
     render() {
         const { handleLogout } = this;
-        const { visible, signedIn } = this.props;
+        const { isTDLPage, visible, signedIn } = this.props;
         if(!visible) return null;
 
         return (
-            <Header signedIn={signedIn}>
+            <Header signedIn={signedIn} isTDLPage={isTDLPage}>
                 { signedIn ? (
                     <UserButton handleLogout={handleLogout} />
                     ) : (
@@ -48,6 +48,7 @@ class HeaderContainer extends Component {
 
 export default connect(
     (state) => ({
+        isTDLPage: state.base.getIn(['header', 'isTDLPage']),
         visible: state.base.getIn(['header', 'visible']),
         signedIn: state.user.get('signedIn')
     }),

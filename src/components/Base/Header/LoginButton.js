@@ -8,7 +8,6 @@ const StyledButton = styled(({isSignUp, backgroundColor, ...rest}) => <Link {...
     color: white;
     border: ${props => props.isSignUp ? '1px solid white' : 'none'};
     padding: 0.5rem;
-    padding-bottom: 0.4rem;
     cursor: pointer;
     border-radius: 2px;
     text-decoration: none;

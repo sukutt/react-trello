@@ -1,9 +1,17 @@
 import React from 'react';
 import Menu from '@material-ui/core/Menu';
+import styled from 'styled-components';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fab from '@material-ui/core/Fab';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 
+const StyledFab = styled(Fab)`
+    &&& {
+        width: 32px;
+        height: 32px;
+        min-height: 32px;
+    }
+`;
 
 export default function UserButton(props) {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -18,9 +26,9 @@ export default function UserButton(props) {
 
     return (
         <div>
-            <Fab size="small" aria-label="profile" onClick={handleOpenMenu}>
-                <PersonRoundedIcon />
-            </Fab>
+            <StyledFab aria-label="profile" onClick={handleOpenMenu}>
+                <PersonRoundedIcon fontSize="small"/>
+            </StyledFab>
             <Menu
             id="profile-menu"
             anchorEl={anchorEl}

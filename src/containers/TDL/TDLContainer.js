@@ -6,6 +6,102 @@ import * as tdlBoardActions from 'store/modules/lists';
 import { bindActionCreators } from 'redux';
 import HeaderContainer from './HeaderContainer';
 import styled from 'styled-components';
+import { withStyles } from '@material-ui/core/styles';
+import Icon from '@material-ui/core/Icon';
+
+const RightSlideMenu = styled.div`
+    bottom: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition-property: transform,width;
+    transition-duration: .1s;
+    transition-timing-function: ease-in;
+    transform: translateX(339px);
+    width: 339px;
+    z-index: 5;
+`;
+
+const BoardMenuContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    left: 0;
+    bottom: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+`;
+
+const BoardMenuTabContent = styled.div`
+    background-color: rgb(22, 24, 25);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow: hidden;
+`;
+
+const BoardMenuHeader = styled.div`
+    opacity: 1;
+    overflow: visible;
+    transition: auto;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    height: 48px;
+    padding: 0 6px 0 12px;
+    position: relative;
+    width: 100%;
+`;
+const BoardHeaderContent = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+`;
+
+const HeaderTitle = styled.h3`
+    line-height: 20px;
+    margin: 14px 32px;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    transition: margin .12s ease-in;
+    white-space: nowrap;
+    flex: 1;
+    color: rgb(213, 210, 203);
+    font-size: 16px;
+    font-weight: 600;
+`
+
+const CloseButton = styled(Icon)`
+    margin-left: 8px;
+    cursor: pointer;
+    color: rgb(176, 193, 210);
+
+    &:hover {
+        color: white;
+    }
+`;
+
+const HorizontalDivider = styled.hr`
+    margin: 0;
+    border: 0;
+    height: 1px;
+    padding: 0;
+    width: 100%;
+`;
+
+const BoardMenuContent = styled.div`
+    box-sizing: border-box;
+    display: flex;
+    flex: 1 1 auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 12px 6px 12px 12px;
+    width: 100%;
+    height: 100%;
+`;
 
 const Body = styled.main`
     position: relative;
@@ -39,13 +135,23 @@ const BoardMain = styled.div`
 
 const BoardList = styled.div`
     padding: 10px;
-    background: linear-gradient(180deg,rgba(0,0,0,.24) 0,rgba(0,0,0,.24) 48px,transparent 80px,transparent);
     position: relative;
     flex-grow: 1;
     overflow: auto;
 `;
 
+const useStyles = theme => ({
+    visible: {
+        transform: 'translateX(0)',
+        boxShadow: 'rgba(3, 25, 63, 0.25) 0px 12px 24px -6px, rgba(3, 25, 63, 0.08) 0px 0px 0px 1px'
+    },
+});
+
 class TDLContainer extends Component {
+    state = {
+        boardMenuOpen: false,
+    }
+
     onDragEnd = async (result) => {
         const { draggableId, destination, source, type } = result;
 
@@ -120,11 +226,30 @@ class TDLContainer extends Component {
         this.initLists();
     }
 
+    handleBoardAction = () => {
+        this.setState((prevState) => ({ boardMenuOpen: !prevState.boardMenuOpen}))
+    }
+
+    handleCloseBoardMenu = () => {
+        this.setState((prevState) => ({ boardMenuOpen: !prevState.boardMenuOpen}))
+    }
+
     render() {
         const {
             title,
             boardId,
+            isFavorite,
+            classes,
         } = this.props;
+
+        const {
+            boardMenuOpen
+        } = this.state;
+
+        const {
+            handleBoardAction,
+            handleCloseBoardMenu
+        } = this;
 
         return (
             <DragDropContext onDragEnd={this.onDragEnd}>
@@ -132,7 +257,13 @@ class TDLContainer extends Component {
                     <Board>
                         <BoardWrapper>
                             <BoardMain>
-                                <HeaderContainer title={title} boardId={boardId} />
+                                <HeaderContainer 
+                                    title={title} 
+                                    boardId={boardId} 
+                                    isFavorite={isFavorite} 
+                                    handleBoardAction={handleBoardAction}
+                                    boardMenuOpen={boardMenuOpen}
+                                />
                                 <Droppable droppableId={boardId} direction="horizontal" type="list">
                                     {provided => (
                                     <BoardList {...provided.droppableProps} ref={provided.innerRef} >
@@ -141,6 +272,26 @@ class TDLContainer extends Component {
                                     )}
                                 </Droppable>
                             </BoardMain>
+                            <RightSlideMenu className={boardMenuOpen ? classes.visible : ''}>
+                                <BoardMenuContainer>
+                                    <BoardMenuTabContent>
+                                        <BoardMenuHeader>
+                                            <BoardHeaderContent>
+                                                <HeaderTitle>
+                                                    Menu
+                                                </HeaderTitle>
+                                                <CloseButton onClick={handleCloseBoardMenu}>
+                                                    close
+                                                </CloseButton>
+                                            </BoardHeaderContent>
+                                            <HorizontalDivider />
+                                        </BoardMenuHeader>
+                                        <BoardMenuContent>
+
+                                        </BoardMenuContent>
+                                    </BoardMenuTabContent>
+                                </BoardMenuContainer>
+                            </RightSlideMenu>
                         </BoardWrapper>
                     </Board>
                 </Body>
@@ -156,4 +307,4 @@ export default connect(
     (dispatch) => ({
         TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch),
     })
-)(TDLContainer);
+)(withStyles(useStyles)(TDLContainer));
