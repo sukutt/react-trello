@@ -11,7 +11,6 @@ import AutosizeInput from 'react-input-autosize';
 import StarBorderRoundedIcon from '@material-ui/icons/StarBorderRounded';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Button from '@material-ui/core/Button';
-import { Hidden } from '@material-ui/core';
 
 const DrawerMenuButtonDiv = styled.div`
     position: relative;
@@ -133,7 +132,7 @@ const useStyles = theme => ({
         display: 'block',
     },
     boardMenuBtn: {
-        visibility: 'hidden'
+        display: 'none'
     }
 });
 
@@ -270,8 +269,9 @@ class HeaderContainer extends Component {
                     <StarIcon isFavorite={favorite} fontSize="small"onClick={handleFavorite} />
                 </FavoriteButton>
                 <VerticalDivider />
-                <DrawerMenuButtonDiv className={boardMenuOpen ? classes.boardMenuBtn : ''}>
+                <DrawerMenuButtonDiv>
                     <DrawerMenuButton
+                        className={boardMenuOpen ? classes.boardMenuBtn : ''}
                         size="small"
                         variant="contained"
                         startIcon={<MoreHorizIcon/>}

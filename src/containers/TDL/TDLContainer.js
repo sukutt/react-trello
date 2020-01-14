@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import ListContainer from 'containers/TDL/ListContainer';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
+import * as boardActions from 'store/modules/boards';
 import * as tdlBoardActions from 'store/modules/lists';
 import { bindActionCreators } from 'redux';
 import HeaderContainer from './HeaderContainer';
 import styled from 'styled-components';
 import { withStyles } from '@material-ui/core/styles';
 import Icon from '@material-ui/core/Icon';
+import Button from '@material-ui/core/Button';
 
 const RightSlideMenu = styled.div`
     bottom: 0;
@@ -103,6 +105,110 @@ const BoardMenuContent = styled.div`
     height: 100%;
 `;
 
+const BoardMenuContentFrame = styled.div`
+    transition-property: transform,opacity;
+    transition-duration: .12s;
+    transition-timing-function: ease-in;
+    transform: translateX(0);
+    flex: 1 auto;
+    width: 100%;
+`;
+
+const BoardMenuNavigation = styled.ul`
+    margin: 4px 0;
+    list-style: none;
+    padding: 0;
+`;
+
+const BoardMenuNavigationItem = styled.li`
+    cursor: pointer;
+`;
+
+const BoardCloseCard = styled.div`
+    background-color: rgb(19, 21, 22);
+    box-shadow: rgba(3, 25, 63, 0.25) 0px 8px 16px -4px, rgba(3, 25, 63, 0.08) 0px 0px 0px 1px;
+    border-radius: 3px;
+    overflow: hidden;
+    position: absolute;
+    width: 304px;
+    z-index: 70;
+`;
+
+const BoardCloseCardHeader = styled.div`
+    height: 40px;
+    position: relative;
+    margin-bottom: 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+`;
+
+const BoardCloseCardHeaderTitle = styled.span`
+    color: rgb(191, 186, 175);
+    border-bottom: 1px solid rgba(22, 89, 204, 0.13);
+    box-sizing: border-box;
+    line-height: 40px;
+    margin: 0 12px;
+    overflow: hidden;
+    padding: 0 32px;
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    z-index: 1;
+    flex: 1;
+`;
+
+const CloseCardButton = styled(Icon)`
+    cursor: pointer;
+    color: rgb(176, 193, 210);
+    padding: 10px 12px 10px 8px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+
+    &:hover {
+        color: white;
+    }
+`;
+
+const BoardCloseCardBody = styled.div`
+    max-height: 674px; 
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0 12px 12px;
+`;
+
+const BoardCloseCardParagraph = styled.p`
+    margin: 0 0 8px;
+    color: rgb(213, 210, 203);
+`
+
+const BoardCloseCardButton = styled(Button)`
+    &&& {
+        background-color: rgb(134, 43, 28);
+        color: white;
+    }
+    width: 100%;
+`;
+
+const BoardMenuNavigationItemLink = styled.a`
+    text-decoration-color: initial;
+    border-radius: 3px;
+    display: block;
+    font-weight: 600;
+    line-height: 20px;
+    text-decoration: none;
+    padding: 6px 6px 6px 40px;
+    position: relative;
+    color: rgb(213, 210, 203);
+
+    &:hover {
+        color: white;
+    }
+`;
+
 const Body = styled.main`
     position: relative;
     outline: none;
@@ -125,7 +231,12 @@ const BoardWrapper = styled.div`
     bottom: 0;
 `;
 
-const BoardMain = styled.div`
+const BoardMain = styled(({boardMenuOpen, ...rest}) => <div {...rest} />)`
+    @media only screen and (max-width: 900px) and (min-width: 751px),
+    only screen and (max-width: 1280px) and (min-width: 901px), only screen and (min-width: 1281px) {
+        margin-right: ${props => props.boardMenuOpen ? '339px' : '0px'};
+    }
+
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -141,6 +252,9 @@ const BoardList = styled.div`
 `;
 
 const useStyles = theme => ({
+    hideCloseCard: {
+        display: 'none'
+    },
     visible: {
         transform: 'translateX(0)',
         boxShadow: 'rgba(3, 25, 63, 0.25) 0px 12px 24px -6px, rgba(3, 25, 63, 0.08) 0px 0px 0px 1px'
@@ -150,6 +264,7 @@ const useStyles = theme => ({
 class TDLContainer extends Component {
     state = {
         boardMenuOpen: false,
+        closeBoardOpen: false,
     }
 
     onDragEnd = async (result) => {
@@ -234,6 +349,20 @@ class TDLContainer extends Component {
         this.setState((prevState) => ({ boardMenuOpen: !prevState.boardMenuOpen}))
     }
 
+    handleCloseBoardCard = () => {
+        this.setState((prevState) => ({ closeBoardOpen: !prevState.closeBoardOpen})) 
+    }
+
+    handleCloseBoard = async () => {
+        // 보드 삭제
+        const { BoardActions, boardId } = this.props;
+        try {
+            await BoardActions.deleteBoard({id: boardId});
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     render() {
         const {
             title,
@@ -243,12 +372,15 @@ class TDLContainer extends Component {
         } = this.props;
 
         const {
-            boardMenuOpen
+            boardMenuOpen,
+            closeBoardOpen
         } = this.state;
 
         const {
             handleBoardAction,
-            handleCloseBoardMenu
+            handleCloseBoardMenu,
+            handleCloseBoardCard,
+            handleCloseBoard
         } = this;
 
         return (
@@ -256,7 +388,7 @@ class TDLContainer extends Component {
                 <Body>
                     <Board>
                         <BoardWrapper>
-                            <BoardMain>
+                            <BoardMain boardMenuOpen={boardMenuOpen}>
                                 <HeaderContainer 
                                     title={title} 
                                     boardId={boardId} 
@@ -287,7 +419,42 @@ class TDLContainer extends Component {
                                             <HorizontalDivider />
                                         </BoardMenuHeader>
                                         <BoardMenuContent>
-
+                                            <BoardMenuContentFrame>
+                                                <BoardMenuNavigation>
+                                                    <BoardMenuNavigationItem>
+                                                        <BoardMenuNavigationItemLink onClick={handleCloseBoardCard}>
+                                                            Close Board...
+                                                        </BoardMenuNavigationItemLink>
+                                                    </BoardMenuNavigationItem>
+                                                    <BoardCloseCard className={closeBoardOpen ? '' : classes.hideCloseCard}>
+                                                        <div>
+                                                            <BoardCloseCardHeader>
+                                                                <BoardCloseCardHeaderTitle>
+                                                                    Close Board?
+                                                                </BoardCloseCardHeaderTitle>
+                                                                <CloseCardButton 
+                                                                fontSize="small"
+                                                                onClick={handleCloseBoardCard}
+                                                                >
+                                                                    close
+                                                                </CloseCardButton>
+                                                            </BoardCloseCardHeader>
+                                                            <BoardCloseCardBody>
+                                                                <div>
+                                                                    <BoardCloseCardParagraph>
+                                                                        Do you want to close this board?
+                                                                    </BoardCloseCardParagraph>
+                                                                    <BoardCloseCardButton
+                                                                        onClick={handleCloseBoard}
+                                                                    >
+                                                                        Close
+                                                                    </BoardCloseCardButton>
+                                                                </div>
+                                                            </BoardCloseCardBody>
+                                                        </div>
+                                                    </BoardCloseCard>
+                                                </BoardMenuNavigation>
+                                            </BoardMenuContentFrame>
                                         </BoardMenuContent>
                                     </BoardMenuTabContent>
                                 </BoardMenuContainer>
@@ -306,5 +473,6 @@ export default connect(
     }),
     (dispatch) => ({
         TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch),
+        BoardActions: bindActionCreators(boardActions, dispatch),
     })
 )(withStyles(useStyles)(TDLContainer));

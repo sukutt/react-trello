@@ -6,6 +6,7 @@ import { pender } from 'redux-pender';
 const GET_BOARDS = 'boards/GET_BOARDS';
 const GET_BOARD_IMAGES = 'boards/GET_BOARD_IMAGES';
 const CREATE = 'boards/CREATE';
+const DELETE = 'boards/DELETE';
 const TOGGLE_FAVORITE = 'boards/TOGGLE_FAVORTIE';
 const UPDATE_TITLE = 'boards/UPDATE_TITLE';
 
@@ -14,6 +15,7 @@ export const getBoardImages = createAction(GET_BOARD_IMAGES, BoardsAPI.getBoardI
 export const createBoard = createAction(CREATE, BoardsAPI.createBoard);
 export const toggleFavorite = createAction(TOGGLE_FAVORITE, BoardsAPI.toggleFavorite);
 export const updateTitle = createAction(UPDATE_TITLE, BoardsAPI.updateTitle);
+export const deleteBoard = createAction(DELETE, BoardsAPI.deleteBoard);
 
 const initialState = Map({
     boards: List([]),
@@ -48,6 +50,13 @@ export default handleActions({
         onSuccess: (state, action) => {
             const list = state.get('boards');
             return state.set('boards', list.push(Map(action.payload.data)));
+        }
+    }),
+
+    ...pender({
+        type: DELETE,
+        onSuccess: (state, action) => {
+            window.location.href = '/boards';
         }
     }),
 
