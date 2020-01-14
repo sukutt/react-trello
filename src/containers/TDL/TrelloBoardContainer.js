@@ -6,11 +6,22 @@ import styled from 'styled-components';
 import TrelloCardContainer from 'containers/TDL/TrelloCardContainer';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { CreateCardButton } from 'components/TDL';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import Textarea from 'react-textarea-autosize';
 
-const HeaderDiv = styled.div`
-    padding: 8px;
-    font-weight: 600;
+const HeaderWrapper = styled.div`
+    flex: 0 0 auto;
+    padding: 10px 36px 2px 14px;
+    position: relative;
+    min-height: 20px;
+`;
+
+const HeaderTitle = styled.div`
+    margin: 0 0 8px;
+    font-weight: 400;
     font-size: 16px;
+    line-height: 24px;
+    color: #172b4d;
 `;
 
 const CardDiv = styled.div`
@@ -34,13 +45,74 @@ const BoardDiv = styled.div`
     }
 `;
 
+const TitleContent = styled.div`
+    overflow: hidden;
+    padding: 6px 8px 2px;
+    position: relative;
+    z-index: 10;
+`;
+
+const TitleTextArea = styled(({height, ...rest}) => <Textarea {...rest} />)`
+    resize: none;
+    width: 100%;
+    overflow-y: ${props => props.height > 162 ? 'scroll' : 'hidden'};
+    overflow-wrap: break-word;
+    background: none;
+    outline: none;
+    border: none;
+    height: 54px;
+    box-shadow: none;
+    margin-bottom: 4px;
+    max-height: 162px;
+    min-height: 54px;
+    padding: 0;
+    display: block;
+    line-height: 20px;
+    border-radius: 3px;
+    box-sizing: border-box;
+`;
+
+const MoreMenuWrapper = styled.div`
+    position: absolute;
+    right: 6px;
+    top: 4px;
+    z-index: 1;
+    border-radius: 3px;
+
+    &:hover {
+        background-color: rgba(120, 120, 120, .1);
+    }
+`;
+const HorizIcon = styled(MoreHorizIcon)`
+    color: #6b778c;
+    float: left;
+    padding: 6px;
+`;
+
 class TrelloBoardContainer extends Component {
+    constructor(props) {
+        super(props);
+        this.textAreaRef = React.createRef();
+    }
+
+    state = {
+        isEditable: false,
+        // title: '',
+    }
+
     handleConfirmNewCard = (content) => {
-        const { TDLBoardActions, id } = this.props;
+        const { TDLBoardActions, id, boardId } = this.props;
         TDLBoardActions.confirmNewCard({
+            boardId,
             listId: id,
             content
         });
+    }
+
+    handleClick = () => {
+        this.setState({
+            isEditable: true,
+        })
     }
 
     render() {
@@ -53,6 +125,7 @@ class TrelloBoardContainer extends Component {
 
         const {
             handleConfirmNewCard,
+            handleClick
         } = this;
 
         const jsxList = cards.map((item, index) => {
@@ -79,8 +152,16 @@ class TrelloBoardContainer extends Component {
                                 <div{...provided.droppableProps} 
                                 ref={provided.innerRef}
                                 >
+                                    <HeaderWrapper>
+                                        <HeaderTitle>{title}</HeaderTitle>
+                                        <MoreMenuWrapper>
+                                            <HorizIcon 
+                                            fontSize="small"
+                                            onClick={handleClick}
+                                            />
+                                        </MoreMenuWrapper>
+                                    </HeaderWrapper>
                                     <CardDiv>
-                                        <HeaderDiv>{title}</HeaderDiv>
                                         {jsxList}
                                     </CardDiv>
                                     {provided.placeholder}
@@ -97,6 +178,7 @@ class TrelloBoardContainer extends Component {
 
 export default connect(
     (state) => ({
+        boardId: state.lists.get('boardId'),
     }),
     (dispatch) => ({
         TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch),
