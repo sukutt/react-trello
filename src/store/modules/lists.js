@@ -10,6 +10,7 @@ const GET_LISTS = 'list/GET_LISTS';
 const REORDER = 'list/REORDER';
 const REORDER_UI = 'list/REORDER_UI';
 const GET_CARDS = 'list/GET_CARDS';
+const UPDATE_LIST = 'list/UPDATE_LIST';
 
 export const getLists = createAction(GET_LISTS, ListsAPI.getLists);
 export const getCards = createAction(GET_CARDS);
@@ -18,6 +19,7 @@ export const confirmNewCard = createAction(CONFIRM_NEW_CARD, ListsAPI.createNewC
 export const confirmNewList = createAction(CONFIRM_NEW_LIST, ListsAPI.createNewList);
 export const reorderUI = createAction(REORDER_UI);
 export const reorder = createAction(REORDER, ListsAPI.reorder);
+export const updateList = createAction(UPDATE_LIST, ListsAPI.updateList);
 
 const initialState = Map({
     boardId: '',
@@ -72,6 +74,16 @@ export default handleActions({
                     content: newCard.content,
                     order: newCard.order,
             }))));
+            return state.set('list', newList);
+        }
+    }),
+
+    ...pender({
+        type: UPDATE_LIST,
+        onSuccess: (state, action) => {
+            const updatedList = action.payload.data;
+            const index = state.get('list').findIndex(list=> list.get('_id') === updatedList._id);
+            const newList = state.get('list').update(index, list => list.merge(updatedList));
             return state.set('list', newList);
         }
     }),

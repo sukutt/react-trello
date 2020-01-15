@@ -8,20 +8,14 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { CreateCardButton } from 'components/TDL';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Textarea from 'react-textarea-autosize';
+import { isEmptyOrSpaces } from 'lib/fnUtils';
 
 const HeaderWrapper = styled.div`
     flex: 0 0 auto;
-    padding: 10px 36px 2px 14px;
+    padding: 6px 32px 0px 10px;
     position: relative;
     min-height: 20px;
-`;
-
-const HeaderTitle = styled.div`
-    margin: 0 0 8px;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    color: #172b4d;
+    cursor: pointer;
 `;
 
 const CardDiv = styled.div`
@@ -47,35 +41,45 @@ const BoardDiv = styled.div`
 
 const TitleContent = styled.div`
     overflow: hidden;
-    padding: 6px 8px 2px;
     position: relative;
     z-index: 10;
 `;
 
-const TitleTextArea = styled(({height, ...rest}) => <Textarea {...rest} />)`
+const TitleTextArea = styled(({isEditable, childRef, ...rest}) => <Textarea ref={childRef} {...rest} />)`
+    border: none;
     resize: none;
     width: 100%;
-    overflow-y: ${props => props.height > 162 ? 'scroll' : 'hidden'};
-    overflow-wrap: break-word;
-    background: none;
-    outline: none;
-    border: none;
-    height: 54px;
-    box-shadow: none;
-    margin-bottom: 4px;
-    max-height: 162px;
-    min-height: 54px;
-    padding: 0;
-    display: block;
-    line-height: 20px;
     border-radius: 3px;
+    color: #172b4d;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    overflow-wrap: break-word;
+    background: transparent;
+    padding: 4px;
+    margin: 0 0 8px;
+    box-shadow: none;
+    max-height: 256px;
+    display: block;
+    line-height: 24px;
     box-sizing: border-box;
+    transition-property: background-color,border-color,box-shadow;
+    transition-duration: 85ms;
+    transition-timing-function: ease;
+    cursor: ${props => props.isEditable ? 'text' : 'pointer'};
+
+    &:focus {
+        background: white;
+        border: none;
+        box-shadow: inset 0 0 0 2px #0079bf;
+        outline: 0;
+    }
 `;
 
 const MoreMenuWrapper = styled.div`
     position: absolute;
     right: 6px;
-    top: 4px;
+    top: 6px;
     z-index: 1;
     border-radius: 3px;
 
@@ -83,6 +87,7 @@ const MoreMenuWrapper = styled.div`
         background-color: rgba(120, 120, 120, .1);
     }
 `;
+
 const HorizIcon = styled(MoreHorizIcon)`
     color: #6b778c;
     float: left;
@@ -97,7 +102,25 @@ class TrelloBoardContainer extends Component {
 
     state = {
         isEditable: false,
-        // title: '',
+        title: '',
+        originalTitle: '',
+    }
+
+    componentDidMount() {
+        const {
+            title
+        } = this.props;
+
+        this.setState({
+            title,
+            originalTitle: title,
+        });
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(!prevState.isEditable && this.state.isEditable) {
+            this.textAreaRef.current._ref.select();
+        }
     }
 
     handleConfirmNewCard = (content) => {
@@ -109,23 +132,84 @@ class TrelloBoardContainer extends Component {
         });
     }
 
-    handleClick = () => {
+    handleShowListMenu = (e) => {
+        e.stopPropagation();
+        console.log('showListMenu')
+    }
+
+    handleBlur = async (e) => {
+        e.target.blur();
+        const title = e.target.value;
+
+        if(isEmptyOrSpaces(title) || title === this.state.originalTitle) {
+            this.setState({
+                title: this.state.originalTitle,
+                isEditable: false,
+            })
+
+            return;
+        }
+
+        const { TDLBoardActions } = this.props;
+
+        // 타이틀 변경
+        try {
+            await TDLBoardActions.updateList({
+                id: this.props.id,
+                title,
+            })
+        } catch (e) {
+            console.log(e);
+        }
+
+        this.setState({
+            originalTitle: title,
+            isEditable: false,
+        })
+    }
+
+    handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if(isEmptyOrSpaces(e.target.value)) {
+                return;
+            }
+
+            this.handleBlur(e);
+        }
+    }
+
+    handleTitleChangeTrigger = (e) => {
         this.setState({
             isEditable: true,
         })
     }
 
+    handleTitleChange = (e) => {
+        this.setState({
+            title: e.target.value,
+        })
+    }
+
     render() {
         const {
-            title,
             id,
             cards,
             index: listIndex,
         } = this.props;
 
         const {
+            isEditable,
+            title,
+        } = this.state;
+
+        const {
             handleConfirmNewCard,
-            handleClick
+            handleShowListMenu,
+            handleTitleChangeTrigger,
+            handleTitleChange,
+            handleBlur,
+            handleKeyDown
         } = this;
 
         const jsxList = cards.map((item, index) => {
@@ -141,7 +225,7 @@ class TrelloBoardContainer extends Component {
         });
 
         return (
-            <Draggable draggableId={id} index={listIndex}>
+            <Draggable disableInteractiveElementBlocking  draggableId={id} index={listIndex}>
                 {provided => (
                     <BoardDiv
                     {...provided.draggableProps} 
@@ -149,15 +233,30 @@ class TrelloBoardContainer extends Component {
                     {...provided.dragHandleProps}>
                         <Droppable droppableId={id}>
                             {provided => (
-                                <div{...provided.droppableProps} 
+                                <div{...provided.droppableProps}
                                 ref={provided.innerRef}
                                 >
-                                    <HeaderWrapper>
-                                        <HeaderTitle>{title}</HeaderTitle>
+                                    <HeaderWrapper onClick={handleTitleChangeTrigger}>
+                                        <TitleContent>
+                                            <TitleTextArea 
+                                                isEditable={isEditable}
+                                                dir="auto"
+                                                maxLength="512"
+                                                spellCheck="false"
+                                                onKeyDown={handleKeyDown}
+                                                onChange={handleTitleChange}
+                                                onBlur={handleBlur}
+                                                value={title}
+                                                childRef={this.textAreaRef}
+                                                onHeightChange={(height, textarea) => {
+                                                    textarea._ref.style.overflowY = height > 256 ? 'scroll' : 'hidden';
+                                                }}
+                                                />
+                                        </TitleContent>
                                         <MoreMenuWrapper>
                                             <HorizIcon 
-                                            fontSize="small"
-                                            onClick={handleClick}
+                                                fontSize="small"
+                                                onClick={handleShowListMenu}
                                             />
                                         </MoreMenuWrapper>
                                     </HeaderWrapper>

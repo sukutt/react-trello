@@ -6,9 +6,14 @@ import { bindActionCreators } from 'redux';
 
 class TDLBoard extends Component {
     componentDidMount() {
-        this.props.BaseActions.setHeaderTransparency(true);
+        const {
+            BaseActions,
+            location,
+        } = this.props;
+
+        BaseActions.setHeaderTransparency(true);
         // board 로드 시 현재 배경화면 설정
-        const { thumbnail } = this.props.location.state;
+        const { thumbnail } = location.state;
         const root = document.getElementById('root');
 
         // 기존 style 제거
@@ -46,6 +51,6 @@ export default connect(
 
     }),
     (dispatch) => ({
-        BaseActions: bindActionCreators(baseActions, dispatch)
+        BaseActions: bindActionCreators(baseActions, dispatch),
     })
 )(TDLBoard);

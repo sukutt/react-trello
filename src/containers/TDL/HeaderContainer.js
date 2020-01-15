@@ -97,7 +97,7 @@ const TitleInput = styled(AutosizeInput)`
             background: #fff;
             border: none;
             box-shadow: inset 0 0 0 2px #0079bf;
-            outline: 0
+            outline: 0;
         }
     }
 `;
