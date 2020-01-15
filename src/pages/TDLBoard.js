@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TDLContainer from 'containers/TDL/TDLContainer';
 import * as baseActions from 'store/modules/base';
+import * as tdlBoardActions from 'store/modules/lists';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -27,6 +28,8 @@ class TDLBoard extends Component {
     // TDL 페이지 벗어날 시 원상복구
     componentWillUnmount() {
         this.props.BaseActions.setHeaderTransparency(false);
+        // 상태 값 청소
+        this.props.TDLBoardActions.clearState();
     }
 
     render() {
@@ -52,5 +55,6 @@ export default connect(
     }),
     (dispatch) => ({
         BaseActions: bindActionCreators(baseActions, dispatch),
+        TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch)
     })
 )(TDLBoard);

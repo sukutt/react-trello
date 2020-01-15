@@ -9,6 +9,8 @@ import { CreateCardButton } from 'components/TDL';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Textarea from 'react-textarea-autosize';
 import { isEmptyOrSpaces } from 'lib/fnUtils';
+import Popper from '@material-ui/core/Popper';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 const HeaderWrapper = styled.div`
     flex: 0 0 auto;
@@ -94,6 +96,14 @@ const HorizIcon = styled(MoreHorizIcon)`
     padding: 6px;
 `;
 
+const BoardEditPopper = styled(Popper)`
+    background-color: white;
+    border-radius: 3px;
+    box-shadow: 0 8px 16px -4px rgba(9,30,66,.25), 0 0 0 1px rgba(9,30,66,.08);
+    width: 304px;
+    z-index: 1;
+`;
+
 class TrelloBoardContainer extends Component {
     constructor(props) {
         super(props);
@@ -101,9 +111,11 @@ class TrelloBoardContainer extends Component {
     }
 
     state = {
+        isCardEditing: false,
         isEditable: false,
         title: '',
         originalTitle: '',
+        anchorEl: null,
     }
 
     componentDidMount() {
@@ -134,7 +146,17 @@ class TrelloBoardContainer extends Component {
 
     handleShowListMenu = (e) => {
         e.stopPropagation();
-        console.log('showListMenu')
+
+        const { currentTarget } = e;
+        this.setState(prevState => ({
+            anchorEl: prevState.anchorEl ? null : currentTarget,
+        }));
+    }
+
+    handleClickAway = () => {
+        this.setState({
+            anchorEl: null
+        })
     }
 
     handleBlur = async (e) => {
@@ -185,6 +207,10 @@ class TrelloBoardContainer extends Component {
         })
     }
 
+    handleCardEditing = (e) => {
+        this.setState(prevState => ({isCardEditing: !prevState.isCardEditing}));
+    }
+
     handleTitleChange = (e) => {
         this.setState({
             title: e.target.value,
@@ -201,6 +227,8 @@ class TrelloBoardContainer extends Component {
         const {
             isEditable,
             title,
+            isCardEditing,
+            anchorEl
         } = this.state;
 
         const {
@@ -209,7 +237,9 @@ class TrelloBoardContainer extends Component {
             handleTitleChangeTrigger,
             handleTitleChange,
             handleBlur,
-            handleKeyDown
+            handleKeyDown,
+            handleCardEditing,
+            handleClickAway,
         } = this;
 
         const jsxList = cards.map((item, index) => {
@@ -224,8 +254,11 @@ class TrelloBoardContainer extends Component {
             )
         });
 
+        const open = Boolean(anchorEl);
+
         return (
-            <Draggable disableInteractiveElementBlocking  draggableId={id} index={listIndex}>
+            // disableInteractiveElementBlocking는 수정 중일 때는 false로 잠궈둔다.
+            <Draggable disableInteractiveElementBlocking={isEditable || isCardEditing ? false : true}  draggableId={id} index={listIndex}>
                 {provided => (
                     <BoardDiv
                     {...provided.draggableProps} 
@@ -253,18 +286,29 @@ class TrelloBoardContainer extends Component {
                                                 }}
                                                 />
                                         </TitleContent>
-                                        <MoreMenuWrapper>
-                                            <HorizIcon 
-                                                fontSize="small"
-                                                onClick={handleShowListMenu}
-                                            />
-                                        </MoreMenuWrapper>
+                                        <ClickAwayListener onClickAway={handleClickAway}>
+                                            <div>
+                                                <MoreMenuWrapper>
+                                                    <HorizIcon 
+                                                        fontSize="small"
+                                                        onClick={handleShowListMenu}
+                                                    />
+                                                </MoreMenuWrapper>
+                                                <BoardEditPopper 
+                                                placement="bottom-start" 
+                                                open={open} 
+                                                anchorEl={anchorEl}
+                                                >
+                                                    <div>The content of the Popper.</div>
+                                                </BoardEditPopper>
+                                            </div>
+                                        </ClickAwayListener>
                                     </HeaderWrapper>
                                     <CardDiv>
                                         {jsxList}
                                     </CardDiv>
                                     {provided.placeholder}
-                                    <CreateCardButton createNewCard={handleConfirmNewCard} />
+                                    <CreateCardButton handleEditing={handleCardEditing} createNewCard={handleConfirmNewCard} />
                                 </div>
                             )}
                         </Droppable>

@@ -11,7 +11,9 @@ const REORDER = 'list/REORDER';
 const REORDER_UI = 'list/REORDER_UI';
 const GET_CARDS = 'list/GET_CARDS';
 const UPDATE_LIST = 'list/UPDATE_LIST';
+const CLEAR_STATE = 'list/CLEAR_STATE';
 
+export const clearState = createAction(CLEAR_STATE);
 export const getLists = createAction(GET_LISTS, ListsAPI.getLists);
 export const getCards = createAction(GET_CARDS);
 export const editCard = createAction(EDIT_CARD);
@@ -87,6 +89,10 @@ export default handleActions({
             return state.set('list', newList);
         }
     }),
+
+    [CLEAR_STATE]: (state, action) => {
+        return state.set('list', List([]));
+    },
 
     [REORDER_UI]: (state, action) => {
         const { 

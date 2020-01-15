@@ -97,6 +97,9 @@ class CreateCardButton extends Component {
     }
 
     handleClick = () => {
+        const { handleEditing } = this.props;
+        handleEditing();
+
         this.setState({
             isEditable: true,
         })
@@ -132,6 +135,9 @@ class CreateCardButton extends Component {
     }
 
     clearState() {
+        const { handleEditing } = this.props;
+        handleEditing();
+
         this.setState({
             isEditable: false,
             title: '',
@@ -145,7 +151,7 @@ class CreateCardButton extends Component {
         } = this.state;
 
         const {
-            createNewCard
+            createNewCard,
         } = this.props;
 
         const {
@@ -185,7 +191,7 @@ class CreateCardButton extends Component {
                             />
                         </TitleContent>
                     </TitleWrapper> 
-                    : <ActionButton onClick={handleClick} >
+                    : <ActionButton onClick={handleClick}>
                             <AddIcon fontSize="small">add</AddIcon>
                             Add a card
                       </ActionButton> 
