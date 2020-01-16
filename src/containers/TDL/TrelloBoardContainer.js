@@ -11,6 +11,7 @@ import Textarea from 'react-textarea-autosize';
 import { isEmptyOrSpaces } from 'lib/fnUtils';
 import Popper from '@material-ui/core/Popper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import CardPopper from 'components/Base/CardPopper';
 
 const HeaderWrapper = styled.div`
     flex: 0 0 auto;
@@ -300,7 +301,7 @@ class TrelloBoardContainer extends Component {
                                                 open={open} 
                                                 anchorEl={anchorEl}
                                                 >
-                                                    <div>The content of the Popper.</div>
+                                                    <CardPopper />
                                                 </BoardEditPopper>
                                             </div>
                                         </ClickAwayListener>
