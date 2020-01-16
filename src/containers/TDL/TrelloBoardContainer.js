@@ -294,8 +294,9 @@ class TrelloBoardContainer extends Component {
                                                         onClick={handleShowListMenu}
                                                     />
                                                 </MoreMenuWrapper>
-                                                <BoardEditPopper 
-                                                placement="bottom-start" 
+                                                <BoardEditPopper
+                                                id="board-edit-popper"
+                                                placement="bottom-start"
                                                 open={open} 
                                                 anchorEl={anchorEl}
                                                 >
