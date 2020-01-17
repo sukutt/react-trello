@@ -11,7 +11,7 @@ import Textarea from 'react-textarea-autosize';
 import { isEmptyOrSpaces } from 'lib/fnUtils';
 import Popper from '@material-ui/core/Popper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import CardPopper from 'components/Base/CardPopper';
+import CommonCard from 'components/Base/CommonCard';
 
 const HeaderWrapper = styled.div`
     flex: 0 0 auto;
@@ -98,11 +98,12 @@ const HorizIcon = styled(MoreHorizIcon)`
 `;
 
 const BoardEditPopper = styled(Popper)`
-    background-color: white;
+    background: white;
     border-radius: 3px;
     box-shadow: 0 8px 16px -4px rgba(9,30,66,.25), 0 0 0 1px rgba(9,30,66,.08);
     width: 304px;
     z-index: 1;
+    overflow: hidden;
 `;
 
 class TrelloBoardContainer extends Component {
@@ -255,6 +256,13 @@ class TrelloBoardContainer extends Component {
             )
         });
 
+        const listActions = [
+            ['Add Card...', 'Copy List...', 'Move List...'],
+            ['Sort By...'],
+            ['Delete All Cards in This List...'],
+            ['Delete This List']
+        ];
+
         const open = Boolean(anchorEl);
 
         return (
@@ -301,7 +309,7 @@ class TrelloBoardContainer extends Component {
                                                 open={open} 
                                                 anchorEl={anchorEl}
                                                 >
-                                                    <CardPopper />
+                                                    <CommonCard actionList={listActions} />
                                                 </BoardEditPopper>
                                             </div>
                                         </ClickAwayListener>
