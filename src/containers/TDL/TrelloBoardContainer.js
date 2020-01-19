@@ -219,9 +219,30 @@ class TrelloBoardContainer extends Component {
         })
     }
 
+    handleDeleteList = async () => {
+        const { TDLBoardActions, id } = this.props;
+        try {
+            await TDLBoardActions.deleteList({
+                id,
+            })
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    handleDeleteAllCards = () => {
+        const { TDLBoardActions, id } = this.props;
+
+        TDLBoardActions.deleteCards({
+            key: 'list',
+            id,
+            listId: id,
+        })
+    }
+
     render() {
         const {
-            id,
+            id, // listId
             cards,
             index: listIndex,
         } = this.props;
@@ -242,6 +263,8 @@ class TrelloBoardContainer extends Component {
             handleKeyDown,
             handleCardEditing,
             handleClickAway,
+            handleDeleteList,
+            handleDeleteAllCards
         } = this;
 
         const jsxList = cards.map((item, index) => {
@@ -251,16 +274,35 @@ class TrelloBoardContainer extends Component {
                 listIndex={listIndex}
                 key={item.get('_id')}
                 id={item.get('_id')}
+                listId={id}
                 index={index}
                 />
             )
         });
 
         const listActions = [
-            ['Add Card...', 'Copy List...', 'Move List...'],
-            ['Sort By...'],
-            ['Delete All Cards in This List...'],
-            ['Delete This List']
+            [{
+                caption:'Add Card...',
+                fn: null
+            }, {
+                caption: 'Copy List...',
+                fn: null
+            }, {
+                caption: 'Move List...',
+                fn: null
+            }],
+            [{
+                caption: 'Sort By...',
+                fn: null
+            }],
+            [{
+                caption: 'Delete All Cards in This List...',
+                fn: handleDeleteAllCards,
+            }],
+            [{
+                caption: 'Delete This List',
+                fn: handleDeleteList,
+            }]
         ];
 
         const open = Boolean(anchorEl);
@@ -308,6 +350,9 @@ class TrelloBoardContainer extends Component {
                                                 placement="bottom-start"
                                                 open={open} 
                                                 anchorEl={anchorEl}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                }}
                                                 >
                                                     <CommonCard actionList={listActions} />
                                                 </BoardEditPopper>

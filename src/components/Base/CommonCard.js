@@ -145,8 +145,8 @@ class CardPopper extends Component {
                                                 <BoardMenuNavigationItem
                                                 key={index}
                                                 >
-                                                    <BoardMenuNavigationItemLink>
-                                                        {item}
+                                                    <BoardMenuNavigationItemLink onClick={item.fn}>
+                                                        {item.caption}
                                                     </BoardMenuNavigationItemLink>
                                                 </BoardMenuNavigationItem>
                                             )

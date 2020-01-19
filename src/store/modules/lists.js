@@ -12,6 +12,8 @@ const REORDER_UI = 'list/REORDER_UI';
 const GET_CARDS = 'list/GET_CARDS';
 const UPDATE_LIST = 'list/UPDATE_LIST';
 const CLEAR_STATE = 'list/CLEAR_STATE';
+const DELETE_LIST = 'list/DELETE_LIST';
+const DELETE_CARD = 'list/DELETE_CARD';
 
 export const clearState = createAction(CLEAR_STATE);
 export const getLists = createAction(GET_LISTS, ListsAPI.getLists);
@@ -22,6 +24,8 @@ export const confirmNewList = createAction(CONFIRM_NEW_LIST, ListsAPI.createNewL
 export const reorderUI = createAction(REORDER_UI);
 export const reorder = createAction(REORDER, ListsAPI.reorder);
 export const updateList = createAction(UPDATE_LIST, ListsAPI.updateList);
+export const deleteList = createAction(DELETE_LIST, ListsAPI.deleteList);
+export const deleteCards = createAction(DELETE_CARD, ListsAPI.deleteCards);
 
 const initialState = Map({
     boardId: '',
@@ -87,6 +91,41 @@ export default handleActions({
             const index = state.get('list').findIndex(list=> list.get('_id') === updatedList._id);
             const newList = state.get('list').update(index, list => list.merge(updatedList));
             return state.set('list', newList);
+        }
+    }),
+
+    ...pender({
+        type: DELETE_LIST,
+        onSuccess: (state, action) => {
+            const deletedListId = action.payload.data;
+            const index = state.get('list').findIndex(list=> list.get('_id') === deletedListId);
+            const newList = state.get('list').delete(index);
+            return state.set('list', newList);
+        }
+    }),
+
+    ...pender({
+        type: DELETE_CARD,
+        onSuccess: (state, action) => {
+            const { key, id, listId } = action.payload.data;
+            const list = state.get('list');
+            const index = list.findIndex(list=> list.get('_id') === listId);
+            if (key === 'card') {
+                return state.set('list', list.update(
+                    index,
+                    (item) => {
+                    const deletedCardIndex = item.get('cards').findIndex(card => card.get('_id') === id);
+                    const newCards = item
+                            .get('cards')
+                            .delete(deletedCardIndex);
+
+                        return item.set('cards', newCards);
+                    }
+                ));
+            } else {
+                const newList = list.update(index, item => item.set('cards', List([])));
+                return state.set('list', newList);
+            }
         }
     }),
 

@@ -19,16 +19,36 @@ class TrelloCardContainer extends Component {
         });
     }
 
+    handleDeleteCard = () => {
+        const { 
+            TDLBoardActions,
+            id,
+            listId
+        } = this.props;
+
+        TDLBoardActions.deleteCards({
+            key: 'card',
+            id,
+            listId,
+        })
+    }
+
     render() {
         const { 
             content,
-            id,
+            id, // cardId
             index,
         } = this.props;
 
+        const {
+            handleEditCard,
+            handleDeleteCard,
+        } = this;
+
         return (
             <TrelloCard 
-                handleEditCard = { this.handleEditCard }
+                handleDeleteCard={handleDeleteCard}
+                handleEditCard = {handleEditCard}
                 content={content}
                 index={index}
                 id={id}
