@@ -11,7 +11,6 @@ const ListButtonDiv = styled.div`
     height: auto;
     min-height: 38px;
     transition: background 85ms ease-in,opacity 40ms ease-in,border-color 85ms ease-in;
-    width: 280px;
     box-sizing: border-box;
     display: inline-block;
     vertical-align: top;
@@ -43,6 +42,11 @@ const AddCardButtonGroup = styled.div`
 const CloseButton = styled(Icon)`
     margin-left: 8px;
     cursor: pointer;
+    opacity: .7;
+
+    &:hover {
+        opacity: 1;
+    }
 `;
 
 const TitleWrapper = styled.div`
@@ -56,14 +60,12 @@ const TitleWrapper = styled.div`
     min-height: 20px;
     position: relative;
     text-decoration: none;
-    z-index: 0;
 `;
 
 const TitleContent = styled.div`
     overflow: hidden;
     padding: 6px 8px 2px;
     position: relative;
-    z-index: 10;
 `;
 const TitleTextArea = styled(({height, ...rest}) => <Textarea {...rest} />)`
     resize: none;

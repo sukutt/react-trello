@@ -18,7 +18,7 @@ const DELETE_CARD = 'list/DELETE_CARD';
 export const clearState = createAction(CLEAR_STATE);
 export const getLists = createAction(GET_LISTS, ListsAPI.getLists);
 export const getCards = createAction(GET_CARDS);
-export const editCard = createAction(EDIT_CARD);
+export const editCard = createAction(EDIT_CARD, ListsAPI.editCard);
 export const confirmNewCard = createAction(CONFIRM_NEW_CARD, ListsAPI.createNewCard);
 export const confirmNewList = createAction(CONFIRM_NEW_LIST, ListsAPI.createNewList);
 export const reorderUI = createAction(REORDER_UI);
@@ -129,6 +129,26 @@ export default handleActions({
         }
     }),
 
+    ...pender({
+        type: EDIT_CARD,
+        onSuccess: (state, action) => {
+            const { newCard } = action.payload.data;
+            const list = state.get('list');
+            const listIndex = list.findIndex(list=> list.get('_id') === newCard.list_id);
+            return state.set('list', list.update(
+                listIndex,
+                (item) => {
+                const modifiedCardIndex = item.get('cards').findIndex(card => card.get('_id') === newCard._id);
+                const newCards = item
+                        .get('cards')
+                        .update(modifiedCardIndex, card => card.set('content', newCard.content));
+
+                    return item.set('cards', newCards); 
+                }
+            ));
+        }
+    }),
+
     [CLEAR_STATE]: (state, action) => {
         return state.set('list', List([]));
     },
@@ -186,17 +206,17 @@ export default handleActions({
         }
     },
 
-    [EDIT_CARD]: (state, action) => {
-        const {listIndex, index, text} = action.payload;
-        const card = state.get('list')
-                          .get(listIndex)
-                          .get('cards')
-                          .get(index);
+    // [EDIT_CARD]: (state, action) => {
+    //     const {listIndex, index, text} = action.payload;
+    //     const card = state.get('list')
+    //                       .get(listIndex)
+    //                       .get('cards')
+    //                       .get(index);
 
-        return state.setIn(['list', listIndex, 'cards', index], Map({
-            ...card.toJS(),
-            content: text,
-        }));
-    }
+    //     return state.setIn(['list', listIndex, 'cards', index], Map({
+    //         ...card.toJS(),
+    //         content: text,
+    //     }));
+    // }
 
 }, initialState)

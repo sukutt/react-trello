@@ -1,6 +1,4 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, { Component } from 'react'; import { connect } from 'react-redux'; import { bindActionCreators } from 'redux';
 import * as tdlBoardActions from 'store/modules/lists';
 import styled from 'styled-components';
 import TrelloCardContainer from 'containers/TDL/TrelloCardContainer';
@@ -22,24 +20,36 @@ const HeaderWrapper = styled.div`
 `;
 
 const CardDiv = styled.div`
-    padding: 0px 8px 0px 8px;
+    margin-bottom: 0;
+    flex: 1 1 auto;
+    min-height: 0;
+    // overflow-y: auto;
+    // overflow-x: hidden;
+    margin: 0 4px;
+    padding: 0 4px;
 `;
 
 const BoardDiv = styled.div`
-    display: inline-block;
-    background-color: #ebecf0;
-    border-radius: 3px;
-    box-sizing: border-box;
+    width: 272px;
     margin-right: 8px;
+    box-sizing: border-box;
+    display: inline-block;
     vertical-align: top;
     white-space: nowrap;
-    flex-direction: column;
-    max-height: 100%;
-    position: relative;
-
     &:first-child {
         margin-left: 8px;
     }
+`;
+
+const BoardContent = styled.div`
+    background-color: #ebecf0;
+    border-radius: 3px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    position: relative;
+    white-space: normal;
 `;
 
 const TitleContent = styled.div`
@@ -317,7 +327,7 @@ class TrelloBoardContainer extends Component {
                     {...provided.dragHandleProps}>
                         <Droppable droppableId={id}>
                             {provided => (
-                                <div{...provided.droppableProps}
+                                <BoardContent {...provided.droppableProps}
                                 ref={provided.innerRef}
                                 >
                                     <HeaderWrapper onClick={handleTitleChangeTrigger}>
@@ -364,7 +374,7 @@ class TrelloBoardContainer extends Component {
                                     </CardDiv>
                                     {provided.placeholder}
                                     <CreateCardButton handleEditing={handleCardEditing} createNewCard={handleConfirmNewCard} />
-                                </div>
+                                </BoardContent>
                             )}
                         </Droppable>
                     </BoardDiv>

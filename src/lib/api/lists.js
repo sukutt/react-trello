@@ -6,5 +6,6 @@ export const createNewCard = ({boardId, listId, content}) => axios.post(`/api/td
 // list: list 또는 card 목록
 export const reorder = ({key, id, list}) => axios.patch(`/api/tdl/${key}/${id}`, {list});
 export const updateList = ({id, ...rest}) => axios.patch(`/api/tdl/${id}`, rest);
+export const editCard = ({id, listId, text}) => axios.patch(`/api/tdl/${listId}/${id}`, {text});
 export const deleteList = ({id}) => axios.delete(`/api/tdl/${id}`);
-export const deleteCards = ({key, id, listId}) => axios.delete(`/api/tdl/${key}/${id}`, {listId});
+export const deleteCards = ({key, id, listId}) => axios.delete(`/api/tdl/${key}/${listId}/${id}`);

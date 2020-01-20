@@ -8,13 +8,13 @@ class TrelloCardContainer extends Component {
     handleEditCard = (text) => {
         const { 
             TDLBoardActions,
-            listIndex,
-            index,
+            id,
+            listId
         } = this.props;
 
         TDLBoardActions.editCard({
-            listIndex,
-            index,
+            id,
+            listId,
             text
         });
     }

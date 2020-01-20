@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Textarea from 'react-textarea-autosize';
 import { Draggable } from 'react-beautiful-dnd';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Icon, Popover, Button, CardContent, Typography, Card } from '@material-ui/core';
+import { Icon, Popover, Button } from '@material-ui/core';
 import { DeleteOutline } from '@material-ui/icons';
 
 const EditFormButton = withStyles({
@@ -51,7 +51,6 @@ const TextAreaContainer = styled.div`
     max-width: 300px;
     min-height: 20px;
     position: relative;
-    text-decoration: none;
 `;
 
 const TextAreaFrame = styled.div`
@@ -70,17 +69,11 @@ const TextArea = styled(Textarea)`
     border-radius: 3px;
 `;
 
-const EditIcon = styled(Icon)`
-    &&& {
-        font-size: 1.2rem;
-    }
-`;
-
 const CardEditButton = styled.span`
     position: absolute;
     font-size: 11px;
     right: 2px;
-    top: 5px;
+    top: 3px;
     padding: 4px;
     opacity: .8;
     background-color: #f4f5f7;
@@ -93,7 +86,20 @@ const CardEditButton = styled.span`
     }
 `;
 
-const StyledCard = styled(Card)`
+const EditIcon = styled(Icon)`
+    &&& {
+        font-size: 1rem;
+    }
+`;
+
+const TrelloCardContainer = styled.div`
+    &&& {
+        display: block;
+        cursor: pointer;
+    }
+    background-color: #fff;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(9,30,66,.25);
     position: relative;
     max-width: 300px;
     min-height: 20px;
@@ -108,10 +114,20 @@ const StyledCard = styled(Card)`
     }
 `;
 
-const StyledCardContent = styled(CardContent)`
-    &&& {
-        padding: 10px 10px 0px 10px;
-    }
+const StyledCard = styled.div`
+    position: relative;
+    overflow: hidden;
+    padding: 6px 8px 2px; 
+`;
+
+const StyledCardContent = styled.span`
+    clear: both;
+    display: block;
+    margin: 0 0 4px;
+    overflow: hidden;
+    text-decoration: none;
+    word-wrap: break-word;
+    color: #172b4d;
 `;
 
 const TrelloCard = ({
@@ -158,7 +174,7 @@ const TrelloCard = ({
     return (
         <Draggable draggableId={id} index={index}>
             {provided => (
-                <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                <TrelloCardContainer ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                     <StyledCard onClick={(e) => {
                         handleClick(e.currentTarget);
                     }}>
@@ -221,13 +237,11 @@ const TrelloCard = ({
                                 </EditFormFloatDiv>
                             </Popover>
                         </CardEditButton>
-                        <StyledCardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                {content}
-                            </Typography>
+                        <StyledCardContent dir="auto">
+                            {content}
                         </StyledCardContent>
                     </StyledCard>
-                </div>
+                </TrelloCardContainer>
             )}
         </Draggable>
     )
