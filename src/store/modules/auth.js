@@ -6,10 +6,12 @@ import * as AuthAPI from 'lib/api/auth';
 const SIGN_UP = 'auth/SIGN_UP';
 const SIGN_IN = 'auth/SIGN_IN';
 const CHANGE_INPUT = 'auth/CHANGE_INPUT';
+const SET_ERROR = 'auth/SET_ERROR';
 
 export const signUp = createAction(SIGN_UP, AuthAPI.signUp);
 export const signIn = createAction(SIGN_IN, AuthAPI.signIn);
 export const changeInput =  createAction(CHANGE_INPUT);
+export const setError = createAction(SET_ERROR);
 
 const initialState = Map({
     register: Map({
