@@ -43,10 +43,10 @@ class Register extends Component {
             this.setError('email', isEmail(value) ?  true : false);
         },
         userId: (value) => {
-            this.setError('userId', isAlphanumeric(value) || isLength(value, { min:4, max: 15 } ?  true : false));
+            this.setError('userId', isAlphanumeric(value) && isLength(value, { min:4, max: 15 }) ?  true : false);
         },
         password: (value) => {
-            this.setError('password', isLength(value, { min: 6, } ?  true : false));
+            this.setError('password', isLength(value, { min: 6, }) ?  true : false);
         },
         passwordConfirm: (value) => {
             this.setError('passwordConfirm', this.props.form.get('password') === value ?  true : false);
@@ -95,8 +95,6 @@ class Register extends Component {
         const {
             error
         } = this.state;
-
-        console.log(error.toJS())
 
         return (
             <Container maxWidth="xs">
