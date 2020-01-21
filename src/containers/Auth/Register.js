@@ -17,15 +17,19 @@ class Register extends Component {
         error: Map({
             email: Map({
                 valid: true,
+                helperText: '잘못된 이메일 형식 입니다.'
             }),
             userId: Map({
                 valid: true,
+                helperText: '아이디는 4~15 글자의 알파벳 혹은 숫자로 이뤄져야 합니다.'
             }),
             password: Map({
                 valid: true,
+                helperText: '비밀번호를 6자 이상 입력하세요.'
             }),
             passwordConfirm: Map({
                 valid: true,
+                helperText: '비밀번호가 일치하지 않습니다.'
             })
         })
     }
@@ -74,6 +78,34 @@ class Register extends Component {
         }
     }
 
+    checkEmailExists = async (email) => {
+        const { AuthActions } = this.props;
+        try {
+            await AuthActions.checkEmailExists(email);
+            if(this.props.exists.get('email')) {
+                this.setError('이미 존재하는 이메일입니다.');
+            } else {
+                this.setError(null);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    checkUserIdExists = async (userId) => {
+        const { AuthActions } = this.props;
+        try {
+            await AuthActions.checkUserIdExists(userId);
+            if(this.props.exists.get('userId')) {
+                this.setError('이미 존재하는 아이디입니다.');
+            } else {
+                this.setError(null);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     handleChange = async (e) => {
         const { AuthActions } = this.props;
         const { name, value } = e.target;
@@ -84,10 +116,12 @@ class Register extends Component {
             form: 'register',
         })
 
-        this.validate[name](value);
+        const validation = this.validate[name](value);
+        if(name.indexOf('password') > -1 || !validation) return; // 비밀번호 검증이거나, 검증 실패하면 여기서 마침
 
-        // const validation = this.validate[name](value);
-        // if(name.indexOf('password') > -1 || !validation) return; // 비밀번호 검증이거나, 검증 실패하면 여기서 마침
+        // 이메일, 아이디 중복 확인
+        const check = name === 'email' ? this.checkEmailExists : this.checkUserIdExists; // name 에 따라 이메일체크할지 아이디 체크 할지 결정
+        check(value);
     }
 
     render() {
@@ -104,7 +138,7 @@ class Register extends Component {
                         <Grid item xs={12}>
                             <TextField 
                             error={error.getIn(['email', 'valid']) ? false : true }
-                            helperText={error.getIn(['email', 'valid']) ? '' : '잘못된 이메일 형식 입니다.'}
+                            helperText={error.getIn(['email', 'valid']) ? '' : ''}
                             name="email"
                             variant="outlined"
                             required
@@ -118,7 +152,7 @@ class Register extends Component {
                         <Grid item xs={12}>
                             <TextField 
                             error={error.getIn(['userId', 'valid']) ? false : true }
-                            helperText={error.getIn(['userId', 'valid']) ? '' : '아이디는 4~15 글자의 알파벳 혹은 숫자로 이뤄져야 합니다.'}
+                            helperText={error.getIn(['userId', 'valid']) ? '' : ''}
                             name="userId"
                             variant="outlined"
                             required
@@ -131,7 +165,7 @@ class Register extends Component {
                         <Grid item xs={12}>
                             <TextField 
                             error={error.getIn(['password', 'valid']) ? false : true }
-                            helperText={error.getIn(['password', 'valid']) ? '' : '비밀번호를 6자 이상 입력하세요.'}
+                            helperText={error.getIn(['password', 'valid']) ? '' : ''}
                             name="password"
                             variant="outlined"
                             required
@@ -145,7 +179,7 @@ class Register extends Component {
                         <Grid item xs={12}>
                             <TextField 
                             error={error.getIn(['passwordConfirm', 'valid']) ? false : true }
-                            helperText={error.getIn(['passwordConfirm', 'valid']) ? '' : '비밀번호가 일치하지 않습니다.'}
+                            helperText={error.getIn(['passwordConfirm', 'valid']) ? '' : ''}
                             name="passwordConfirm"
                             variant="outlined"
                             required

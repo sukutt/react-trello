@@ -7,11 +7,15 @@ const SIGN_UP = 'auth/SIGN_UP';
 const SIGN_IN = 'auth/SIGN_IN';
 const CHANGE_INPUT = 'auth/CHANGE_INPUT';
 const SET_ERROR = 'auth/SET_ERROR';
+const CHECK_EMAIL_EXISTS = 'auth/CHECK_EMAIL_EXISTS'; // 이메일 중복 확인
+const CHECK_USERID_EXISTS = 'auth/CHECK_USERID_EXISTS'; // 아이디 중복 확인
 
 export const signUp = createAction(SIGN_UP, AuthAPI.signUp);
 export const signIn = createAction(SIGN_IN, AuthAPI.signIn);
 export const changeInput =  createAction(CHANGE_INPUT);
 export const setError = createAction(SET_ERROR);
+export const checkEmailExists = createAction(CHECK_EMAIL_EXISTS, AuthAPI.checkEmailExists);
+export const checkUserIdExists = createAction(CHECK_USERID_EXISTS, AuthAPI.checkUserIdExists);
 
 const initialState = Map({
     register: Map({
@@ -20,6 +24,10 @@ const initialState = Map({
             userId: '',
             password: '',
             passwordConfirm: '',
+        }),
+        exists: Map({
+            email: false,
+            userId: false
         })
     }),
     signIn: Map({
@@ -45,5 +53,15 @@ export default handleActions({
     ...pender({
         type: SIGN_IN,
         onSuccess: (state, action) => state.set('result', Map(action.payload.data))
+    }),
+
+    ...pender({
+        type: CHECK_EMAIL_EXISTS,
+        onSuccess: (state, action) => state.setIn(['register', 'exists', 'email'], action.payload.data.exists)
+    }),
+
+    ...pender({
+        type: CHECK_USERID_EXISTS,
+        onSuccess: (state, action) => state.setIn(['register', 'exists', 'userId'], action.payload.data.exists)
     })
 }, initialState)
