@@ -10,13 +10,27 @@ import * as userActions from 'store/modules/user';
 import * as authActions from 'store/modules/auth';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import { Map } from 'immutable';
 
 class Login extends Component {
+    state = {
+        form: Map({
+            email: '',
+            password: '',
+        }),
+        alert: Map({
+            open: false,
+            message: ''
+        }),
+    }
 
     handleSubmit = async (e) => {
         e.preventDefault();
 
-        const { AuthActions, UserActions, history, form } = this.props;
+        const { AuthActions, UserActions, history } = this.props;
+        const { form } = this.state;
         const { email, password } = form.toJS();
 
         try {
@@ -31,26 +45,51 @@ class Login extends Component {
 
             history.push('/boards');
         } catch(e) {
-            console.log(e);
+            this.setState({
+                alert: Map({
+                    open: true,
+                    message: 'Incorrect email or password'
+                })
+            })
         }
     }
 
     handleChange = (e) => {
-        const { AuthActions } = this.props;
         const { name, value } = e.target;
+        const { form } = this.state;
 
-        AuthActions.changeInput({
-            name,
-            value,
-            form: 'signIn'
+        this.setState({
+            form: form.set(name, value)
         });
     }
 
+    handleAlertClose = () => {
+        this.setState({
+            alert: Map({
+                open: false,
+                message: ''
+            })
+        })
+    }
+
     render() {
-        const { handleChange, handleSubmit } = this;
+        const {
+            handleChange,
+            handleSubmit,
+            handleAlertClose
+        } = this;
+
+        const {
+            alert
+        } = this.state;
 
         return (
             <Container>
+                <Snackbar anchorOrigin={{ vertical: 'top', horizontal:'center' }} open={alert.get('open')} autoHideDuration={2000} onClose={handleAlertClose}>
+                    <MuiAlert elevation={6} variant="filled" severity="error">
+                        {alert.get('message')}
+                    </MuiAlert>
+                </Snackbar>
                 <CssBaseline />
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={1}>
@@ -93,7 +132,6 @@ class Login extends Component {
 
 export default connect(
     (state) => ({
-        form: state.auth.getIn(['signIn', 'form']),
         result: state.auth.get('result')
     }),
 

@@ -6,115 +6,190 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as userActions from 'store/modules/user';
 import * as authActions from 'store/modules/auth';
 import { bindActionCreators } from 'redux';
 import {isEmail, isLength, isAlphanumeric} from 'validator';
 import { Map } from 'immutable';
+import debounce from 'lodash/debounce';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 class Register extends Component {
     state = {
+        form: Map({
+            email: '',
+            userId: '',
+            password: '',
+            passwordConfirm: '',
+        }),
+        alert: Map({
+            open: false,
+            message: ''
+        }),
         error: Map({
             email: Map({
                 valid: true,
-                helperText: '잘못된 이메일 형식 입니다.'
+                helperText: 'Invalid email format'
             }),
             userId: Map({
                 valid: true,
-                helperText: '아이디는 4~15 글자의 알파벳 혹은 숫자로 이뤄져야 합니다.'
+                helperText: 'The ID must be 4-15 letters or numbers'
             }),
             password: Map({
                 valid: true,
-                helperText: '비밀번호를 6자 이상 입력하세요.'
+                helperText: 'Passwords must be at least 6 characters'
             }),
             passwordConfirm: Map({
                 valid: true,
-                helperText: '비밀번호가 일치하지 않습니다.'
+                helperText: 'Password is not matching'
             })
         })
     }
 
-    setError = (key, isValid) => {
+    setError = ({key, valid, helperText}) => {
         const { error } = this.state;
 
         this.setState({
-            error: error.setIn([key, 'valid'], isValid)
+            error: error.set(key, {
+                valid,
+                helperText
+            })
         })
     }
 
     validate = {
         email: (value) => {
-            this.setError('email', isEmail(value) ?  true : false);
+            const valid = isEmail(value);
+            this.setError({
+                key: 'email',
+                valid,
+                helperText: 'Invalid email format'
+            });
+
+            return valid;
         },
         userId: (value) => {
-            this.setError('userId', isAlphanumeric(value) && isLength(value, { min:4, max: 15 }) ?  true : false);
+            const valid = isAlphanumeric(value) && isLength(value, { min:4, max: 15 });
+            this.setError({
+                key: 'userId', 
+                valid,
+                helperText: 'The ID must be 4-15 letters or numbers'
+            });
+
+            return valid;
         },
         password: (value) => {
-            this.setError('password', isLength(value, { min: 6, }) ?  true : false);
+            const valid = isLength(value, { min: 6, });
+
+            this.setError({
+                key: 'password', 
+                valid,
+                helperText: 'Passwords must be at least 6 characters'
+            })
+
+            return valid;
         },
         passwordConfirm: (value) => {
-            this.setError('passwordConfirm', this.props.form.get('password') === value ?  true : false);
+            const { form } = this.state;
+            const valid = form.get('password') === value;
+
+            this.setError({
+                key: 'passwordConfirm', 
+                valid,
+                helperText: 'Password is not matching'
+            });
+
+            return valid;
         }
     }
 
     handleSubmit = async (e) => {
         e.preventDefault();
 
-        const { AuthActions, form } = this.props;
+        const { AuthActions } = this.props;
+        const { error, alert, form } = this.state;
         const { email, userId, password, passwordConfirm } = form.toJS();
+
+        if(!error.getIn(['email', 'valid'])
+        || !error.getIn(['userId', 'valid'])
+        || !error.getIn(['password', 'valid'])
+        || !error.getIn(['passwordConfirm', 'valid'])) {
+            return;
+        }
+
+        if (password !== passwordConfirm) {
+            this.setError({
+                key: 'passwordConfirm',
+                valid: false,
+                helperText: 'Password is not matching'
+            });
+
+            return;
+        }
 
         try {
             await AuthActions.signUp({
-                email, userId, password 
+                email, userId, password
             });
 
             window.location.href = '/';
         } catch(e) {
             if (e.response && (e.response.status === 409)) {
                 const { key } = e.response.data;
-                const message = key === 'email' ? '이미 존재하는 이메일입니다.' : '이미 존재하는 아이디입니다.';
-                console.log(message);
+                const message = key === 'email' ? 'This email already exists' : 'This id already exists';
+                this.setState({
+                    alert: alert
+                           .set('open', true)
+                           .set('message', message)
+                })
             }
         }
     }
 
-    checkEmailExists = async (email) => {
+    checkEmailExists = debounce(async (email) => {
         const { AuthActions } = this.props;
+        const { error } = this.state;
         try {
             await AuthActions.checkEmailExists(email);
             if(this.props.exists.get('email')) {
-                this.setError('이미 존재하는 이메일입니다.');
-            } else {
-                this.setError(null);
+                this.setState({
+                    error: error.set('email', {
+                        valid: false,
+                        helperText: 'This email already exists'
+                    })
+                })
             }
         } catch (e) {
             console.log(e);
         }
-    }
+    }, 300)
 
-    checkUserIdExists = async (userId) => {
+    checkUserIdExists = debounce(async (userId) => {
         const { AuthActions } = this.props;
+        const { error } = this.state;
+
         try {
             await AuthActions.checkUserIdExists(userId);
             if(this.props.exists.get('userId')) {
-                this.setError('이미 존재하는 아이디입니다.');
-            } else {
-                this.setError(null);
-            }
+                this.setState({
+                    error: error.set('userId', {
+                        valid: false,
+                        helperText: 'This id already exists',
+                    })
+                })
+            } 
         } catch (e) {
             console.log(e);
         }
-    }
+    }, 300)
 
-    handleChange = async (e) => {
-        const { AuthActions } = this.props;
+    handleChange = (e) => {
         const { name, value } = e.target;
+        const { form } = this.state;
 
-        await AuthActions.changeInput({
-            name,
-            value,
-            form: 'register',
-        })
+        this.setState({
+            form: form.set(name, value)
+        });
 
         const validation = this.validate[name](value);
         if(name.indexOf('password') > -1 || !validation) return; // 비밀번호 검증이거나, 검증 실패하면 여기서 마침
@@ -124,21 +199,41 @@ class Register extends Component {
         check(value);
     }
 
+    handleAlertClose = () => {
+        this.setState({
+            alert: Map({
+                open: false,
+                message: ''
+            })
+        })
+    }
+
     render() {
-        const { handleChange, handleSubmit } = this;
         const {
-            error
+            handleChange,
+            handleSubmit,
+            handleAlertClose
+         } = this;
+
+        const {
+            error,
+            alert,
         } = this.state;
 
         return (
             <Container maxWidth="xs">
+                <Snackbar anchorOrigin={{ vertical: 'top', horizontal:'center' }} open={alert.get('open')} autoHideDuration={2000} onClose={handleAlertClose}>
+                    <MuiAlert elevation={6} variant="filled" severity="error">
+                        {alert.get('message')}
+                    </MuiAlert>
+                </Snackbar>
                 <CssBaseline />
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={1}>
                         <Grid item xs={12}>
                             <TextField 
                             error={error.getIn(['email', 'valid']) ? false : true }
-                            helperText={error.getIn(['email', 'valid']) ? '' : ''}
+                            helperText={error.getIn(['email', 'valid']) ? '' : error.getIn(['email', 'helperText'])}
                             name="email"
                             variant="outlined"
                             required
@@ -152,7 +247,7 @@ class Register extends Component {
                         <Grid item xs={12}>
                             <TextField 
                             error={error.getIn(['userId', 'valid']) ? false : true }
-                            helperText={error.getIn(['userId', 'valid']) ? '' : ''}
+                            helperText={error.getIn(['userId', 'valid']) ? '' : error.getIn(['userId', 'helperText'])}
                             name="userId"
                             variant="outlined"
                             required
@@ -165,7 +260,7 @@ class Register extends Component {
                         <Grid item xs={12}>
                             <TextField 
                             error={error.getIn(['password', 'valid']) ? false : true }
-                            helperText={error.getIn(['password', 'valid']) ? '' : ''}
+                            helperText={error.getIn(['password', 'valid']) ? '' : error.getIn(['password', 'helperText'])}
                             name="password"
                             variant="outlined"
                             required
@@ -179,7 +274,7 @@ class Register extends Component {
                         <Grid item xs={12}>
                             <TextField 
                             error={error.getIn(['passwordConfirm', 'valid']) ? false : true }
-                            helperText={error.getIn(['passwordConfirm', 'valid']) ? '' : ''}
+                            helperText={error.getIn(['passwordConfirm', 'valid']) ? '' : error.getIn(['passwordConfirm', 'helperText'])}
                             name="passwordConfirm"
                             variant="outlined"
                             required
@@ -205,11 +300,10 @@ class Register extends Component {
 
 export default connect(
     (state) => ({
-        form: state.auth.getIn(['register', 'form']),
-        result: state.auth.get('result')
+        result: state.auth.get('result'),
+        exists: state.auth.getIn(['signUp', 'exists'])
     }),
     (dispatch) => ({
         AuthActions: bindActionCreators(authActions, dispatch),
-        UserActions: bindActionCreators(userActions, dispatch)
     })
 )(Register);

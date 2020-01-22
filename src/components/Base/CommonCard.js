@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Icon from '@material-ui/core/Icon';
+import { withStyles } from '@material-ui/core/styles';
 
 const BoardMenuTabContent = styled.div`
     flex: 1;
@@ -114,9 +115,17 @@ const BoardMenuNavigationItemLink = styled.a`
     color: #172b4d;
 `;
 
+
+const useStyles = theme => ({
+    disabled: {
+        pointerEvents: 'none',
+        opacity: 0.6,
+    },
+});
+
 class CardPopper extends Component {
     render() {
-        const { actionList } = this.props;
+        const { actionList, classes } = this.props;
 
         return (
             <div>
@@ -143,6 +152,7 @@ class CardPopper extends Component {
                                         {list.map((item, index) => {
                                             return (
                                                 <BoardMenuNavigationItem
+                                                className={item.fn ? '' : classes.disabled }
                                                 key={index}
                                                 >
                                                     <BoardMenuNavigationItemLink onClick={item.fn}>
@@ -162,4 +172,4 @@ class CardPopper extends Component {
     }
 }
 
-export default CardPopper;
+export default withStyles(useStyles)(CardPopper);

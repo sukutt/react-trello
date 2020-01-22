@@ -18,33 +18,16 @@ export const checkEmailExists = createAction(CHECK_EMAIL_EXISTS, AuthAPI.checkEm
 export const checkUserIdExists = createAction(CHECK_USERID_EXISTS, AuthAPI.checkUserIdExists);
 
 const initialState = Map({
-    register: Map({
-        form: Map({
-            email: '',
-            userId: '',
-            password: '',
-            passwordConfirm: '',
-        }),
+    signUp: Map({
         exists: Map({
             email: false,
             userId: false
-        })
-    }),
-    signIn: Map({
-        form: Map({
-            email: '',
-            password: '',
         })
     }),
     result: Map({})
 });
 
 export default handleActions({
-    [CHANGE_INPUT]: (state, action) => {
-        const { name, value, form } = action.payload;
-        return state.setIn([form, 'form', name], value);
-    },
-
     ...pender({
         type: SIGN_UP,
         onSuccess: (state, action) => state.set('result', Map(action.payload.data))
@@ -57,11 +40,11 @@ export default handleActions({
 
     ...pender({
         type: CHECK_EMAIL_EXISTS,
-        onSuccess: (state, action) => state.setIn(['register', 'exists', 'email'], action.payload.data.exists)
+        onSuccess: (state, action) => state.setIn(['signUp', 'exists', 'email'], action.payload.data.exists)
     }),
 
     ...pender({
         type: CHECK_USERID_EXISTS,
-        onSuccess: (state, action) => state.setIn(['register', 'exists', 'userId'], action.payload.data.exists)
+        onSuccess: (state, action) => state.setIn(['signUp', 'exists', 'userId'], action.payload.data.exists)
     })
 }, initialState)

@@ -35,7 +35,7 @@ const BoardMenuContainer = styled.div`
 `;
 
 const BoardMenuTabContent = styled.div`
-    background-color: rgb(22, 24, 25);
+    background-color: #f4f5f7;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -71,7 +71,7 @@ const HeaderTitle = styled.h3`
     transition: margin .12s ease-in;
     white-space: nowrap;
     flex: 1;
-    color: rgb(213, 210, 203);
+    color: #172b4d;
     font-size: 16px;
     font-weight: 600;
 `
@@ -79,10 +79,11 @@ const HeaderTitle = styled.h3`
 const CloseButton = styled(Icon)`
     margin-left: 8px;
     cursor: pointer;
-    color: rgb(176, 193, 210);
+    color: #42526e;
+    opacity: .8;
 
     &:hover {
-        color: white;
+        opacity: 1;
     }
 `;
 
@@ -122,11 +123,14 @@ const BoardMenuNavigation = styled.ul`
 
 const BoardMenuNavigationItem = styled.li`
     cursor: pointer;
+    &:hover {
+        background-color: rgba(9, 30, 66, .08);
+    }
 `;
 
 const BoardCloseCard = styled.div`
-    background-color: rgb(19, 21, 22);
-    box-shadow: rgba(3, 25, 63, 0.25) 0px 8px 16px -4px, rgba(3, 25, 63, 0.08) 0px 0px 0px 1px;
+    background-color: #fff;
+    box-shadow: 0 8px 16px -4px rgba(9,30,66,.25), 0 0 0 1px rgba(9,30,66,.08);
     border-radius: 3px;
     overflow: hidden;
     position: absolute;
@@ -145,8 +149,8 @@ const BoardCloseCardHeader = styled.div`
 `;
 
 const BoardCloseCardHeaderTitle = styled.span`
-    color: rgb(191, 186, 175);
-    border-bottom: 1px solid rgba(22, 89, 204, 0.13);
+    color: #5e6c84;
+    border-bottom: 1px solid rgba(9,30,66,.13);
     box-sizing: border-box;
     line-height: 40px;
     margin: 0 12px;
@@ -161,15 +165,16 @@ const BoardCloseCardHeaderTitle = styled.span`
 
 const CloseCardButton = styled(Icon)`
     cursor: pointer;
-    color: rgb(176, 193, 210);
+    color: #6b778c;
     padding: 10px 12px 10px 8px;
     position: absolute;
     top: 0;
     right: 0;
     z-index: 2;
+    opacity: .8;
 
     &:hover {
-        color: white;
+        opacity: 1;
     }
 `;
 
@@ -182,12 +187,12 @@ const BoardCloseCardBody = styled.div`
 
 const BoardCloseCardParagraph = styled.p`
     margin: 0 0 8px;
-    color: rgb(213, 210, 203);
+    color: #172b4d;
 `
 
 const BoardCloseCardButton = styled(Button)`
     &&& {
-        background-color: rgb(134, 43, 28);
+        background-color: #cf513d;
         color: white;
     }
     width: 100%;
@@ -202,11 +207,7 @@ const BoardMenuNavigationItemLink = styled.a`
     text-decoration: none;
     padding: 6px 6px 6px 40px;
     position: relative;
-    color: rgb(213, 210, 203);
-
-    &:hover {
-        color: white;
-    }
+    color: #172b4d;
 `;
 
 const Body = styled.main`
@@ -257,7 +258,7 @@ const useStyles = theme => ({
     },
     visible: {
         transform: 'translateX(0)',
-        boxShadow: 'rgba(3, 25, 63, 0.25) 0px 12px 24px -6px, rgba(3, 25, 63, 0.08) 0px 0px 0px 1px'
+        boxShadow: '0 12px 24px -6px rgba(9,30,66,.25), 0 0 0 1px rgba(9,30,66,.08)'
     },
 });
 

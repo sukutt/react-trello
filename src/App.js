@@ -24,14 +24,13 @@ const RootDiv = styled.div`
 class App extends React.Component {
   initializeUserInfo = async () => {
     const signedInInfo = storage.get('signedInInfo'); // 로그인 정보를 로컬스토리지에서 가져옵니다.
-    if(!signedInInfo) return; // 로그인 정보가 없다면 여기서 멈춥니다.
+    if(!signedInInfo) return;
 
     const { UserActions, history } = this.props;
     UserActions.setSignedInInfo(signedInInfo);
 
     try {
         await UserActions.checkStatus();
-
         // 바로 boards로 넘겨준다
         history.push('/boards');
     } catch (e) {
