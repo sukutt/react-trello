@@ -47,7 +47,7 @@ class App extends React.Component {
     return (
       <Container>
         <RootDiv>
-          <HeaderContainer />
+          <Route component={HeaderContainer} />
           <Route exact path="/" component={Home}/>
           <Route path="/tdl" component={TDLBoard} />
           <Route path="/auth" component={Auth}/>

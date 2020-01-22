@@ -24,14 +24,26 @@ class HeaderContainer extends Component {
         window.location.href = '/';
     }
 
+    handleGoBackToBoards = () => {
+        const { history } = this.props;
+        history.push('/boards');
+    }
 
     render() {
-        const { handleLogout } = this;
+        const { 
+            handleLogout,
+            handleGoBackToBoards
+        } = this;
+
         const { isTDLPage, visible, signedIn } = this.props;
         if(!visible) return null;
 
         return (
-            <Header signedIn={signedIn} isTDLPage={isTDLPage}>
+            <Header 
+            signedIn={signedIn} 
+            isTDLPage={isTDLPage}
+            handleGoBackToBoards={handleGoBackToBoards}
+            >
                 { signedIn ? (
                     <UserButton handleLogout={handleLogout} />
                     ) : (

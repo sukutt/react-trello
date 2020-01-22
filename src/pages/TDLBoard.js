@@ -40,7 +40,7 @@ class TDLBoard extends Component {
         } = this.props.location.state;
 
         return (
-            <TDLContainer 
+            <TDLContainer
             title={title}
             boardId={boardId}
             isFavorite={isFavorite}

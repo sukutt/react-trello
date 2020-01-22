@@ -35,7 +35,7 @@ const VerticalDivider =  styled.span`
 
 const FavoriteButton = styled.div`
     border-radius: 3px;
-    background: rgba(19, 21, 22, .24);
+    background: rgba(19,21,22,.24);
     cursor: default;
     float: left;
     font-size: 14px;
@@ -49,7 +49,7 @@ const FavoriteButton = styled.div`
 
     &:hover {
         cursor: pointer;
-        background: rgba(19, 21, 22, .34);
+        background:rgba(19,21,22,.24);
     }
 `;
 
