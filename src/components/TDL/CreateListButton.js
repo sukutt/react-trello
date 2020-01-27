@@ -6,14 +6,14 @@ import { isEmptyOrSpaces } from 'lib/fnUtils';
 
 const ListButtonDiv = styled.div`
     background-color: hsla(0,0%,100%,.24);
+    margin: 0 5px;
     cursor: pointer;
     border-radius: 3px;
     height: auto;
     min-height: 32px;
     padding: 4px;
     transition: background 85ms ease-in,opacity 40ms ease-in,border-color 85ms ease-in;
-    margin-right: 8px;
-    width: 280px;
+    width: 272px;
     box-sizing: border-box;
     display: inline-block;
     vertical-align: top;
@@ -64,6 +64,7 @@ const TitleInput = styled.input`
     border-radius: 3px;
     line-height: 20px;
     padding: 8px 12px;
+    font-size: 14px;
 `;
 
 class CreateListButton extends Component {

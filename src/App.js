@@ -10,15 +10,8 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   height: 100%;
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
-`;
-
-const RootDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  display: inline-flex;
+  min-width: 100%;
 `;
 
 class App extends React.Component {
@@ -46,13 +39,11 @@ class App extends React.Component {
   render() {
     return (
       <Container>
-        <RootDiv>
-          <Route component={HeaderContainer} />
-          <Route exact path="/" component={Home}/>
-          <Route path="/tdl" component={TDLBoard} />
-          <Route path="/auth" component={Auth}/>
-          <Route path="/boards" component={Boards} />
-        </RootDiv>
+        <Route component={HeaderContainer} />
+        <Route exact path="/" component={Home}/>
+        <Route path="/tdl" component={TDLBoard} />
+        <Route path="/auth" component={Auth}/>
+        <Route path="/boards" component={Boards} />
       </Container>
     )
   }

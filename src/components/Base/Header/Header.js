@@ -13,6 +13,10 @@ const bounce = keyframes`
 `
 
 const StyledAppBar = styled(({signedIn, isTDLPage, ...rest}) => <AppBar {...rest} />)`
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
     height: ${props => props.signedIn ? '40px' : '48px'};
     &&& {
         background: ${props => props.isTDLPage 
@@ -87,7 +91,11 @@ export default function Header({signedIn, isTDLPage, handleGoBackToBoards, child
     const [bounce, setBounce] = React.useState(null);
 
     return (
-        <StyledAppBar position="relative" isTDLPage={isTDLPage} signedIn={signedIn}>
+        <StyledAppBar 
+        id='base-header'
+        isTDLPage={isTDLPage} 
+        signedIn={signedIn}
+        >
             <StyledToolbar disableGutters={true} signedIn={signedIn} variant="dense">
                 {signedIn ? (
                 <HomeButton onClick={handleGoBackToBoards} size="small" aria-label="home">

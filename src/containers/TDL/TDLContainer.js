@@ -12,26 +12,24 @@ import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 
 const RightSlideMenu = styled.div`
-    bottom: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition-property: transform,width;
-    transition-duration: .1s;
-    transition-timing-function: ease-in;
-    transform: translateX(339px);
-    width: 339px;
-    z-index: 5;
+    flex: 0 0 auto;
+    display: none;
 `;
 
 const BoardMenuContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    left: 0;
-    bottom: 0;
-    position: absolute;
+    box-shadow: 0 12px 24px -6px rgba(9,30,66,.25), 0 0 0 1px rgba(9,30,66,.08);
+    width: 339px;
+    left: auto;
     right: 0;
-    top: 0;
+    top: 40px;
+    flex: 1 0 auto;
+    height: 100%;
+    display: flex;
+    outline: 0;
+    z-index: 1200;
+    position: fixed;
+    overflow-y: auto;
+    flex-direction: column;
 `;
 
 const BoardMenuTabContent = styled.div`
@@ -210,46 +208,12 @@ const BoardMenuNavigationItemLink = styled.a`
     color: #172b4d;
 `;
 
-const Body = styled.main`
-    position: relative;
-    outline: none;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-`;
-
-const Board = styled.div`
-    flex-grow: 1;
-    position: relative;
-    outline: none;
-`;
-
-const BoardWrapper = styled.div`
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-`;
-
-const BoardMain = styled(({boardMenuOpen, ...rest}) => <div {...rest} />)`
-    @media only screen and (max-width: 900px) and (min-width: 751px),
-    only screen and (max-width: 1280px) and (min-width: 901px), only screen and (min-width: 1281px) {
-        margin-right: ${props => props.boardMenuOpen ? '339px' : '0px'};
-    }
-
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    margin-right: 0;
-    transition: margin .1s ease-in;
-`;
 
 const BoardList = styled.div`
-    padding: 10px;
-    position: relative;
-    flex-grow: 1;
-    overflow: auto;
+    display: inline-flex;
+    padding: 85px 5px 8px;
+    box-sizing: border-box;
+    height: 100%;
 `;
 
 const useStyles = theme => ({
@@ -257,8 +221,7 @@ const useStyles = theme => ({
         display: 'none'
     },
     visible: {
-        transform: 'translateX(0)',
-        boxShadow: '0 12px 24px -6px rgba(9,30,66,.25), 0 0 0 1px rgba(9,30,66,.08)'
+        display: 'block',
     },
 });
 
@@ -386,83 +349,78 @@ class TDLContainer extends Component {
 
         return (
             <DragDropContext onDragEnd={this.onDragEnd}>
-                <Body>
-                    <Board>
-                        <BoardWrapper>
-                            <BoardMain boardMenuOpen={boardMenuOpen}>
-                                <HeaderContainer 
-                                    title={title} 
-                                    boardId={boardId} 
-                                    isFavorite={isFavorite} 
-                                    handleBoardAction={handleBoardAction}
-                                    boardMenuOpen={boardMenuOpen}
-                                />
-                                <Droppable droppableId={boardId} direction="horizontal" type="list">
-                                    {provided => (
-                                    <BoardList {...provided.droppableProps} ref={provided.innerRef} >
-                                        <ListContainer boardId={boardId} provided={provided} />
-                                    </BoardList>
-                                    )}
-                                </Droppable>
-                            </BoardMain>
-                            <RightSlideMenu className={boardMenuOpen ? classes.visible : ''}>
-                                <BoardMenuContainer>
-                                    <BoardMenuTabContent>
-                                        <BoardMenuHeader>
-                                            <BoardHeaderContent>
-                                                <HeaderTitle>
-                                                    Menu
-                                                </HeaderTitle>
-                                                <CloseButton onClick={handleCloseBoardMenu}>
-                                                    close
-                                                </CloseButton>
-                                            </BoardHeaderContent>
-                                            <HorizontalDivider />
-                                        </BoardMenuHeader>
-                                        <BoardMenuContent>
-                                            <BoardMenuContentFrame>
-                                                <BoardMenuNavigation>
-                                                    <BoardMenuNavigationItem>
-                                                        <BoardMenuNavigationItemLink onClick={handleCloseBoardCard}>
-                                                            Close Board...
-                                                        </BoardMenuNavigationItemLink>
-                                                    </BoardMenuNavigationItem>
-                                                    <BoardCloseCard className={closeBoardOpen ? '' : classes.hideCloseCard}>
-                                                        <div>
-                                                            <BoardCloseCardHeader>
-                                                                <BoardCloseCardHeaderTitle>
-                                                                    Close Board?
-                                                                </BoardCloseCardHeaderTitle>
-                                                                <CloseCardButton 
-                                                                fontSize="small"
-                                                                onClick={handleCloseBoardCard}
-                                                                >
-                                                                    close
-                                                                </CloseCardButton>
-                                                            </BoardCloseCardHeader>
-                                                            <BoardCloseCardBody>
-                                                                <div>
-                                                                    <BoardCloseCardParagraph>
-                                                                        Do you want to close this board?
-                                                                    </BoardCloseCardParagraph>
-                                                                    <BoardCloseCardButton
-                                                                        onClick={handleCloseBoard}
-                                                                    >
-                                                                        Close
-                                                                    </BoardCloseCardButton>
-                                                                </div>
-                                                            </BoardCloseCardBody>
-                                                        </div>
-                                                    </BoardCloseCard>
-                                                </BoardMenuNavigation>
-                                            </BoardMenuContentFrame>
-                                        </BoardMenuContent>
-                                    </BoardMenuTabContent>
-                                </BoardMenuContainer>
-                            </RightSlideMenu>
-                        </BoardWrapper>
-                    </Board>
-                </Body>
+                <HeaderContainer 
+                    title={title} 
+                    boardId={boardId} 
+                    isFavorite={isFavorite} 
+                    handleBoardAction={handleBoardAction}
+                    boardMenuOpen={boardMenuOpen}
+                />
+                <Droppable
+                    droppableId={boardId}
+                    direction="horizontal"
+                    type="list">
+                        {provided => (
+                            <BoardList ref={provided.innerRef} >
+                                <ListContainer boardId={boardId} provided={provided} />
+                            </BoardList>
+                        )}
+                </Droppable>
+                <RightSlideMenu className={boardMenuOpen ? classes.visible : ''}>
+                    <BoardMenuContainer>
+                        <BoardMenuTabContent>
+                            <BoardMenuHeader>
+                                <BoardHeaderContent>
+                                    <HeaderTitle>
+                                        Menu
+                                    </HeaderTitle>
+                                    <CloseButton onClick={handleCloseBoardMenu}>
+                                        close
+                                    </CloseButton>
+                                </BoardHeaderContent>
+                                <HorizontalDivider />
+                            </BoardMenuHeader>
+                            <BoardMenuContent>
+                                <BoardMenuContentFrame>
+                                    <BoardMenuNavigation>
+                                        <BoardMenuNavigationItem>
+                                            <BoardMenuNavigationItemLink onClick={handleCloseBoardCard}>
+                                                Close Board...
+                                            </BoardMenuNavigationItemLink>
+                                        </BoardMenuNavigationItem>
+                                        <BoardCloseCard className={closeBoardOpen ? '' : classes.hideCloseCard}>
+                                            <div>
+                                                <BoardCloseCardHeader>
+                                                    <BoardCloseCardHeaderTitle>
+                                                        Close Board?
+                                                    </BoardCloseCardHeaderTitle>
+                                                    <CloseCardButton 
+                                                    fontSize="small"
+                                                    onClick={handleCloseBoardCard}
+                                                    >
+                                                        close
+                                                    </CloseCardButton>
+                                                </BoardCloseCardHeader>
+                                                <BoardCloseCardBody>
+                                                    <div>
+                                                        <BoardCloseCardParagraph>
+                                                            Do you want to close this board?
+                                                        </BoardCloseCardParagraph>
+                                                        <BoardCloseCardButton
+                                                            onClick={handleCloseBoard}
+                                                        >
+                                                            Close
+                                                        </BoardCloseCardButton>
+                                                    </div>
+                                                </BoardCloseCardBody>
+                                            </div>
+                                        </BoardCloseCard>
+                                    </BoardMenuNavigation>
+                                </BoardMenuContentFrame>
+                            </BoardMenuContent>
+                        </BoardMenuTabContent>
+                    </BoardMenuContainer>
+                </RightSlideMenu>
             </DragDropContext>
         )
     }

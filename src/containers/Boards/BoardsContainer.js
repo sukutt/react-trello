@@ -36,11 +36,11 @@ const FormContainer = styled.div`
 `;
 
 const ContentDiv = styled.main`
+    margin: 40px 0;
     display: flex;
     flex-grow: 1;
     flex-direction: column;
     position: relative;
-    overflow-y: auto;
     outline: none;
 `;
 

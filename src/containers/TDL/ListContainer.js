@@ -7,15 +7,10 @@ import { CreateListButton } from 'components/TDL';
 import { bindActionCreators } from 'redux';
 
 const Body = styled.div`
+    display: inline-flex;
+    align-items: flex-start;
+    height: 100%;
     user-select: none;
-    white-space: nowrap;
-    margin-bottom: 8px;
-    padding-bottom: 8px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
 `;
 
 class ListContainer extends Component {

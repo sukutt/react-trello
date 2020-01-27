@@ -13,9 +13,69 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Button from '@material-ui/core/Button';
 
 const DrawerMenuButtonDiv = styled.div`
-    position: relative;
     display: block;
-    float: right;
+`;
+
+const LeftMenuDiv = styled.div`
+    display: flex;
+    min-width: 0;
+    cursor: pointer;
+`;
+
+const TitleDiv = styled.div`
+    line-height: 32px;
+    padding: 0;
+    text-decoration: none;
+    max-width: calc(100% - 24px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 3px;
+    height: 32px;
+    margin: 0 4px 4px 0;
+    border: 0;
+    outline: 0;
+
+    &:hover {
+        background: hsla(0,0%,100%,.24);
+    }
+`;
+
+const CenteredTypography = styled(({isEditable, ...rest}) => <Typography {...rest} />)`
+    display: ${props => props.isEditable ? 'none' : 'block'};
+    padding: 0 12px;
+    color: white;
+    max-width: calc(100% - 24px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+`;
+
+const TitleInput = styled(AutosizeInput)`
+    > input {
+        color: #172b4d;
+        border-radius: 3px;
+        line-height: 20px;
+        background-color: #fff;
+        border: 0;
+        padding: 0 12px;
+        font-weight: 700;
+        font-size: 18px;
+        height: 32px;
+
+        &:focus {
+            background: #fff;
+            border: none;
+            box-shadow: inset 0 0 0 2px #0079bf;
+            outline: 0;
+        }
+    }
+`;
+
+const RightMenuDiv = styled.div`
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
 `;
 
 const DrawerMenuButton = styled(Button)`
@@ -26,7 +86,6 @@ const DrawerMenuButton = styled(Button)`
 `;
 
 const VerticalDivider =  styled.span`
-    float: left;
     border-left: 1px solid hsla(0,0%,100%,.24);
     border-left-color: rgba(47, 47, 47, 0.24);
     height: 16px;
@@ -37,7 +96,6 @@ const FavoriteButton = styled.div`
     border-radius: 3px;
     background: rgba(19,21,22,.24);
     cursor: default;
-    float: left;
     font-size: 14px;
     height: 32px;
     line-height: 32px;
@@ -62,74 +120,20 @@ const StarIcon = styled(({isFavorite, ...rest}) => <StarBorderRoundedIcon {...re
 `;
 
 const Main = styled.div`
-    height: auto;
-    padding: 8px 4px 4px 8px;
-    position: relative;
-`;
-
-const CenteredTypography = styled(({isEditable, ...rest}) => <Typography {...rest} />)`
-    display: ${props => props.isEditable ? 'none' : 'block'};
-    padding: 0 12px;
-    color: white;
-    max-width: calc(100% - 24px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
-
-const TitleInput = styled(AutosizeInput)`
-    display: none;
-
-    > input {
-        color: #172b4d;
-        border-radius: 3px;
-        line-height: 20px;
-        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;
-        background-color: #fff;
-        border: 0;
-        margin: 0;
-        padding: 0 12px;
-        font-weight: 700;
-        font-size: 18px;
-        height: 32px;
-
-        &:focus {
-            background: #fff;
-            border: none;
-            box-shadow: inset 0 0 0 2px #0079bf;
-            outline: 0;
-        }
-    }
-`;
-
-const TitleDiv = styled.div`
-    background: transparent;
-    cursor: default;
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 32px;
-    padding: 0;
-    text-decoration: none;
-    max-width: calc(100% - 24px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border-radius: 3px;
-    color: #fff;
-    float: left;
-    height: 32px;
-    margin: 0 4px 4px 0;
-    position: relative;
-
-    &:hover {
-        background: hsla(0,0%,100%,.24);
-        cursor: pointer;
-    }
+    position: fixed;
+    top: 40px;
+    display: flex;
+    box-sizing: border-box;
+    justify-content: space-between;
+    height: 40px;
+    width: 100%;
+    padding: 8px 10px 5px;
+    color: #fbfbfb;
 `;
 
 const useStyles = theme => ({
     visible: {
-        display: 'block',
+        display: 'block !important',
     },
     boardMenuBtn: {
         display: 'none'
@@ -251,35 +255,40 @@ class HeaderContainer extends Component {
 
         return (
             <Main>
-                <TitleDiv onClick={handleTitleClick}>
-                    <CenteredTypography variant='h6' isEditable={changeDiv}>
-                        {title}
-                    </CenteredTypography>
-                    <TitleInput
-                        type='text'
-                        className={changeDiv ? classes.visible : ''}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        onKeyDown={handleKeyPress}
-                        value={title}
-                        ref={this.inputRef}
-                    />
-                </TitleDiv>
-                <FavoriteButton >
-                    <StarIcon isFavorite={favorite} fontSize="small"onClick={handleFavorite} />
-                </FavoriteButton>
-                <VerticalDivider />
-                <DrawerMenuButtonDiv>
-                    <DrawerMenuButton
-                        className={boardMenuOpen ? classes.boardMenuBtn : ''}
-                        size="small"
-                        variant="contained"
-                        startIcon={<MoreHorizIcon/>}
-                        onClick={handleBoardAction}
-                    >
-                        Show Menu
-                    </DrawerMenuButton>
-                </DrawerMenuButtonDiv>
+                <LeftMenuDiv>
+                    <TitleDiv onClick={handleTitleClick}>
+                        <CenteredTypography variant='h6' isEditable={changeDiv}>
+                            {title}
+                        </CenteredTypography>
+                        <TitleInput
+                            type='text'
+                            style={{ display: 'none' }}
+                            className={changeDiv ? classes.visible : ''}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            onKeyDown={handleKeyPress}
+                            value={title}
+                            ref={this.inputRef}
+                        />
+                    </TitleDiv>
+                    <FavoriteButton >
+                        <StarIcon isFavorite={favorite} fontSize="small"onClick={handleFavorite} />
+                    </FavoriteButton>
+                    <VerticalDivider />
+                </LeftMenuDiv>
+                <RightMenuDiv>
+                    <DrawerMenuButtonDiv>
+                        <DrawerMenuButton
+                            className={boardMenuOpen ? classes.boardMenuBtn : ''}
+                            size="small"
+                            variant="contained"
+                            startIcon={<MoreHorizIcon/>}
+                            onClick={handleBoardAction}
+                        >
+                            Show Menu
+                        </DrawerMenuButton>
+                    </DrawerMenuButtonDiv>
+                </RightMenuDiv>
             </Main>
         )
     }

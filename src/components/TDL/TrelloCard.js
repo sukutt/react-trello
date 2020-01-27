@@ -67,6 +67,8 @@ const TextArea = styled(Textarea)`
     outline: none;
     border: none;
     border-radius: 3px;
+    font-size: 16px;
+    font-weight: 400;
 `;
 
 const CardEditButton = styled.span`
@@ -92,7 +94,7 @@ const EditIcon = styled(Icon)`
     }
 `;
 
-const TrelloCardContainer = styled.div`
+const TrelloCardContainer = styled.a`
     &&& {
         display: block;
         cursor: pointer;
@@ -103,8 +105,13 @@ const TrelloCardContainer = styled.div`
     position: relative;
     max-width: 300px;
     min-height: 20px;
-    display: block;
     margin-bottom: 8px;
+    text-decoration: none;
+    margin: 8px 5px 0;
+
+    &:first-child {
+        margin: 0px 5px 0;
+    }
 
     &:hover {
         background-color: #f4f5f7;
@@ -174,7 +181,11 @@ const TrelloCard = ({
     return (
         <Draggable draggableId={id} index={index}>
             {provided => (
-                <TrelloCardContainer ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                <TrelloCardContainer 
+                ref={provided.innerRef} 
+                {...provided.draggableProps} 
+                {...provided.dragHandleProps}
+                >
                     <StyledCard onClick={(e) => {
                         handleClick(e.currentTarget);
                     }}>

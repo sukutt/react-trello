@@ -3,19 +3,20 @@
 
 html {
     height: 100%;
+    width: 100%;
 }
 
 body {
-    margin:0px; 
+    margin:0px;
     height: 100%;
+    width: 100%;
     font-family: 'Roboto', sans-serif;
 }
 
 #root {
-    position: relative; 
-    z-index: 1; 
-    overflow: hidden; 
-    height: 100%; 
-    background-position: 50%; 
+    background-attachment: fixed;
     background-size: cover;
+    height: 100%;
+    display: inline-flex;
+    min-width: 100%;
 }

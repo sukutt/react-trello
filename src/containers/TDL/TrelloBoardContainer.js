@@ -19,37 +19,30 @@ const HeaderWrapper = styled.div`
     cursor: pointer;
 `;
 
-const CardDiv = styled.div`
-    margin-bottom: 0;
-    flex: 1 1 auto;
-    min-height: 0;
-    // overflow-y: auto;
-    // overflow-x: hidden;
-    margin: 0 4px;
-    padding: 0 4px;
+const CardRootDiv = styled.div`
+    height: 100%;
+    margin: 0 3px 6px;
+    overflow-y: auto;
+    overflow-x: hidden;
 `;
 
 const BoardDiv = styled.div`
-    width: 272px;
-    margin-right: 8px;
-    box-sizing: border-box;
-    display: inline-block;
-    vertical-align: top;
-    white-space: nowrap;
-    &:first-child {
-        margin-left: 8px;
-    }
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    user-select: none;
 `;
 
 const BoardContent = styled.div`
+    width: 272px;
+    margin: 0 5px;
     background-color: #ebecf0;
     border-radius: 3px;
     box-sizing: border-box;
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
+    min-height: 0;
     max-height: 100%;
-    position: relative;
-    white-space: normal;
 `;
 
 const TitleContent = styled.div`
@@ -66,7 +59,7 @@ const TitleTextArea = styled(({isEditable, childRef, ...rest}) => <Textarea ref=
     color: #172b4d;
     font-family: 'Roboto', sans-serif;
     font-weight: 400;
-    font-size: 16px;
+    font-size: 14px;
     overflow-wrap: break-word;
     background: transparent;
     padding: 4px;
@@ -89,12 +82,15 @@ const TitleTextArea = styled(({isEditable, childRef, ...rest}) => <Textarea ref=
     }
 `;
 
-const MoreMenuWrapper = styled.div`
+const MoreMenuWrapper = styled.span`
     position: absolute;
     right: 6px;
     top: 6px;
-    z-index: 1;
     border-radius: 3px;
+
+    &:focus {
+        outline: 0;
+    }
 
     &:hover {
         background-color: rgba(120, 120, 120, .1);
@@ -112,7 +108,6 @@ const BoardEditPopper = styled(Popper)`
     border-radius: 3px;
     box-shadow: 0 8px 16px -4px rgba(9,30,66,.25), 0 0 0 1px rgba(9,30,66,.08);
     width: 304px;
-    z-index: 1;
     overflow: hidden;
 `;
 
@@ -123,11 +118,11 @@ class TrelloBoardContainer extends Component {
     }
 
     state = {
-        isCardEditing: false,
         isEditable: false,
         title: '',
         originalTitle: '',
         anchorEl: null,
+        placement: 'bottom-start',
     }
 
     componentDidMount() {
@@ -158,10 +153,14 @@ class TrelloBoardContainer extends Component {
 
     handleShowListMenu = (e) => {
         e.stopPropagation();
+        const { parentElement } = e.currentTarget;
+        const { x } = parentElement.getBoundingClientRect();
+        parentElement.focus();
 
-        const { currentTarget } = e;
+        const { clientWidth } = document.getElementById('base-header');
         this.setState(prevState => ({
-            anchorEl: prevState.anchorEl ? null : currentTarget,
+            placement: x + 304 > clientWidth ? 'bottom-end' : 'bottom-start',
+            anchorEl: prevState.anchorEl ? null : parentElement,
         }));
     }
 
@@ -219,10 +218,6 @@ class TrelloBoardContainer extends Component {
         })
     }
 
-    handleCardEditing = (e) => {
-        this.setState(prevState => ({isCardEditing: !prevState.isCardEditing}));
-    }
-
     handleTitleChange = (e) => {
         this.setState({
             title: e.target.value,
@@ -260,8 +255,8 @@ class TrelloBoardContainer extends Component {
         const {
             isEditable,
             title,
-            isCardEditing,
-            anchorEl
+            anchorEl,
+            placement
         } = this.state;
 
         const {
@@ -271,7 +266,6 @@ class TrelloBoardContainer extends Component {
             handleTitleChange,
             handleBlur,
             handleKeyDown,
-            handleCardEditing,
             handleClickAway,
             handleDeleteList,
             handleDeleteAllCards
@@ -318,19 +312,21 @@ class TrelloBoardContainer extends Component {
         const open = Boolean(anchorEl);
 
         return (
-            // disableInteractiveElementBlocking는 수정 중일 때는 false로 잠궈둔다.
-            <Draggable disableInteractiveElementBlocking={isEditable || isCardEditing ? false : true}  draggableId={id} index={listIndex}>
-                {provided => (
+            <Draggable 
+            disableInteractiveElementBlocking 
+            draggableId={id} 
+            index={listIndex}>
+                {(boardProvided) => (
                     <BoardDiv
-                    {...provided.draggableProps} 
-                    ref={provided.innerRef}
-                    {...provided.dragHandleProps}>
+                    {...boardProvided.draggableProps} 
+                    ref={boardProvided.innerRef}
+                    >
                         <Droppable droppableId={id}>
                             {provided => (
-                                <BoardContent {...provided.droppableProps}
-                                ref={provided.innerRef}
-                                >
-                                    <HeaderWrapper onClick={handleTitleChangeTrigger}>
+                                <BoardContent>
+                                    <HeaderWrapper 
+                                    {...boardProvided.dragHandleProps} 
+                                    onClick={handleTitleChangeTrigger}>
                                         <TitleContent>
                                             <TitleTextArea 
                                                 isEditable={isEditable}
@@ -349,15 +345,17 @@ class TrelloBoardContainer extends Component {
                                         </TitleContent>
                                         <ClickAwayListener onClickAway={handleClickAway}>
                                             <div>
-                                                <MoreMenuWrapper>
+                                                <MoreMenuWrapper
+                                                role="button"
+                                                tabIndex={0}
+                                                >
                                                     <HorizIcon 
                                                         fontSize="small"
                                                         onClick={handleShowListMenu}
                                                     />
                                                 </MoreMenuWrapper>
                                                 <BoardEditPopper
-                                                id="board-edit-popper"
-                                                placement="bottom-start"
+                                                placement={placement}
                                                 open={open} 
                                                 anchorEl={anchorEl}
                                                 onClick={(e) => {
@@ -369,11 +367,14 @@ class TrelloBoardContainer extends Component {
                                             </div>
                                         </ClickAwayListener>
                                     </HeaderWrapper>
-                                    <CardDiv>
+                                    <CardRootDiv
+                                    ref={provided.innerRef}
+                                    {...provided.droppableProps}
+                                    >
                                         {jsxList}
-                                    </CardDiv>
-                                    {provided.placeholder}
-                                    <CreateCardButton handleEditing={handleCardEditing} createNewCard={handleConfirmNewCard} />
+                                        {provided.placeholder}
+                                    </CardRootDiv>
+                                    <CreateCardButton createNewCard={handleConfirmNewCard} />
                                 </BoardContent>
                             )}
                         </Droppable>

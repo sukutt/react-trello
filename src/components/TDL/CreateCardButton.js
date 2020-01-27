@@ -9,7 +9,6 @@ const ListButtonDiv = styled.div`
     cursor: pointer;
     border-radius: 3px;
     height: auto;
-    min-height: 38px;
     transition: background 85ms ease-in,opacity 40ms ease-in,border-color 85ms ease-in;
     box-sizing: border-box;
     display: inline-block;
@@ -67,9 +66,13 @@ const TitleContent = styled.div`
     padding: 6px 8px 2px;
     position: relative;
 `;
+
 const TitleTextArea = styled(({height, ...rest}) => <Textarea {...rest} />)`
     resize: none;
     width: 100%;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
     overflow-y: ${props => props.height > 162 ? 'scroll' : 'hidden'};
     overflow-wrap: break-word;
     background: none;
@@ -99,9 +102,6 @@ class CreateCardButton extends Component {
     }
 
     handleClick = () => {
-        const { handleEditing } = this.props;
-        handleEditing();
-
         this.setState({
             isEditable: true,
         })
@@ -137,9 +137,6 @@ class CreateCardButton extends Component {
     }
 
     clearState() {
-        const { handleEditing } = this.props;
-        handleEditing();
-
         this.setState({
             isEditable: false,
             title: '',
@@ -211,9 +208,13 @@ class CreateCardButton extends Component {
                                 variant="contained">
                                     Add Card
                             </Button>
-                            <CloseButton onClick={() => {
+                            <CloseButton 
+                            onMouseDown={(e) => {
+                                e.stopPropagation();
                                 this.clearState();
-                            }}>close</CloseButton>
+                            }}>
+                                close
+                            </CloseButton>
                         </AddCardButtonGroup> :
                         ''
                     }
