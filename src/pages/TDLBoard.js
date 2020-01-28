@@ -4,6 +4,7 @@ import * as baseActions from 'store/modules/base';
 import * as tdlBoardActions from 'store/modules/lists';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Redirect } from 'react-router-dom';
 
 
 class TDLBoard extends Component {
@@ -12,6 +13,11 @@ class TDLBoard extends Component {
             BaseActions,
             location,
         } = this.props;
+
+        const isFavorite = location.state && location.state.isFavorite;
+        if (isFavorite === undefined) {
+            return;
+        }
 
         BaseActions.setHeaderTransparency(true);
         // board 로드 시 현재 배경화면 설정
@@ -39,16 +45,16 @@ class TDLBoard extends Component {
             boardId
         } = this.props.match.params;
 
-        const {
-            isFavorite
-        } = this.props.location.state;
+        const isFavorite = this.props.location.state && this.props.location.state.isFavorite;
 
-        return (
+        return isFavorite !== undefined ? (
             <TDLContainer
             title={title}
             boardId={boardId}
             isFavorite={isFavorite}
             />
+        ) : (
+            <Redirect to='/' />
         )
     }
 }
