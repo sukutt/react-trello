@@ -62,7 +62,7 @@ const ImageGrid = styled(Grid)`
 `
 const ImageBox = styled(Box)`
     &&& {
-        background: url(images/main.svg);
+        background: url(/images/main.svg);
         max-width: 100%;
         vertical-align: middle;
     }

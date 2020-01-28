@@ -231,7 +231,7 @@ class BoardsContainer extends Component {
         background: {
             id: 0,
             key: 'background-image',
-            value: 'url(images/default1.jpg)',
+            value: 'url(/images/default1.jpg)',
         },
     }
 
@@ -242,7 +242,7 @@ class BoardsContainer extends Component {
         background: {
             id: 0,
             key: 'background-image',
-            value: 'url(images/default1.jpg)',
+            value: 'url(/images/default1.jpg)',
         },
     }
 
@@ -409,7 +409,13 @@ class BoardsContainer extends Component {
                                                 <GridList>
                                                     {tileData.map((value, index) => (
                                                         <GridListItem key={value.img || value.backgroundColor}>
-                                                            <GridItemButton id={index} value={value.img || value.backgroundColor} name={value.img ? 'background-image' : 'background-color'} onClick={changeThumbnail} backgroundColor={value.backgroundColor} img={value.img}>
+                                                            <GridItemButton 
+                                                            id={index} 
+                                                            value={value.img || value.backgroundColor} 
+                                                            name={value.img ? 'background-image' : 'background-color'} 
+                                                            onClick={changeThumbnail} 
+                                                            backgroundColor={value.backgroundColor} 
+                                                            img={value.img}>
                                                                 {index === background.id ? <GridItemCheck /> : ''}
                                                             </GridItemButton>
                                                         </GridListItem>

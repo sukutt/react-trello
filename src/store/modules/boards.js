@@ -54,13 +54,6 @@ export default handleActions({
     }),
 
     ...pender({
-        type: DELETE,
-        onSuccess: (state, action) => {
-            window.location.href = '/boards';
-        }
-    }),
-
-    ...pender({
         type: TOGGLE_FAVORITE,
         onSuccess: (state, action) => {
             const { _id, favorite } = action.payload.data;

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route} from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import {Home, Auth, Boards, TDLBoard} from 'pages';
 import HeaderContainer from 'containers/Base/HeaderContainer';
 import storage from 'lib/storage';
@@ -25,7 +25,7 @@ class App extends React.Component {
     try {
         await UserActions.checkStatus();
         // 바로 boards로 넘겨준다
-        history.push('/boards');
+        history.push(`/${signedInInfo.userId}/boards`);
     } catch (e) {
         storage.remove('signedInInfo');
         window.location.href = '/auth/login?expired';
@@ -37,13 +37,18 @@ class App extends React.Component {
   }
 
   render() {
+    // 유효성 검사 실시
+
     return (
       <Container>
-        <Route component={HeaderContainer} />
-        <Route exact path="/" component={Home}/>
-        <Route path="/tdl" component={TDLBoard} />
-        <Route path="/auth" component={Auth}/>
-        <Route path="/boards" component={Boards} />
+          <Route component={HeaderContainer} />
+          <Switch>
+            <Route exact path="/" component={Home}/>
+            <Route path="/b/:boardId/:title" component={TDLBoard} />
+            <Route path="/auth" component={Auth}/>
+            <Route path="/:userId/boards" component={Boards} />
+            <Redirect to="/" />
+          </Switch>
       </Container>
     )
   }

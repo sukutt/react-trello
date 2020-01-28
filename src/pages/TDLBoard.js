@@ -5,6 +5,7 @@ import * as tdlBoardActions from 'store/modules/lists';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+
 class TDLBoard extends Component {
     componentDidMount() {
         const {
@@ -35,7 +36,10 @@ class TDLBoard extends Component {
     render() {
         const {
             title,
-            boardId,
+            boardId
+        } = this.props.match.params;
+
+        const {
             isFavorite
         } = this.props.location.state;
 

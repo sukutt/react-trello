@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { withStyles } from '@material-ui/core/styles';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
+import { withRouter } from 'react-router-dom';
 
 const RightSlideMenu = styled.div`
     flex: 0 0 auto;
@@ -319,9 +320,11 @@ class TDLContainer extends Component {
 
     handleCloseBoard = async () => {
         // 보드 삭제
-        const { BoardActions, boardId } = this.props;
+        const { BoardActions, boardId, history, userId } = this.props;
         try {
             await BoardActions.deleteBoard({id: boardId});
+
+            history.push(`/${userId}/boards`);
         } catch (e) {
             console.log(e);
         }
@@ -429,9 +432,10 @@ class TDLContainer extends Component {
 export default connect(
     (state) => ({
         list: state.lists.get('list'),
+        userId: state.user.getIn(['signedInInfo', 'userId'])
     }),
     (dispatch) => ({
         TDLBoardActions: bindActionCreators(tdlBoardActions, dispatch),
         BoardActions: bindActionCreators(boardActions, dispatch),
     })
-)(withStyles(useStyles)(TDLContainer));
+)(withRouter(withStyles(useStyles)(TDLContainer)));

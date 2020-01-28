@@ -25,8 +25,8 @@ class HeaderContainer extends Component {
     }
 
     handleGoBackToBoards = () => {
-        const { history } = this.props;
-        history.push('/boards');
+        const { history, userId } = this.props;
+        history.push(`/${userId}/boards`);
     }
 
     render() {
@@ -35,13 +35,14 @@ class HeaderContainer extends Component {
             handleGoBackToBoards
         } = this;
 
-        const { isTDLPage, visible, signedIn } = this.props;
+        const { isTDLPage, visible, signedIn, userId } = this.props;
         if(!visible) return null;
 
         return (
             <Header 
             signedIn={signedIn} 
             isTDLPage={isTDLPage}
+            userId={userId}
             handleGoBackToBoards={handleGoBackToBoards}
             >
                 { signedIn ? (
@@ -62,7 +63,8 @@ export default connect(
     (state) => ({
         isTDLPage: state.base.getIn(['header', 'isTDLPage']),
         visible: state.base.getIn(['header', 'visible']),
-        signedIn: state.user.get('signedIn')
+        signedIn: state.user.get('signedIn'),
+        userId: state.user.getIn(['signedInInfo', 'userId'])
     }),
     (dispatch) => ({
         UserActions: bindActionCreators(userActions, dispatch)

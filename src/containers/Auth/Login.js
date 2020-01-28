@@ -43,7 +43,7 @@ class Login extends Component {
             storage.set('signedInInfo', signedInInfo);
             UserActions.setSignedInInfo(signedInInfo);
 
-            history.push('/boards');
+            history.push(`/${signedInInfo.userId}/boards`);
         } catch(e) {
             this.setState({
                 alert: Map({

@@ -174,10 +174,8 @@ class GridPanel extends Component {
                         <GridItem key={value._id} item>
                             <StyledLink 
                             to={{
-                                pathname: '/tdl',
+                                pathname: `/b/${value._id}/${value.title}`,
                                 state: {
-                                    title: value.title,
-                                    boardId: value._id,
                                     thumbnail: value.thumbnail,
                                     isFavorite: isFavorite,
                                 }

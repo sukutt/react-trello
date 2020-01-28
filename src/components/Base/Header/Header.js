@@ -87,13 +87,13 @@ const FrelloBoard = styled(({bounce, ...rest}) => <Link {...rest} />)`
     }
 `;
 
-export default function Header({signedIn, isTDLPage, handleGoBackToBoards, children}) {
+export default function Header({signedIn, isTDLPage, userId, handleGoBackToBoards, children}) {
     const [bounce, setBounce] = React.useState(null);
 
     return (
         <StyledAppBar 
         id='base-header'
-        isTDLPage={isTDLPage} 
+        isTDLPage={isTDLPage}
         signedIn={signedIn}
         >
             <StyledToolbar disableGutters={true} signedIn={signedIn} variant="dense">
@@ -107,7 +107,7 @@ export default function Header({signedIn, isTDLPage, handleGoBackToBoards, child
                 onClick={() => setBounce(true)}
                 onAnimationEnd={() => setBounce(false)}
                 bounce={bounce}
-                to="/boards"
+                to={`/${userId}/boards`}
                 >
                     Frello
                 </FrelloBoard>
