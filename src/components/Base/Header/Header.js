@@ -7,9 +7,9 @@ import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 import { Link } from 'react-router-dom';
 
 const bounce = keyframes`
-    0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
-    40% {transform: translateX(-50%) translateY(-10px);}
-    60% {transform: translateX(-50%) translateY(-5px);}
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
 `
 
 const StyledAppBar = styled(({signedIn, isTDLPage, ...rest}) => <AppBar {...rest} />)`
@@ -77,7 +77,6 @@ const FrelloBoard = styled(({bounce, ...rest}) => <Link {...rest} />)`
     display: block;
     left: 50%;
     position: absolute;
-    transform: translateX(-50%);
     cursor: pointer;
     &&& {
         color: hsla(0, 0%, 100%, .8);

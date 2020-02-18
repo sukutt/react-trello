@@ -57,5 +57,5 @@
   "devDependencies": {
     "react-hot-loader": "4.12.18"
   },
-  "proxy": "http://localhost:4000"
+  "proxy": "http://localhost:8080"
 }
