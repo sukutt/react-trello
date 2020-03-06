@@ -33,12 +33,18 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    const userInfo = storage.get('signedInInfo');
+    const { history } = this.props;
+
+    if (window.location.pathname !== '/' && userInfo === null) {
+        history.push('/');
+        return;
+    }
+
     this.initializeUserInfo();
   }
 
   render() {
-    // 유효성 검사 실시
-
     return (
       <Container>
           <Route component={HeaderContainer} />
