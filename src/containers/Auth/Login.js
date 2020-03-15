@@ -13,6 +13,20 @@ import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { Map } from 'immutable';
+import { GoogleLogin } from 'react-google-login';
+import { withStyles } from '@material-ui/core/styles';
+
+const useStyles = theme => ({
+    btnGoogle: {
+        width: '100%',
+        boxSizing: 'border-box',
+        margin: 0,
+        outline: 0,
+        position: 'relative',
+        verticalAlign: 'middle',
+        justifyContent: 'center'
+    },
+});
 
 class Login extends Component {
     state = {
@@ -72,11 +86,41 @@ class Login extends Component {
         })
     }
 
+    handleGoogleLogin = async (res) => {
+        const { AuthActions, UserActions, history } = this.props;
+        const { email, name } = res.profileObj;
+
+        try {
+            await AuthActions.signInWithOAuth({
+                userId: name,
+                email,
+            });
+
+            const signedInInfo = this.props.result.toJS();
+            storage.set('signedInInfo', signedInInfo);
+            UserActions.setSignedInInfo(signedInInfo);
+
+            history.push(`/${signedInInfo.userId}/boards`);
+        } catch(e) {
+            this.setState({
+                alert: Map({
+                    open: true,
+                    message: 'Incorrect email or password'
+                })
+            })
+        }
+    }
+
     render() {
+        const {
+            classes
+        } = this.props;
+
         const {
             handleChange,
             handleSubmit,
-            handleAlertClose
+            handleAlertClose,
+            handleGoogleLogin
         } = this;
 
         const {
@@ -120,6 +164,16 @@ class Login extends Component {
                         <Grid item xs={12}>
                             <Button type="submit" color="primary" variant="contained" fullWidth={true}>Sign in</Button>
                         </Grid>
+                        <Grid item xs={12}>
+                            <GoogleLogin
+                                buttonText='Sign in with Google'
+                                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                                onSuccess={result => handleGoogleLogin(result)}
+                                onFailure={result => console.log(result)}
+                                cookiePolicy={'single_host_origin'}
+                                className={classes.btnGoogle}
+                            />
+                        </Grid>
                         <Grid container justify="flex-end">
                             <Link to="/auth/register" underline="always">Sign up</Link>
                         </Grid>
@@ -139,4 +193,4 @@ export default connect(
         AuthActions: bindActionCreators(authActions, dispatch),
         UserActions: bindActionCreators(userActions, dispatch),
     })
-)(Login);
+)(withStyles(useStyles)(Login));

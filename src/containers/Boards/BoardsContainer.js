@@ -248,10 +248,14 @@ class BoardsContainer extends Component {
 
     initBoards = async () => {
         const { BoardsActions } = this.props;
-        const { email } = storage.get('signedInInfo');
+        const userInfo = storage.get('signedInInfo');
+
+        if (userInfo === null) {
+            return;
+        }
 
         try {
-            await BoardsActions.getBoards(email);
+            await BoardsActions.getBoards(userInfo.email);
         } catch (e) {
             console.log(e);
         }
