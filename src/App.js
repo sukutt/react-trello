@@ -15,54 +15,52 @@ const Container = styled.div`
 `;
 
 class App extends React.Component {
-  initializeUserInfo = async () => {
-    const signedInInfo = storage.get('signedInInfo'); // 로그인 정보를 로컬스토리지에서 가져옵니다.
-    if(!signedInInfo) return;
-
+  checkAuthentication = async () => {
     const { UserActions, history } = this.props;
+    const signedInInfo = storage.get('signedInInfo'); // 로그인 정보를 로컬스토리지에서 가져옵니다.
+    if(!signedInInfo) {
+      history.push('/');
+      return;
+    };
+
     UserActions.setSignedInInfo(signedInInfo);
 
     try {
         await UserActions.checkStatus();
-        // 바로 boards로 넘겨준다
-        history.push(`/${signedInInfo.userId}/boards`);
+        if (this.props.isSignedIn && window.location.pathname === '/') {
+          const { userId } = signedInInfo;
+          history.push(`/${userId}/boards`);
+        }
     } catch (e) {
         storage.remove('signedInInfo');
-        window.location.href = '/auth/login?expired';
+        history.push('/auth/login');
     }
   }
 
   componentDidMount() {
-    const userInfo = storage.get('signedInInfo');
-    const { history } = this.props;
-
-    if (window.location.pathname !== '/' && userInfo === null) {
-        history.push('/');
-        return;
-    }
-
-    this.initializeUserInfo();
+    this.checkAuthentication();
   }
 
   render() {
     return (
       <Container>
-          <Route component={HeaderContainer} />
-          <Switch>
-            <Route exact path="/" component={Home}/>
-            <Route path="/b/:boardId/:title" component={TDLBoard} />
-            <Route path="/auth" component={Auth}/>
-            <Route path="/:userId/boards" component={Boards} />
-            <Redirect to="/" />
-          </Switch>
-      </Container>
+        <Route component={HeaderContainer} />
+        <Switch>
+          <Route exact path="/" component={Home}/>
+          <Route path="/auth" component={Auth}/>
+          <Route path="/b/:boardId/:title" component={TDLBoard} />
+          <Route path="/:userId/boards" component={Boards} />
+          <Redirect to="/" />
+        </Switch>
+    </Container>
     )
   }
 }
 
 export default connect(
   (state) => ({
-
+    signedInInfo: state.user.get('signedInInfo'),
+    isSignedIn: state.user.get('signedIn'),
   }),
   (dispatch) => ({
     UserActions: bindActionCreators(userActions, dispatch)
